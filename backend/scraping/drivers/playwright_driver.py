@@ -19,7 +19,6 @@ from playwright.async_api import (
     TimeoutError as PlaywrightTimeoutError, Error as PlaywrightError,
     Route, Request, Response
 )
-from playwright._impl._api_types import Error as PlaywrightAPIError
 
 from ..utils.anti_detection import AntiDetectionManager, DetectionRiskLevel
 from ..utils.rate_limiter import AdaptiveRateLimiter
