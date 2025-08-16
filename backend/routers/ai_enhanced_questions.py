@@ -270,13 +270,10 @@ async def assess_question_difficulty(request: DifficultyAssessmentRequest):
         raise HTTPException(status_code=500, detail=f"Difficulty assessment failed: {str(e)}")
 
 @router.post("/detect-duplicates")
-async def detect_duplicate_questions(
-    question_text: str,
-    similarity_threshold: Optional[float] = 0.85
-):
+async def detect_duplicate_questions(request: DuplicateDetectionRequest):
     """Detect if question is duplicate of existing questions"""
     try:
-        logger.info(f"Detecting duplicates for question: {question_text[:50]}...")
+        logger.info(f"Detecting duplicates for question: {request.question_text[:50]}...")
         
         # Get database connection
         db = get_database()
@@ -286,7 +283,7 @@ async def detect_duplicate_questions(
         existing_questions = await existing_cursor.to_list(length=1000)
         
         # Detect duplicates using HuggingFace
-        duplicate_result = await get_ai_coordinator().detect_duplicate_questions(question_text, existing_questions)
+        duplicate_result = await get_ai_coordinator().detect_duplicate_questions(request.question_text, existing_questions)
         
         return duplicate_result
         
