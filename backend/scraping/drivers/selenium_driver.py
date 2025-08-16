@@ -134,11 +134,9 @@ class SeleniumDriver:
         ) if self.config.enable_anti_detection else None
         
         # Rate limiting
-        self.rate_limiter = ExponentialBackoffLimiter(
-            base_delay=1.0, 
-            max_delay=10.0, 
-            strategy="exponential"
-        )
+        from ..utils.rate_limiter import RateLimitConfig
+        rate_config = RateLimitConfig(base_delay=1.0, max_delay=10.0)
+        self.rate_limiter = ExponentialBackoffLimiter(rate_config)
         
         # Performance tracking
         self.performance_logs: List[ScrapingPerformanceLog] = []
