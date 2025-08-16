@@ -100,7 +100,7 @@ async def create_enhanced_question(question_request: QuestionCreateRequest):
         }
         
         # Process through AI pipeline
-        enhanced_question = await ai_coordinator.process_new_question_complete(question_data)
+        enhanced_question = await get_ai_coordinator().process_new_question_complete(question_data)
         
         # Save to database
         db = get_database()
