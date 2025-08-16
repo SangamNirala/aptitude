@@ -194,13 +194,9 @@
   run_ui: false
 
 ## test_plan:
-  current_focus:
-    - "IndiaBix Content Extractor"
-    - "GeeksforGeeks Content Extractor"
+  current_focus: []
+  stuck_tasks:
     - "Main Scraping Coordinator"
-    - "Base Content Extractor Framework"
-    - "Scraping Module Organization"
-  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
