@@ -7,7 +7,8 @@ import uuid
 from models.question_models import (
     EnhancedQuestion, QuestionCreateRequest, QuestionFilterRequest,
     PersonalizedQuestionRequest, QuestionBatch, BulkQuestionUpload,
-    BulkProcessingResult, QuestionCategory, DifficultyLevel, InstantFeedbackRequest
+    BulkProcessingResult, QuestionCategory, DifficultyLevel, InstantFeedbackRequest,
+    HintRequest, DifficultyAssessmentRequest, DuplicateDetectionRequest
 )
 from ai_services.ai_coordinator import AICoordinator
 from services.categorization_service import CategorizationService
