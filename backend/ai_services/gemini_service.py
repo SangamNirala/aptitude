@@ -4,7 +4,7 @@ import json
 import logging
 from typing import List, Dict, Optional, Any
 import asyncio
-from ..models.question_models import AIExplanation, QuestionCategory, DifficultyLevel
+from models.question_models import AIExplanation, QuestionCategory, DifficultyLevel
 
 logger = logging.getLogger(__name__)
 
