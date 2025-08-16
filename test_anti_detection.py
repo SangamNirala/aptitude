@@ -328,12 +328,16 @@ class AntiDetectionSystemTester:
             
             # Test proxy statistics
             start_time = time.time()
-            stats = manager.get_proxy_statistics()
-            response_time = time.time() - start_time
-            
-            success = isinstance(stats, dict) and stats.get("total_proxies", 0) > 0
-            self.log_test_result("Proxy Statistics", success, 
-                               f"Stats: {stats.get('total_proxies', 0)} total, {stats.get('active_proxies', 0)} active", response_time)
+            try:
+                stats = manager.get_proxy_statistics()
+                response_time = time.time() - start_time
+                
+                success = isinstance(stats, dict) and stats.get("total_proxies", 0) > 0
+                self.log_test_result("Proxy Statistics", success, 
+                                   f"Stats: {stats.get('total_proxies', 0)} total, {stats.get('active_proxies', 0)} active", response_time)
+            except Exception as e:
+                response_time = time.time() - start_time
+                self.log_test_result("Proxy Statistics", False, f"Stats error: {str(e)}", response_time)
             
             # Test proxy failure reporting
             start_time = time.time()
