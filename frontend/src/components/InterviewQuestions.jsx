@@ -3,14 +3,23 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Badge } from './ui/badge';
-import { Search, BookOpen, Code, Users, Lightbulb, X } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { 
+  Search, BookOpen, Code, Users, Lightbulb, X, Calculator, Brain, 
+  FileText, BarChart3, Building2, Trophy, Clock, Target, ChevronRight 
+} from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
 const InterviewQuestions = () => {
   const [jobTitle, setJobTitle] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTechnicalModalOpen, setIsTechnicalModalOpen] = useState(false);
+  const [isAptitudeModalOpen, setIsAptitudeModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedJobTitle, setSelectedJobTitle] = useState('');
+  const [selectedAptitudeCategory, setSelectedAptitudeCategory] = useState('');
+  const [selectedSubtopic, setSelectedSubtopic] = useState('');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('');
 
   const { toast } = useToast();
 
