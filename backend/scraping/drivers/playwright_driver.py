@@ -23,7 +23,7 @@ from playwright._impl._api_types import Error as PlaywrightAPIError
 
 from ..utils.anti_detection import AntiDetectionManager, DetectionRiskLevel
 from ..utils.rate_limiter import AdaptiveRateLimiter
-from ...models.scraping_models import (
+from models.scraping_models import (
     ContentExtractionMethod, ScrapingPerformanceLog,
     AntiDetectionLog, RawExtractedQuestion
 )
