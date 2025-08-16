@@ -502,7 +502,7 @@ async def _process_bulk_questions_background(question_data_list: List[Dict], bat
     try:
         logger.info(f"Starting background processing for batch {batch_id}")
         
-        enhanced_questions = await ai_coordinator.bulk_process_questions(question_data_list)
+        enhanced_questions = await get_ai_coordinator().bulk_process_questions(question_data_list)
         
         # Save to database
         db = get_database()
