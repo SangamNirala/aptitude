@@ -1044,6 +1044,550 @@ class AntiDetectionSystemTester:
         
         return self.test_results
 
+class ScrapingExtractorsTester:
+    """Tester for TASK 6-8 - Content Extractors & Main Scraping Coordinator"""
+    
+    def __init__(self):
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": [],
+            "component_tests": {}
+        }
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_scraping_module_imports(self):
+        """Test scraping module imports and organization"""
+        logger.info("📦 Testing Scraping Module Imports...")
+        
+        try:
+            # Test main scraping module import
+            start_time = time.time()
+            import scraping
+            response_time = time.time() - start_time
+            
+            success = hasattr(scraping, '__version__') and scraping.__version__ == "1.0.0"
+            self.log_test_result("Scraping Module Import", success, 
+                               f"Module imported with version: {getattr(scraping, '__version__', 'None')}", response_time)
+        except Exception as e:
+            self.log_test_result("Scraping Module Import", False, f"Import error: {str(e)}")
+        
+        # Test core engine imports
+        try:
+            start_time = time.time()
+            from scraping import (
+                ScrapingEngine, ScrapingEngineConfig, JobProgress, ScrapingStats,
+                create_scraping_engine, create_quick_scraping_job, 
+                get_scraping_engine, shutdown_scraping_engine
+            )
+            response_time = time.time() - start_time
+            self.log_test_result("Core Engine Imports", True, "Successfully imported all core engine classes", response_time)
+        except Exception as e:
+            self.log_test_result("Core Engine Imports", False, f"Import error: {str(e)}")
+        
+        # Test extractor imports
+        try:
+            start_time = time.time()
+            from scraping import (
+                BaseContentExtractor, ExtractionResult, BatchExtractionResult,
+                IndiaBixExtractor, create_indiabix_extractor,
+                GeeksforGeeksExtractor, create_geeksforgeeks_extractor
+            )
+            response_time = time.time() - start_time
+            self.log_test_result("Extractor Imports", True, "Successfully imported all extractor classes", response_time)
+        except Exception as e:
+            self.log_test_result("Extractor Imports", False, f"Import error: {str(e)}")
+        
+        # Test utility imports
+        try:
+            start_time = time.time()
+            from scraping import (
+                ContentValidator, create_indiabix_validator, create_geeksforgeeks_validator,
+                PerformanceMonitor, create_performance_monitor
+            )
+            response_time = time.time() - start_time
+            self.log_test_result("Utility Imports", True, "Successfully imported utility classes", response_time)
+        except Exception as e:
+            self.log_test_result("Utility Imports", False, f"Import error: {str(e)}")
+    
+    async def test_base_extractor_framework(self):
+        """Test BaseContentExtractor framework"""
+        logger.info("🏗️ Testing Base Extractor Framework...")
+        
+        try:
+            from scraping.extractors.base_extractor import (
+                BaseContentExtractor, ExtractionResult, BatchExtractionResult,
+                PageExtractionContext, create_extraction_context, merge_batch_results
+            )
+            
+            # Test ExtractionResult creation
+            start_time = time.time()
+            extraction_result = ExtractionResult(
+                success=True,
+                question_data=None,
+                extraction_time=1.5,
+                source_url="https://test.com"
+            )
+            response_time = time.time() - start_time
+            
+            success = (extraction_result.success == True and 
+                      extraction_result.extraction_time == 1.5 and
+                      extraction_result.source_url == "https://test.com")
+            self.log_test_result("ExtractionResult Creation", success, 
+                               f"Result created with success: {extraction_result.success}", response_time)
+            
+            # Test BatchExtractionResult creation
+            start_time = time.time()
+            batch_result = BatchExtractionResult(
+                total_processed=10,
+                successful_extractions=8,
+                failed_extractions=2,
+                extraction_results=[extraction_result],
+                batch_start_time=datetime.now(),
+                batch_end_time=datetime.now(),
+                total_batch_time=5.0,
+                errors=["Test error"],
+                metadata={"test": "data"}
+            )
+            response_time = time.time() - start_time
+            
+            success = (batch_result.total_processed == 10 and
+                      batch_result.successful_extractions == 8 and
+                      len(batch_result.extraction_results) == 1)
+            self.log_test_result("BatchExtractionResult Creation", success, 
+                               f"Batch result: {batch_result.successful_extractions}/{batch_result.total_processed} successful", response_time)
+            
+            # Test PageExtractionContext creation
+            start_time = time.time()
+            context = PageExtractionContext(
+                page_url="https://test.com/page1",
+                page_number=1,
+                category="quantitative",
+                subcategory="percentages",
+                expected_questions=20,
+                selectors={"question": "div.question"},
+                extraction_config={}
+            )
+            response_time = time.time() - start_time
+            
+            success = (context.page_number == 1 and 
+                      context.category == "quantitative" and
+                      context.expected_questions == 20)
+            self.log_test_result("PageExtractionContext Creation", success, 
+                               f"Context created for page {context.page_number}, category: {context.category}", response_time)
+            
+            # Test merge_batch_results utility
+            start_time = time.time()
+            batch1 = BatchExtractionResult(
+                total_processed=5, successful_extractions=4, failed_extractions=1,
+                extraction_results=[], batch_start_time=datetime.now(),
+                batch_end_time=datetime.now(), total_batch_time=2.0,
+                errors=[], metadata={}
+            )
+            batch2 = BatchExtractionResult(
+                total_processed=3, successful_extractions=2, failed_extractions=1,
+                extraction_results=[], batch_start_time=datetime.now(),
+                batch_end_time=datetime.now(), total_batch_time=1.5,
+                errors=[], metadata={}
+            )
+            
+            merged = merge_batch_results([batch1, batch2])
+            response_time = time.time() - start_time
+            
+            success = (merged.total_processed == 8 and 
+                      merged.successful_extractions == 6 and
+                      merged.failed_extractions == 2)
+            self.log_test_result("Merge Batch Results", success, 
+                               f"Merged: {merged.successful_extractions}/{merged.total_processed} successful", response_time)
+            
+        except Exception as e:
+            self.log_test_result("Base Extractor Framework", False, f"Framework test error: {str(e)}")
+    
+    async def test_indiabix_extractor(self):
+        """Test IndiaBix Content Extractor"""
+        logger.info("🇮🇳 Testing IndiaBix Extractor...")
+        
+        try:
+            from scraping.extractors.indiabix_extractor import IndiaBixExtractor, create_indiabix_extractor
+            from config.scraping_config import INDIABIX_CONFIG
+            
+            # Test factory function
+            start_time = time.time()
+            extractor = create_indiabix_extractor()
+            response_time = time.time() - start_time
+            
+            success = (extractor is not None and 
+                      extractor.source_name == "indiabix" and
+                      hasattr(extractor, 'indiabix_patterns'))
+            self.log_test_result("IndiaBix Extractor Factory", success, 
+                               f"Extractor created for source: {extractor.source_name if extractor else 'None'}", response_time)
+            
+            if not success:
+                return
+            
+            # Test extractor configuration
+            start_time = time.time()
+            has_patterns = hasattr(extractor, 'indiabix_patterns') and len(extractor.indiabix_patterns) > 0
+            has_format_rules = hasattr(extractor, 'format_rules') and len(extractor.format_rules) > 0
+            has_validator = extractor.validator is not None
+            has_performance_monitor = extractor.performance_monitor is not None
+            response_time = time.time() - start_time
+            
+            success = has_patterns and has_format_rules and has_validator and has_performance_monitor
+            self.log_test_result("IndiaBix Extractor Configuration", success, 
+                               f"Patterns: {has_patterns}, Rules: {has_format_rules}, Validator: {has_validator}, Monitor: {has_performance_monitor}", response_time)
+            
+            # Test text cleaning methods
+            start_time = time.time()
+            test_text = "Q. 1. What is 25% of 200?   "
+            cleaned = extractor.clean_text(test_text)
+            response_time = time.time() - start_time
+            
+            success = cleaned == "Q. 1. What is 25% of 200?" and len(cleaned) < len(test_text)
+            self.log_test_result("IndiaBix Text Cleaning", success, 
+                               f"Original: '{test_text}' -> Cleaned: '{cleaned}'", response_time)
+            
+            # Test IndiaBix-specific pattern matching
+            start_time = time.time()
+            option_text = "A) 50"
+            cleaned_option = extractor.indiabix_patterns["option_prefix"].sub("", option_text).strip()
+            response_time = time.time() - start_time
+            
+            success = cleaned_option == "50"
+            self.log_test_result("IndiaBix Pattern Matching", success, 
+                               f"Option '{option_text}' -> '{cleaned_option}'", response_time)
+            
+            # Test extraction statistics
+            start_time = time.time()
+            stats = extractor.get_extraction_statistics()
+            response_time = time.time() - start_time
+            
+            success = (isinstance(stats, dict) and 
+                      "total_processed" in stats and
+                      "success_rate" in stats and
+                      stats["total_processed"] == 0)
+            self.log_test_result("IndiaBix Statistics", success, 
+                               f"Stats keys: {list(stats.keys()) if isinstance(stats, dict) else 'Not dict'}", response_time)
+            
+        except Exception as e:
+            self.log_test_result("IndiaBix Extractor", False, f"Extractor test error: {str(e)}")
+    
+    async def test_geeksforgeeks_extractor(self):
+        """Test GeeksforGeeks Content Extractor"""
+        logger.info("🤓 Testing GeeksforGeeks Extractor...")
+        
+        try:
+            from scraping.extractors.geeksforgeeks_extractor import GeeksforGeeksExtractor, create_geeksforgeeks_extractor
+            from config.scraping_config import GEEKSFORGEEKS_CONFIG
+            
+            # Test factory function
+            start_time = time.time()
+            extractor = create_geeksforgeeks_extractor()
+            response_time = time.time() - start_time
+            
+            success = (extractor is not None and 
+                      extractor.source_name == "geeksforgeeks" and
+                      hasattr(extractor, 'gfg_patterns'))
+            self.log_test_result("GeeksforGeeks Extractor Factory", success, 
+                               f"Extractor created for source: {extractor.source_name if extractor else 'None'}", response_time)
+            
+            if not success:
+                return
+            
+            # Test GeeksforGeeks-specific configuration
+            start_time = time.time()
+            has_gfg_patterns = hasattr(extractor, 'gfg_patterns') and len(extractor.gfg_patterns) > 0
+            has_gfg_formats = hasattr(extractor, 'gfg_formats') and len(extractor.gfg_formats) > 0
+            has_dynamic_selectors = hasattr(extractor, 'dynamic_selectors') and len(extractor.dynamic_selectors) > 0
+            response_time = time.time() - start_time
+            
+            success = has_gfg_patterns and has_gfg_formats and has_dynamic_selectors
+            self.log_test_result("GeeksforGeeks Extractor Configuration", success, 
+                               f"GFG Patterns: {has_gfg_patterns}, Formats: {has_gfg_formats}, Dynamic: {has_dynamic_selectors}", response_time)
+            
+            # Test code pattern matching
+            start_time = time.time()
+            code_text = "```python\nprint('Hello World')\n```"
+            code_matches = extractor.gfg_patterns["code_block"].findall(code_text)
+            response_time = time.time() - start_time
+            
+            success = len(code_matches) > 0 and "print('Hello World')" in code_matches[0]
+            self.log_test_result("GeeksforGeeks Code Pattern", success, 
+                               f"Found {len(code_matches)} code blocks", response_time)
+            
+            # Test complexity pattern matching
+            start_time = time.time()
+            complexity_text = "Time Complexity: O(n log n)"
+            complexity_matches = extractor.gfg_patterns["complexity_pattern"].findall(complexity_text)
+            response_time = time.time() - start_time
+            
+            success = len(complexity_matches) > 0
+            self.log_test_result("GeeksforGeeks Complexity Pattern", success, 
+                               f"Found {len(complexity_matches)} complexity patterns", response_time)
+            
+            # Test format detection capabilities
+            start_time = time.time()
+            format_types = list(extractor.gfg_formats.keys())
+            response_time = time.time() - start_time
+            
+            expected_formats = ["multiple_choice", "coding_problem", "theory_question", "practice_problem"]
+            success = all(fmt in format_types for fmt in expected_formats)
+            self.log_test_result("GeeksforGeeks Format Detection", success, 
+                               f"Supported formats: {format_types}", response_time)
+            
+        except Exception as e:
+            self.log_test_result("GeeksforGeeks Extractor", False, f"Extractor test error: {str(e)}")
+    
+    async def test_scraping_engine(self):
+        """Test Main Scraping Coordinator (ScrapingEngine)"""
+        logger.info("🚀 Testing Scraping Engine...")
+        
+        try:
+            from scraping.scraper_engine import (
+                ScrapingEngine, ScrapingEngineConfig, JobProgress, ScrapingStats,
+                create_scraping_engine, get_scraping_engine
+            )
+            
+            # Test engine configuration
+            start_time = time.time()
+            config = ScrapingEngineConfig(
+                max_concurrent_jobs=2,
+                max_retries_per_job=2,
+                job_timeout_minutes=30,
+                enable_performance_monitoring=True
+            )
+            response_time = time.time() - start_time
+            
+            success = (config.max_concurrent_jobs == 2 and 
+                      config.max_retries_per_job == 2 and
+                      config.enable_performance_monitoring == True)
+            self.log_test_result("Scraping Engine Config", success, 
+                               f"Config: {config.max_concurrent_jobs} jobs, {config.max_retries_per_job} retries", response_time)
+            
+            # Test engine creation
+            start_time = time.time()
+            engine = create_scraping_engine(config)
+            response_time = time.time() - start_time
+            
+            success = (engine is not None and 
+                      engine.config.max_concurrent_jobs == 2 and
+                      hasattr(engine, 'job_queue') and
+                      hasattr(engine, 'extractors'))
+            self.log_test_result("Scraping Engine Creation", success, 
+                               f"Engine created with {len(engine.extractors)} extractors", response_time)
+            
+            if not success:
+                return
+            
+            # Test engine components initialization
+            start_time = time.time()
+            has_extractors = len(engine.extractors) > 0
+            has_validators = len(engine.content_validators) > 0
+            has_performance_monitor = engine.performance_monitor is not None
+            has_anti_detection = engine.anti_detection is not None
+            response_time = time.time() - start_time
+            
+            success = has_extractors and has_validators and has_performance_monitor and has_anti_detection
+            self.log_test_result("Engine Components", success, 
+                               f"Extractors: {len(engine.extractors)}, Validators: {len(engine.content_validators)}, Monitor: {has_performance_monitor}, Anti-detection: {has_anti_detection}", response_time)
+            
+            # Test engine statistics
+            start_time = time.time()
+            stats = engine.get_engine_statistics()
+            response_time = time.time() - start_time
+            
+            success = (isinstance(stats, dict) and 
+                      "engine_status" in stats and
+                      "active_jobs" in stats and
+                      "statistics" in stats)
+            self.log_test_result("Engine Statistics", success, 
+                               f"Stats keys: {list(stats.keys()) if isinstance(stats, dict) else 'Not dict'}", response_time)
+            
+            # Test health check
+            start_time = time.time()
+            health = engine.health_check()
+            response_time = time.time() - start_time
+            
+            success = (isinstance(health, dict) and 
+                      "status" in health and
+                      "health_score" in health and
+                      health.get("extractors_available", 0) > 0)
+            self.log_test_result("Engine Health Check", success, 
+                               f"Health status: {health.get('status', 'unknown')}, Score: {health.get('health_score', 0):.2f}", response_time)
+            
+            # Test global engine access
+            start_time = time.time()
+            global_engine = get_scraping_engine()
+            response_time = time.time() - start_time
+            
+            success = global_engine is not None and hasattr(global_engine, 'extractors')
+            self.log_test_result("Global Engine Access", success, 
+                               f"Global engine available with {len(global_engine.extractors) if global_engine else 0} extractors", response_time)
+            
+        except Exception as e:
+            self.log_test_result("Scraping Engine", False, f"Engine test error: {str(e)}")
+    
+    async def test_factory_functions(self):
+        """Test factory functions and convenience methods"""
+        logger.info("🏭 Testing Factory Functions...")
+        
+        try:
+            # Test create_quick_scraping_job
+            start_time = time.time()
+            from scraping.scraper_engine import create_quick_scraping_job
+            
+            job_config = create_quick_scraping_job(
+                source_type="indiabix",
+                category="quantitative",
+                subcategory="percentages",
+                max_questions=50
+            )
+            response_time = time.time() - start_time
+            
+            success = (job_config is not None and 
+                      job_config.max_questions == 50 and
+                      job_config.target.category == "quantitative")
+            self.log_test_result("Quick Job Creation", success, 
+                               f"Job config created for {job_config.target.category if job_config else 'None'}/{job_config.target.subcategory if job_config else 'None'}", response_time)
+            
+        except Exception as e:
+            # This might fail if config targets are not available, which is acceptable
+            self.log_test_result("Quick Job Creation", False, f"Job creation error (may be expected): {str(e)}")
+        
+        try:
+            # Test extractor factory functions
+            start_time = time.time()
+            from scraping import create_indiabix_extractor, create_geeksforgeeks_extractor
+            
+            indiabix_extractor = create_indiabix_extractor()
+            gfg_extractor = create_geeksforgeeks_extractor()
+            response_time = time.time() - start_time
+            
+            success = (indiabix_extractor is not None and 
+                      gfg_extractor is not None and
+                      indiabix_extractor.source_name == "indiabix" and
+                      gfg_extractor.source_name == "geeksforgeeks")
+            self.log_test_result("Extractor Factories", success, 
+                               f"Created extractors: {indiabix_extractor.source_name if indiabix_extractor else 'None'}, {gfg_extractor.source_name if gfg_extractor else 'None'}", response_time)
+            
+        except Exception as e:
+            self.log_test_result("Extractor Factories", False, f"Factory function error: {str(e)}")
+    
+    async def test_integration_compatibility(self):
+        """Test integration with existing infrastructure"""
+        logger.info("🔗 Testing Integration Compatibility...")
+        
+        try:
+            # Test integration with anti-detection system
+            start_time = time.time()
+            from scraping.utils.anti_detection import create_anti_detection_manager
+            from scraping.extractors.indiabix_extractor import create_indiabix_extractor
+            
+            anti_detection = create_anti_detection_manager("indiabix")
+            extractor = create_indiabix_extractor()
+            response_time = time.time() - start_time
+            
+            success = (anti_detection is not None and 
+                      extractor is not None and
+                      extractor.performance_monitor is not None)
+            self.log_test_result("Anti-Detection Integration", success, 
+                               f"Anti-detection: {anti_detection.source_name if anti_detection else 'None'}, Extractor monitor: {extractor.performance_monitor is not None if extractor else False}", response_time)
+            
+        except Exception as e:
+            self.log_test_result("Anti-Detection Integration", False, f"Integration error: {str(e)}")
+        
+        try:
+            # Test integration with content validation
+            start_time = time.time()
+            from scraping.utils.content_validator import create_indiabix_validator, create_geeksforgeeks_validator
+            
+            indiabix_validator = create_indiabix_validator()
+            gfg_validator = create_geeksforgeeks_validator()
+            response_time = time.time() - start_time
+            
+            success = (indiabix_validator is not None and 
+                      gfg_validator is not None and
+                      indiabix_validator.source_name == "indiabix" and
+                      gfg_validator.source_name == "geeksforgeeks")
+            self.log_test_result("Content Validation Integration", success, 
+                               f"Validators: {indiabix_validator.source_name if indiabix_validator else 'None'}, {gfg_validator.source_name if gfg_validator else 'None'}", response_time)
+            
+        except Exception as e:
+            self.log_test_result("Content Validation Integration", False, f"Validation integration error: {str(e)}")
+        
+        try:
+            # Test integration with performance monitoring
+            start_time = time.time()
+            from scraping.utils.performance_monitor import create_performance_monitor, create_extraction_monitor
+            
+            perf_monitor = create_performance_monitor()
+            extraction_monitor = create_extraction_monitor()
+            response_time = time.time() - start_time
+            
+            success = (perf_monitor is not None and 
+                      extraction_monitor is not None and
+                      hasattr(perf_monitor, 'monitor_operation') and
+                      hasattr(extraction_monitor, 'monitor_operation'))
+            self.log_test_result("Performance Monitoring Integration", success, 
+                               f"Monitors created: {perf_monitor is not None}, {extraction_monitor is not None}", response_time)
+            
+        except Exception as e:
+            self.log_test_result("Performance Monitoring Integration", False, f"Performance integration error: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all scraping extractor tests"""
+        logger.info("🚀 Starting Scraping Extractors & Coordinator Testing...")
+        start_time = time.time()
+        
+        # Run all test suites
+        await self.test_scraping_module_imports()
+        await self.test_base_extractor_framework()
+        await self.test_indiabix_extractor()
+        await self.test_geeksforgeeks_extractor()
+        await self.test_scraping_engine()
+        await self.test_factory_functions()
+        await self.test_integration_compatibility()
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 60)
+        logger.info("🎯 SCRAPING EXTRACTORS & COORDINATOR TEST SUMMARY")
+        logger.info("=" * 60)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 60)
+        
+        # Show failed tests
+        failed_tests = [t for t in self.test_results["test_details"] if not t["success"]]
+        if failed_tests:
+            logger.info("❌ FAILED TESTS:")
+            for test in failed_tests:
+                logger.info(f"  - {test['test_name']}: {test['details']}")
+        
+        return self.test_results
+
 class ScrapingEnginesTester:
     """Tester for TASK 4 & 5 - Selenium, Playwright, Content Validation, and Performance Monitoring"""
     
