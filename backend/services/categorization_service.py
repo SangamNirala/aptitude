@@ -3,8 +3,9 @@ from typing import List, Dict, Optional, Any, Tuple
 from datetime import datetime
 import asyncio
 
-from ai_services.ai_coordinator import AICoordinator
 from models.question_models import QuestionCategory, DifficultyLevel, EnhancedQuestion
+from ai_services.groq_service import GroqService
+from ai_services.huggingface_service import HuggingFaceService
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +13,9 @@ class CategorizationService:
     """Smart categorization and classification service using AI"""
     
     def __init__(self):
-        self.ai_coordinator = AICoordinator()
+        # Initialize AI services directly to avoid circular imports
+        self.groq = GroqService()
+        self.huggingface = HuggingFaceService()
         
         # Company-specific question patterns (learned from historical data)
         self.company_patterns = {
