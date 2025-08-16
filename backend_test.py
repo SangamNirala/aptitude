@@ -1587,6 +1587,12 @@ class ScrapingExtractorsTester:
                 logger.info(f"  - {test['test_name']}: {test['details']}")
         
         return self.test_results
+    
+    async def __aenter__(self):
+        return self
+        
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        pass
 
 class ScrapingEnginesTester:
     """Tester for TASK 4 & 5 - Selenium, Playwright, Content Validation, and Performance Monitoring"""
