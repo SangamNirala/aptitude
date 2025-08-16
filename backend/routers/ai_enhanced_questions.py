@@ -218,7 +218,7 @@ async def get_instant_feedback(
         logger.info(f"Providing instant feedback for question: {question_id}")
         
         # Get ultra-fast feedback using Groq
-        feedback = await ai_coordinator.instant_feedback_response(
+        feedback = await get_ai_coordinator().instant_feedback_response(
             question_text=question_text,
             user_answer=user_answer,
             correct_answer=correct_answer
