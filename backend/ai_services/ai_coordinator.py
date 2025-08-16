@@ -4,10 +4,10 @@ import asyncio
 from datetime import datetime
 import json
 
-from .gemini_service import GeminiService
-from .groq_service import GroqService  
-from .huggingface_service import HuggingFaceService
-from ..models.question_models import (
+from ai_services.gemini_service import GeminiService
+from ai_services.groq_service import GroqService  
+from ai_services.huggingface_service import HuggingFaceService
+from models.question_models import (
     EnhancedQuestion, AIQualityMetrics, QuestionMetadata, 
     AIExplanation, QuestionCategory, DifficultyLevel
 )
