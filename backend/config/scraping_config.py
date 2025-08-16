@@ -4,7 +4,13 @@ Comprehensive source configurations with selectors, pagination, and extraction r
 """
 
 from typing import Dict, List, Any
-from ..models.scraping_models import DataSourceConfig, ScrapingTarget, ContentExtractionMethod, ScrapingSourceType
+import sys
+import os
+
+# Add backend to path for imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from models.scraping_models import DataSourceConfig, ScrapingTarget, ContentExtractionMethod, ScrapingSourceType
 
 # =============================================================================
 # INDIABIX CONFIGURATION
