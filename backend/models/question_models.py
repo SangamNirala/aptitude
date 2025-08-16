@@ -131,3 +131,22 @@ class BulkProcessingResult(BaseModel):
     failed_questions: List[str] = []
     processing_time_seconds: float
     batch_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
+# Request models for API endpoints
+class InstantFeedbackRequest(BaseModel):
+    question_id: str
+    question_text: str
+    user_answer: str
+    correct_answer: str
+
+class HintRequest(BaseModel):
+    question_text: str
+    user_progress: Optional[str] = ""
+
+class DifficultyAssessmentRequest(BaseModel):
+    question_text: str
+    options: List[str]
+
+class DuplicateDetectionRequest(BaseModel):
+    question_text: str
+    similarity_threshold: Optional[float] = 0.85
