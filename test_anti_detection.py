@@ -150,12 +150,16 @@ class AntiDetectionSystemTester:
             # Test request tracking
             start_time = time.time()
             manager.track_request("https://example.com/test")
-            stats = manager.get_request_statistics()
-            response_time = time.time() - start_time
-            
-            success = stats.get("total_requests", 0) > 0
-            self.log_test_result("Request Tracking", success, 
-                               f"Tracked requests: {stats.get('total_requests', 0)}", response_time)
+            try:
+                stats = manager.get_request_statistics()
+                response_time = time.time() - start_time
+                
+                success = isinstance(stats, dict) and stats.get("total_requests", 0) > 0
+                self.log_test_result("Request Tracking", success, 
+                                   f"Tracked requests: {stats.get('total_requests', 0)}", response_time)
+            except Exception as e:
+                response_time = time.time() - start_time
+                self.log_test_result("Request Tracking", False, f"Stats error: {str(e)}", response_time)
             
             # Test factory function
             start_time = time.time()
