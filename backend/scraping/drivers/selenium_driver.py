@@ -30,7 +30,7 @@ from selenium.common.exceptions import (
 
 from ..utils.anti_detection import AntiDetectionManager, DetectionRiskLevel
 from ..utils.rate_limiter import RateLimiter, ExponentialBackoffLimiter
-from ...models.scraping_models import (
+from models.scraping_models import (
     ContentExtractionMethod, ScrapingPerformanceLog,
     AntiDetectionLog, RawExtractedQuestion
 )
