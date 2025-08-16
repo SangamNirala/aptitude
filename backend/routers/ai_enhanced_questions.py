@@ -255,13 +255,13 @@ async def generate_hint(request: HintRequest):
         raise HTTPException(status_code=500, detail=f"Hint generation failed: {str(e)}")
 
 @router.post("/assess-difficulty")
-async def assess_question_difficulty(question_text: str, options: List[str]):
+async def assess_question_difficulty(request: DifficultyAssessmentRequest):
     """Assess question difficulty using AI"""
     try:
-        logger.info(f"Assessing difficulty for question: {question_text[:50]}...")
+        logger.info(f"Assessing difficulty for question: {request.question_text[:50]}...")
         
         # Get instant difficulty assessment using Groq
-        difficulty_result = await get_ai_coordinator().groq.assess_difficulty_instantly(question_text, options)
+        difficulty_result = await get_ai_coordinator().groq.assess_difficulty_instantly(request.question_text, request.options)
         
         return difficulty_result
         
