@@ -56,7 +56,7 @@ async def generate_ai_question(
         logger.info(f"Generating AI question - Category: {category}, Difficulty: {difficulty}, Topic: {topic}")
         
         # Generate question using Gemini
-        question_data = await ai_coordinator.gemini.generate_question(
+        question_data = await get_ai_coordinator().gemini.generate_question(
             category=category.value,
             difficulty=difficulty.value,
             topic=topic,
