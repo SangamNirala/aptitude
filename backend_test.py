@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Comprehensive Backend Testing for AI-Enhanced Aptitude Questions API
-Tests all AI services integration and endpoints
+Tests all AI services integration and endpoints + Anti-Detection & Rate Limiting System
 """
 
 import asyncio
@@ -11,7 +11,11 @@ import time
 import logging
 from typing import Dict, List, Any
 import os
+import sys
 from datetime import datetime
+
+# Add backend directory to path for imports
+sys.path.append('/app/backend')
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
