@@ -32,6 +32,13 @@ class QualityGate(str, Enum):
     AUTO_REJECT = "auto_reject"    # Low quality, auto-rejected  
     HUMAN_REVIEW = "human_review"  # Medium quality, needs review
 
+class ExtractionQuality(str, Enum):
+    EXCELLENT = "excellent"
+    GOOD = "good"
+    FAIR = "fair"
+    POOR = "poor"
+    FAILED = "failed"
+
 # =============================================================================
 # DATA SOURCE MODELS
 # =============================================================================
