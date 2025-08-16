@@ -6,7 +6,7 @@ content validation, and performance monitoring
 
 from .anti_detection import AntiDetectionManager, DetectionRiskLevel, UserAgentProfile
 from .rate_limiter import RateLimiter, ExponentialBackoffLimiter, AdaptiveRateLimiter
-from .proxy_manager import ProxyManager, ProxyConfig, ProxyRotationStrategy
+from .proxy_manager import ProxyManager, ProxyConfig, ProxyType, ProxyStatus
 from .ethical_crawler import EthicalCrawler, CrawlingSession, CrawlingBehaviorConfig
 from .content_validator import (
     ContentValidator, ContentQualityScore, ValidationIssue, ValidationSeverity,
@@ -33,7 +33,8 @@ __all__ = [
     # Proxy Management
     'ProxyManager',
     'ProxyConfig',
-    'ProxyRotationStrategy',
+    'ProxyType',
+    'ProxyStatus',
     
     # Ethical Crawling
     'EthicalCrawler',
