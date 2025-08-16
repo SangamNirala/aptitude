@@ -4,7 +4,7 @@ import { Input } from './ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Badge } from './ui/badge';
 import { Search, BookOpen, Code, Users, Lightbulb, X } from 'lucide-react';
-import { toast } from './ui/toast';
+import { useToast } from '../hooks/use-toast';
 
 const InterviewQuestions = () => {
   const [jobTitle, setJobTitle] = useState('');
