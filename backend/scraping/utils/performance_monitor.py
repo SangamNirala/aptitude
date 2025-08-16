@@ -871,3 +871,27 @@ def cleanup_global_monitor():
     if _global_monitor:
         _global_monitor.cleanup()
         _global_monitor = None
+
+def create_performance_monitor(monitor_name: str = "default", **kwargs) -> PerformanceMonitor:
+    """Create a basic performance monitor"""
+    return PerformanceMonitor(monitor_name=monitor_name, **kwargs)
+
+def create_extraction_monitor(monitor_name: str = "extraction", **kwargs) -> PerformanceMonitor:
+    """Create monitor optimized for extraction operations"""
+    thresholds = PerformanceThresholds(
+        cpu_warning=70.0,
+        cpu_critical=85.0,
+        memory_warning=75.0,
+        memory_critical=90.0,
+        response_warning=3.0,
+        response_critical=8.0,
+        throughput_warning=20.0,
+        throughput_critical=10.0
+    )
+    
+    return PerformanceMonitor(
+        monitor_name=f"{monitor_name}_extractor",
+        collection_interval=1.0,
+        thresholds=thresholds,
+        **kwargs
+    )
