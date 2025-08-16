@@ -69,7 +69,7 @@ async def generate_ai_question(
         question_data['source'] = 'ai_generated'
         
         # Process through complete AI pipeline
-        enhanced_question = await ai_coordinator.process_new_question_complete(question_data)
+        enhanced_question = await get_ai_coordinator().process_new_question_complete(question_data)
         
         # Save to database
         db = get_database()
