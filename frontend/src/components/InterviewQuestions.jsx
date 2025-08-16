@@ -76,6 +76,70 @@ const InterviewQuestions = () => {
     }
   ];
 
+  const aptitudeCategories = [
+    {
+      id: 'quantitative',
+      title: 'Quantitative Aptitude',
+      icon: Calculator,
+      description: 'Mathematical problem-solving skills',
+      color: 'bg-blue-600',
+      subtopics: [
+        'Percentages', 'Profit & Loss', 'Time, Speed & Distance', 'Time & Work',
+        'Averages', 'Number Systems', 'Simplification', 'HCF & LCM',
+        'Permutations & Combinations', 'Probability'
+      ]
+    },
+    {
+      id: 'logical',
+      title: 'Logical Reasoning',
+      icon: Brain,
+      description: 'Critical thinking and pattern recognition',
+      color: 'bg-purple-600',
+      subtopics: [
+        'Blood Relations', 'Direction Sense', 'Syllogisms', 'Puzzles & Seating Arrangement',
+        'Coding-Decoding', 'Series & Pattern Recognition', 'Data Sufficiency'
+      ]
+    },
+    {
+      id: 'verbal',
+      title: 'Verbal Ability',
+      icon: FileText,
+      description: 'English language proficiency',
+      color: 'bg-green-600',
+      subtopics: [
+        'Reading Comprehension', 'Error Spotting', 'Sentence Improvement',
+        'Para Jumbles', 'Fill in the Blanks', 'Synonyms & Antonyms'
+      ]
+    },
+    {
+      id: 'data-interpretation',
+      title: 'Data Interpretation',
+      icon: BarChart3,
+      description: 'Analyzing charts, graphs, and data',
+      color: 'bg-orange-600',
+      subtopics: [
+        'Pie Charts', 'Bar Graphs', 'Line Graphs', 'Tables', 'Caselets'
+      ]
+    }
+  ];
+
+  const companies = [
+    { name: 'TCS NQT', logo: Building2 },
+    { name: 'Infosys', logo: Building2 },
+    { name: 'Wipro Elite', logo: Building2 },
+    { name: 'Cognizant GenC', logo: Building2 },
+    { name: 'Accenture', logo: Building2 },
+    { name: 'Capgemini', logo: Building2 },
+    { name: 'Tech Mahindra', logo: Building2 },
+    { name: 'HCL', logo: Building2 }
+  ];
+
+  const difficultyLevels = [
+    { id: 'beginner', name: 'Beginner', color: 'bg-green-600', description: 'Foundation level' },
+    { id: 'intermediate', name: 'Intermediate', color: 'bg-yellow-600', description: 'Moderate complexity' },
+    { id: 'advanced', name: 'Advanced', color: 'bg-red-600', description: 'Expert level' }
+  ];
+
   const filteredJobs = jobCategories.map(category => ({
     ...category,
     jobs: category.jobs.filter(job => 
