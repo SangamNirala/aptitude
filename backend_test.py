@@ -43,7 +43,8 @@ class AntiDetectionSystemTester:
             "passed_tests": 0,
             "failed_tests": 0,
             "test_details": [],
-            "component_tests": {}
+            "component_tests": {},
+            "performance_metrics": {}
         }
     
     def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
