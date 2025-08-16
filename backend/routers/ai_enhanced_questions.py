@@ -4,13 +4,13 @@ import logging
 from datetime import datetime
 import uuid
 
-from ..models.question_models import (
+from models.question_models import (
     EnhancedQuestion, QuestionCreateRequest, QuestionFilterRequest,
     PersonalizedQuestionRequest, QuestionBatch, BulkQuestionUpload,
     BulkProcessingResult, QuestionCategory, DifficultyLevel
 )
-from ..ai_services.ai_coordinator import AICoordinator
-from ..services.categorization_service import CategorizationService
+from ai_services.ai_coordinator import AICoordinator
+from services.categorization_service import CategorizationService
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 
