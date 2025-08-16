@@ -10,7 +10,7 @@ from ai_services.groq_service import GroqService
 from ai_services.huggingface_service import HuggingFaceService
 from models.question_models import (
     EnhancedQuestion, AIQualityMetrics, QuestionMetadata, 
-    AIExplanation, QuestionCategory, DifficultyLevel
+    AIExplanation, QuestionCategory, DifficultyLevel, QuestionAnalytics
 )
 
 logger = logging.getLogger(__name__)
