@@ -120,7 +120,7 @@ async def generate_personalized_questions(request: PersonalizedQuestionRequest):
         logger.info(f"Generating personalized questions for user: {request.user_id}")
         
         # Generate personalized questions using AI
-        personalized_questions = await ai_coordinator.generate_personalized_question_set(
+        personalized_questions = await get_ai_coordinator().generate_personalized_question_set(
             user_weak_areas=request.weak_areas,
             target_companies=request.target_companies,
             count=request.count
