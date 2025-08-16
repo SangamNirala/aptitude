@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime
 import json
 
+# Import services directly to avoid circular imports
 from ai_services.gemini_service import GeminiService
 from ai_services.groq_service import GroqService  
 from ai_services.huggingface_service import HuggingFaceService
