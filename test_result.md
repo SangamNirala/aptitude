@@ -194,10 +194,7 @@
   run_ui: false
 
 ## test_plan:
-  current_focus:
-    - "AI Integration Layer Setup"
-    - "Enhanced Question Management System"
-    - "Smart Categorization System"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
