@@ -1,103 +1,103 @@
 {
   "total_tests": 13,
-  "passed_tests": 13,
-  "failed_tests": 0,
+  "passed_tests": 12,
+  "failed_tests": 1,
   "test_details": [
     {
       "test_name": "Root Endpoint",
       "success": true,
       "details": "Status: 200, Features: 6",
-      "response_time": 0.08208703994750977,
-      "timestamp": "2025-08-16T19:23:21.666083"
+      "response_time": 0.1058340072631836,
+      "timestamp": "2025-08-16T20:24:51.828978"
     },
     {
       "test_name": "Health Check",
       "success": true,
       "details": "MongoDB: healthy, AI Services: {'gemini': 'available', 'groq': 'available', 'huggingface': 'available'}",
-      "response_time": 0.009307861328125,
-      "timestamp": "2025-08-16T19:23:21.675617"
+      "response_time": 0.23108601570129395,
+      "timestamp": "2025-08-16T20:24:52.060294"
     },
     {
       "test_name": "AI Question Generation",
       "success": true,
-      "details": "Generated question with quality score: 82.5",
-      "response_time": 7.341048240661621,
-      "timestamp": "2025-08-16T19:23:29.016999"
+      "details": "Generated question with quality score: 84.6",
+      "response_time": 14.352491617202759,
+      "timestamp": "2025-08-16T20:25:06.413093"
     },
     {
       "test_name": "Create Enhanced Question",
       "success": true,
       "details": "Enhanced question created with quality: 79.02",
-      "response_time": 4.411003351211548,
-      "timestamp": "2025-08-16T19:23:33.428262"
+      "response_time": 4.531071186065674,
+      "timestamp": "2025-08-16T20:25:10.944399"
     },
     {
       "test_name": "Instant Feedback",
       "success": true,
-      "details": "Feedback in 0.348s, Correct: True",
-      "response_time": 0.3477456569671631,
-      "timestamp": "2025-08-16T19:23:33.776266"
+      "details": "Feedback in 0.340s, Correct: True",
+      "response_time": 0.33971285820007324,
+      "timestamp": "2025-08-16T20:25:11.284359"
     },
     {
       "test_name": "Generate Hint",
       "success": true,
-      "details": "Hint generated in 0.710s",
-      "response_time": 0.7104086875915527,
-      "timestamp": "2025-08-16T19:23:34.486969"
+      "details": "Hint generated in 0.399s",
+      "response_time": 0.39850378036499023,
+      "timestamp": "2025-08-16T20:25:11.683077"
     },
     {
       "test_name": "Assess Difficulty",
       "success": true,
       "details": "Difficulty: placement_ready (Score: 5.0)",
-      "response_time": 0.630763053894043,
-      "timestamp": "2025-08-16T19:23:35.117943"
+      "response_time": 0.7069845199584961,
+      "timestamp": "2025-08-16T20:25:12.390264"
     },
     {
       "test_name": "Detect Duplicates",
-      "success": true,
-      "details": "Duplicate check completed, Is duplicate: False",
-      "response_time": 1.713024377822876,
-      "timestamp": "2025-08-16T19:23:36.831169"
+      "success": false,
+      "details": "Status: 500, Error: Internal Server Error",
+      "response_time": 0.5314769744873047,
+      "timestamp": "2025-08-16T20:25:12.921939"
     },
     {
       "test_name": "Generate Personalized Questions",
       "success": true,
       "details": "Generated 3 personalized questions",
-      "response_time": 16.840510606765747,
-      "timestamp": "2025-08-16T19:23:53.672235"
+      "response_time": 19.87373185157776,
+      "timestamp": "2025-08-16T20:25:32.796840"
     },
     {
       "test_name": "Quality Stats",
       "success": true,
-      "details": "Total questions: 5, Avg quality: 81.3",
-      "response_time": 0.0134429931640625,
-      "timestamp": "2025-08-16T19:23:53.685852"
+      "details": "Total questions: 5, Avg quality: 83.3",
+      "response_time": 0.014760971069335938,
+      "timestamp": "2025-08-16T20:25:32.811796"
     },
     {
       "test_name": "Filtered Questions",
       "success": true,
-      "details": "Found 5 questions, Quality: 81.3",
-      "response_time": 0.017271041870117188,
-      "timestamp": "2025-08-16T19:23:53.703750"
+      "details": "Found 5 questions, Quality: 83.3",
+      "response_time": 0.01511240005493164,
+      "timestamp": "2025-08-16T20:25:32.827840"
     },
     {
       "test_name": "Company-Specific Questions",
       "success": true,
       "details": "Found 0 TCS-specific questions",
-      "response_time": 0.013005256652832031,
-      "timestamp": "2025-08-16T19:23:53.716939"
+      "response_time": 0.05542397499084473,
+      "timestamp": "2025-08-16T20:25:32.883462"
     },
     {
       "test_name": "Performance Benchmark",
       "success": true,
-      "details": "Avg: 0.471s, Max: 0.543s",
-      "response_time": 0.4710044066111247,
-      "timestamp": "2025-08-16T19:23:55.130160"
+      "details": "Avg: 0.599s, Max: 0.752s",
+      "response_time": 0.5985437234242758,
+      "timestamp": "2025-08-16T20:25:34.679292"
     }
   ],
   "performance_metrics": {
-    "avg_feedback_time": 0.4710044066111247,
-    "max_feedback_time": 0.5431668758392334,
+    "avg_feedback_time": 0.5985437234242758,
+    "max_feedback_time": 0.751793622970581,
     "feedback_samples": 3
   }
 }
