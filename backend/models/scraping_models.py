@@ -447,29 +447,5 @@ class SourceReliabilityReport(BaseModel):
     generated_at: datetime = Field(default_factory=datetime.utcnow)
 
 # =============================================================================
-# VALIDATORS
+# VALIDATORS - Applied to existing ScrapingJobConfig class above
 # =============================================================================
-
-class ScrapingJobConfig(BaseModel):
-    """Enhanced validation for scraping job config"""
-    
-    @validator('schedule_cron')
-    def validate_cron_expression(cls, v):
-        if v is not None:
-            # Basic cron validation (can be enhanced)
-            parts = v.split()
-            if len(parts) != 5:
-                raise ValueError('Cron expression must have 5 parts')
-        return v
-    
-    @validator('max_questions_per_source')
-    def validate_max_questions(cls, v):
-        if v is not None and (v < 1 or v > 10000):
-            raise ValueError('max_questions_per_source must be between 1 and 10000')
-        return v
-    
-    @validator('quality_threshold')
-    def validate_quality_threshold(cls, v):
-        if v < 0 or v > 100:
-            raise ValueError('quality_threshold must be between 0 and 100')
-        return v
