@@ -1,0 +1,84 @@
+{
+  "total_tests": 12,
+  "passed_tests": 3,
+  "failed_tests": 9,
+  "test_details": [
+    {
+      "test_name": "Scraping Models Import",
+      "success": false,
+      "details": "Import error: Decorators defined with incorrect fields: models.scraping_models.ScrapingJobConfig:190624127148720.validate_cron_expression (use check_fields=False if you're inheriting from the model and intended this)\n\nFor further information visit https://errors.pydantic.dev/2.11/u/decorator-missing-field",
+      "timestamp": "2025-08-16T20:26:34.982956"
+    },
+    {
+      "test_name": "Analytics Models Import",
+      "success": true,
+      "details": "Scraping analytics models imported successfully",
+      "timestamp": "2025-08-16T20:26:34.983033"
+    },
+    {
+      "test_name": "DataSourceConfig Instantiation",
+      "success": false,
+      "details": "Instantiation error: Decorators defined with incorrect fields: models.scraping_models.ScrapingJobConfig:190624126698224.validate_cron_expression (use check_fields=False if you're inheriting from the model and intended this)\n\nFor further information visit https://errors.pydantic.dev/2.11/u/decorator-missing-field",
+      "timestamp": "2025-08-16T20:26:35.005848"
+    },
+    {
+      "test_name": "ScrapingTarget Instantiation",
+      "success": false,
+      "details": "Instantiation error: Decorators defined with incorrect fields: models.scraping_models.ScrapingJobConfig:190624127760720.validate_cron_expression (use check_fields=False if you're inheriting from the model and intended this)\n\nFor further information visit https://errors.pydantic.dev/2.11/u/decorator-missing-field",
+      "timestamp": "2025-08-16T20:26:35.027296"
+    },
+    {
+      "test_name": "IndiaBix Configuration Loading",
+      "success": false,
+      "details": "Config error: attempted relative import beyond top-level package",
+      "timestamp": "2025-08-16T20:26:35.030030"
+    },
+    {
+      "test_name": "GeeksforGeeks Configuration Loading",
+      "success": false,
+      "details": "Config error: cannot access local variable 'get_source_config' where it is not associated with a value",
+      "timestamp": "2025-08-16T20:26:35.030159"
+    },
+    {
+      "test_name": "Scraping Targets Loading",
+      "success": false,
+      "details": "Targets error: cannot access local variable 'get_source_targets' where it is not associated with a value",
+      "timestamp": "2025-08-16T20:26:35.030188"
+    },
+    {
+      "test_name": "MongoDB Connection",
+      "success": true,
+      "details": "Connected to MongoDB at mongodb://localhost:27017",
+      "timestamp": "2025-08-16T20:26:35.173497"
+    },
+    {
+      "test_name": "Database Collections",
+      "success": true,
+      "details": "Successfully tested 6 collections",
+      "timestamp": "2025-08-16T20:26:35.257318"
+    },
+    {
+      "test_name": "Source Management Service",
+      "success": false,
+      "details": "Service error: attempted relative import beyond top-level package",
+      "timestamp": "2025-08-16T20:26:43.263022"
+    },
+    {
+      "test_name": "Enum Validations",
+      "success": false,
+      "details": "Enum error: Decorators defined with incorrect fields: models.scraping_models.ScrapingJobConfig:190624281608112.validate_cron_expression (use check_fields=False if you're inheriting from the model and intended this)\n\nFor further information visit https://errors.pydantic.dev/2.11/u/decorator-missing-field",
+      "timestamp": "2025-08-16T20:26:43.286625"
+    },
+    {
+      "test_name": "Request/Response Models",
+      "success": false,
+      "details": "Model error: Decorators defined with incorrect fields: models.scraping_models.ScrapingJobConfig:190624281490672.validate_cron_expression (use check_fields=False if you're inheriting from the model and intended this)\n\nFor further information visit https://errors.pydantic.dev/2.11/u/decorator-missing-field",
+      "timestamp": "2025-08-16T20:26:43.310939"
+    }
+  ],
+  "critical_issues": [
+    "Scraping Models Import: Import error: Decorators defined with incorrect fields: models.scraping_models.ScrapingJobConfig:190624127148720.validate_cron_expression (use check_fields=False if you're inheriting from the model and intended this)\n\nFor further information visit https://errors.pydantic.dev/2.11/u/decorator-missing-field",
+    "IndiaBix Configuration Loading: Config error: attempted relative import beyond top-level package",
+    "Source Management Service: Service error: attempted relative import beyond top-level package"
+  ]
+}
