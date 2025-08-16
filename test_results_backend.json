@@ -1,103 +1,103 @@
 {
   "total_tests": 13,
-  "passed_tests": 1,
-  "failed_tests": 12,
+  "passed_tests": 6,
+  "failed_tests": 7,
   "test_details": [
     {
       "test_name": "Root Endpoint",
-      "success": false,
-      "details": "Exception: 502, message='Attempt to decode JSON with unexpected mimetype: ', url='https://prep-genius-3.preview.emergentagent.com/api/'",
-      "response_time": 0,
-      "timestamp": "2025-08-16T18:47:56.370345"
+      "success": true,
+      "details": "Status: 200, Features: 6",
+      "response_time": 0.07075977325439453,
+      "timestamp": "2025-08-16T18:50:01.249623"
     },
     {
       "test_name": "Health Check",
-      "success": false,
-      "details": "Exception: 502, message='Attempt to decode JSON with unexpected mimetype: ', url='https://prep-genius-3.preview.emergentagent.com/api/health'",
-      "response_time": 0,
-      "timestamp": "2025-08-16T18:47:56.378142"
+      "success": true,
+      "details": "MongoDB: healthy, AI Services: {'gemini': 'available', 'groq': 'available', 'huggingface': 'available'}",
+      "response_time": 0.01637411117553711,
+      "timestamp": "2025-08-16T18:50:01.266203"
     },
     {
       "test_name": "AI Question Generation",
       "success": false,
-      "details": "Status: 502, Error: ",
-      "response_time": 0.011405229568481445,
-      "timestamp": "2025-08-16T18:47:56.389769"
+      "details": "Status: 500, Error: {\"detail\":\"Question generation failed: AI processing failed: 1 validation error for EnhancedQuestion\\nanalytics\\n  Field required [type=missing, input_value={'question_text': 'A reta...16, 18, 50, 11,",
+      "response_time": 10.555224180221558,
+      "timestamp": "2025-08-16T18:50:11.821662"
     },
     {
       "test_name": "Create Enhanced Question",
       "success": false,
-      "details": "Status: 502, Error: ",
-      "response_time": 0.008441686630249023,
-      "timestamp": "2025-08-16T18:47:56.398406"
+      "details": "Status: 500, Error: {\"detail\":\"Question creation failed: AI processing failed: 1 validation error for EnhancedQuestion\\nanalytics\\n  Field required [type=missing, input_value={'question_text': 'If 20%... 16, 18, 50, 16, ",
+      "response_time": 4.242358207702637,
+      "timestamp": "2025-08-16T18:50:16.064203"
     },
     {
       "test_name": "Instant Feedback",
       "success": false,
-      "details": "Status: 502, Error: ",
-      "response_time": 0.015303850173950195,
-      "timestamp": "2025-08-16T18:47:56.413925"
+      "details": "Status: 422, Error: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"query\",\"question_id\"],\"msg\":\"Field required\",\"input\":null,\"url\":\"https://errors.pydantic.dev/2.11/v/missing\"},{\"type\":\"missing\",\"loc\":[\"query\",\"question_text\"],\"ms",
+      "response_time": 0.00930166244506836,
+      "timestamp": "2025-08-16T18:50:16.073719"
     },
     {
       "test_name": "Generate Hint",
       "success": false,
-      "details": "Status: 502, Error: ",
-      "response_time": 0.011478185653686523,
-      "timestamp": "2025-08-16T18:47:56.425587"
+      "details": "Status: 422, Error: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"query\",\"question_text\"],\"msg\":\"Field required\",\"input\":null,\"url\":\"https://errors.pydantic.dev/2.11/v/missing\"}]}",
+      "response_time": 0.011777162551879883,
+      "timestamp": "2025-08-16T18:50:16.085694"
     },
     {
       "test_name": "Assess Difficulty",
       "success": false,
-      "details": "Status: 502, Error: ",
-      "response_time": 0.00699925422668457,
-      "timestamp": "2025-08-16T18:47:56.432728"
+      "details": "Status: 422, Error: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"query\",\"question_text\"],\"msg\":\"Field required\",\"input\":null,\"url\":\"https://errors.pydantic.dev/2.11/v/missing\"},{\"type\":\"list_type\",\"loc\":[\"body\"],\"msg\":\"Input sho",
+      "response_time": 0.05260014533996582,
+      "timestamp": "2025-08-16T18:50:16.138470"
     },
     {
       "test_name": "Detect Duplicates",
       "success": false,
-      "details": "Status: 502, Error: ",
-      "response_time": 0.008112192153930664,
-      "timestamp": "2025-08-16T18:47:56.440990"
+      "details": "Status: 422, Error: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"query\",\"question_text\"],\"msg\":\"Field required\",\"input\":null,\"url\":\"https://errors.pydantic.dev/2.11/v/missing\"}]}",
+      "response_time": 0.011671781539916992,
+      "timestamp": "2025-08-16T18:50:16.150308"
     },
     {
       "test_name": "Generate Personalized Questions",
       "success": false,
-      "details": "Status: 502, Error: ",
-      "response_time": 0.0074977874755859375,
-      "timestamp": "2025-08-16T18:47:56.448685"
+      "details": "Status: 500, Error: {\"detail\":\"Personalized question generation failed: 500: Failed to generate personalized questions\"}",
+      "response_time": 17.42610216140747,
+      "timestamp": "2025-08-16T18:50:33.576603"
     },
     {
       "test_name": "Quality Stats",
-      "success": false,
-      "details": "Status: 502, Error: ",
-      "response_time": 0.008359670639038086,
-      "timestamp": "2025-08-16T18:47:56.457160"
+      "success": true,
+      "details": "Total questions: 0, Avg quality: 0.0",
+      "response_time": 0.019614696502685547,
+      "timestamp": "2025-08-16T18:50:33.596411"
     },
     {
       "test_name": "Filtered Questions",
-      "success": false,
-      "details": "Status: 502, Error: ",
-      "response_time": 0.007737398147583008,
-      "timestamp": "2025-08-16T18:47:56.465061"
+      "success": true,
+      "details": "Found 0 questions, Quality: 0.0",
+      "response_time": 0.018675804138183594,
+      "timestamp": "2025-08-16T18:50:33.615300"
     },
     {
       "test_name": "Company-Specific Questions",
-      "success": false,
-      "details": "Status: 502, Error: ",
-      "response_time": 0.0077228546142578125,
-      "timestamp": "2025-08-16T18:47:56.472919"
+      "success": true,
+      "details": "Found 0 TCS-specific questions",
+      "response_time": 0.019247055053710938,
+      "timestamp": "2025-08-16T18:50:33.634723"
     },
     {
       "test_name": "Performance Benchmark",
       "success": true,
-      "details": "Avg: 0.008s, Max: 0.008s",
-      "response_time": 0.008086284001668295,
-      "timestamp": "2025-08-16T18:47:56.497367"
+      "details": "Avg: 0.037s, Max: 0.050s",
+      "response_time": 0.03654980659484863,
+      "timestamp": "2025-08-16T18:50:33.744624"
     }
   ],
   "performance_metrics": {
-    "avg_feedback_time": 0.008086284001668295,
-    "max_feedback_time": 0.008377313613891602,
+    "avg_feedback_time": 0.03654980659484863,
+    "max_feedback_time": 0.05028724670410156,
     "feedback_samples": 3
   }
 }
