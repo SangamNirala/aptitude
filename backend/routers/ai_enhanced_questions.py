@@ -342,7 +342,7 @@ async def bulk_upload_questions(
                 )
             else:
                 # Process immediately for small uploads
-                enhanced_questions = await ai_coordinator.bulk_process_questions(question_data_list)
+                enhanced_questions = await get_ai_coordinator().bulk_process_questions(question_data_list)
                 
                 # Save to database
                 db = get_database()
