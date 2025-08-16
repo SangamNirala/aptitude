@@ -10,8 +10,8 @@ from typing import List
 import uuid
 from datetime import datetime
 
-# Import AI-enhanced routers
-from .routers.ai_enhanced_questions import router as ai_questions_router
+# Import AI-enhanced routers (fix relative imports)
+from routers.ai_enhanced_questions import router as ai_questions_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
