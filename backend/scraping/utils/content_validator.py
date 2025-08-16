@@ -11,6 +11,9 @@ from datetime import datetime
 from dataclasses import dataclass
 from enum import Enum
 
+# Import QualityGate from models
+from models.scraping_models import QualityGate
+
 logger = logging.getLogger(__name__)
 
 # =============================================================================
