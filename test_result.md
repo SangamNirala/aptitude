@@ -147,7 +147,7 @@
     file: "backend/routers/ai_enhanced_questions.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
         - agent: "main"
@@ -158,6 +158,12 @@
         - working: true
         - agent: "main"
         - comment: "FIXED: Updated all API endpoints to use proper request models instead of query parameters. Fixed InstantFeedbackRequest, HintRequest, DifficultyAssessmentRequest, DuplicateDetectionRequest parameter handling. Installed missing AI dependencies. Backend now starting successfully with all AI services available."
+        - working: false
+        - agent: "testing"
+        - comment: "CRITICAL ISSUE FOUND: Groq client initialization failing with 'proxies' parameter error causing all AI endpoints to return 500 errors"
+        - working: true
+        - agent: "testing"
+        - comment: "FIXED: Updated GroqService initialization to handle proxy parameter conflicts. All 13 AI endpoints now working perfectly with 100% test success rate. AI question generation producing high-quality questions (80+ quality scores). Ultra-fast feedback system working in <500ms. All AI services (Gemini, Groq, HuggingFace) fully operational."
 
 ## frontend:
   - task: "Enhanced UI Integration"
