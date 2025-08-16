@@ -1,6 +1,4 @@
 # Services package
-from .categorization_service import CategorizationService
+# Import services individually to avoid circular imports
 
-__all__ = [
-    'CategorizationService'
-]
+__all__ = []
