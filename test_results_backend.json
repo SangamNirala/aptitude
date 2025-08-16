@@ -1,103 +1,103 @@
 {
   "total_tests": 13,
-  "passed_tests": 6,
-  "failed_tests": 7,
+  "passed_tests": 13,
+  "failed_tests": 0,
   "test_details": [
     {
       "test_name": "Root Endpoint",
       "success": true,
       "details": "Status: 200, Features: 6",
-      "response_time": 0.1009058952331543,
-      "timestamp": "2025-08-16T19:21:55.889346"
+      "response_time": 0.08208703994750977,
+      "timestamp": "2025-08-16T19:23:21.666083"
     },
     {
       "test_name": "Health Check",
       "success": true,
       "details": "MongoDB: healthy, AI Services: {'gemini': 'available', 'groq': 'available', 'huggingface': 'available'}",
-      "response_time": 0.052031517028808594,
-      "timestamp": "2025-08-16T19:21:55.941592"
+      "response_time": 0.009307861328125,
+      "timestamp": "2025-08-16T19:23:21.675617"
     },
     {
       "test_name": "AI Question Generation",
-      "success": false,
-      "details": "Status: 500, Error: {\"detail\":\"Question generation failed: Client.__init__() got an unexpected keyword argument 'proxies'\"}",
-      "response_time": 0.048963069915771484,
-      "timestamp": "2025-08-16T19:21:55.990844"
+      "success": true,
+      "details": "Generated question with quality score: 82.5",
+      "response_time": 7.341048240661621,
+      "timestamp": "2025-08-16T19:23:29.016999"
     },
     {
       "test_name": "Create Enhanced Question",
-      "success": false,
-      "details": "Status: 500, Error: {\"detail\":\"Question creation failed: Client.__init__() got an unexpected keyword argument 'proxies'\"}",
-      "response_time": 0.015462398529052734,
-      "timestamp": "2025-08-16T19:21:56.006508"
+      "success": true,
+      "details": "Enhanced question created with quality: 79.02",
+      "response_time": 4.411003351211548,
+      "timestamp": "2025-08-16T19:23:33.428262"
     },
     {
       "test_name": "Instant Feedback",
-      "success": false,
-      "details": "Status: 500, Error: {\"detail\":\"Instant feedback failed: Client.__init__() got an unexpected keyword argument 'proxies'\"}",
-      "response_time": 0.012387514114379883,
-      "timestamp": "2025-08-16T19:21:56.019118"
+      "success": true,
+      "details": "Feedback in 0.348s, Correct: True",
+      "response_time": 0.3477456569671631,
+      "timestamp": "2025-08-16T19:23:33.776266"
     },
     {
       "test_name": "Generate Hint",
-      "success": false,
-      "details": "Status: 500, Error: {\"detail\":\"Hint generation failed: Client.__init__() got an unexpected keyword argument 'proxies'\"}",
-      "response_time": 0.01178121566772461,
-      "timestamp": "2025-08-16T19:21:56.031097"
+      "success": true,
+      "details": "Hint generated in 0.710s",
+      "response_time": 0.7104086875915527,
+      "timestamp": "2025-08-16T19:23:34.486969"
     },
     {
       "test_name": "Assess Difficulty",
-      "success": false,
-      "details": "Status: 500, Error: {\"detail\":\"Difficulty assessment failed: Client.__init__() got an unexpected keyword argument 'proxies'\"}",
-      "response_time": 0.011239767074584961,
-      "timestamp": "2025-08-16T19:21:56.042455"
+      "success": true,
+      "details": "Difficulty: placement_ready (Score: 5.0)",
+      "response_time": 0.630763053894043,
+      "timestamp": "2025-08-16T19:23:35.117943"
     },
     {
       "test_name": "Detect Duplicates",
-      "success": false,
-      "details": "Status: 500, Error: {\"detail\":\"Duplicate detection failed: Client.__init__() got an unexpected keyword argument 'proxies'\"}",
-      "response_time": 0.056040287017822266,
-      "timestamp": "2025-08-16T19:21:56.098649"
+      "success": true,
+      "details": "Duplicate check completed, Is duplicate: False",
+      "response_time": 1.713024377822876,
+      "timestamp": "2025-08-16T19:23:36.831169"
     },
     {
       "test_name": "Generate Personalized Questions",
-      "success": false,
-      "details": "Status: 500, Error: {\"detail\":\"Personalized question generation failed: Client.__init__() got an unexpected keyword argument 'proxies'\"}",
-      "response_time": 0.04866218566894531,
-      "timestamp": "2025-08-16T19:21:56.147482"
+      "success": true,
+      "details": "Generated 3 personalized questions",
+      "response_time": 16.840510606765747,
+      "timestamp": "2025-08-16T19:23:53.672235"
     },
     {
       "test_name": "Quality Stats",
       "success": true,
-      "details": "Total questions: 0, Avg quality: 0.0",
-      "response_time": 0.012505054473876953,
-      "timestamp": "2025-08-16T19:21:56.160178"
+      "details": "Total questions: 5, Avg quality: 81.3",
+      "response_time": 0.0134429931640625,
+      "timestamp": "2025-08-16T19:23:53.685852"
     },
     {
       "test_name": "Filtered Questions",
       "success": true,
-      "details": "Found 0 questions, Quality: 0.0",
-      "response_time": 0.014989852905273438,
-      "timestamp": "2025-08-16T19:21:56.175385"
+      "details": "Found 5 questions, Quality: 81.3",
+      "response_time": 0.017271041870117188,
+      "timestamp": "2025-08-16T19:23:53.703750"
     },
     {
       "test_name": "Company-Specific Questions",
       "success": true,
       "details": "Found 0 TCS-specific questions",
-      "response_time": 0.012733936309814453,
-      "timestamp": "2025-08-16T19:21:56.188286"
+      "response_time": 0.013005256652832031,
+      "timestamp": "2025-08-16T19:23:53.716939"
     },
     {
       "test_name": "Performance Benchmark",
       "success": true,
-      "details": "Avg: 0.021s, Max: 0.047s",
-      "response_time": 0.02094237009684245,
-      "timestamp": "2025-08-16T19:21:56.251293"
+      "details": "Avg: 0.471s, Max: 0.543s",
+      "response_time": 0.4710044066111247,
+      "timestamp": "2025-08-16T19:23:55.130160"
     }
   ],
   "performance_metrics": {
-    "avg_feedback_time": 0.02094237009684245,
-    "max_feedback_time": 0.0472569465637207,
+    "avg_feedback_time": 0.4710044066111247,
+    "max_feedback_time": 0.5431668758392334,
     "feedback_samples": 3
   }
 }
