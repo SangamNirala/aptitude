@@ -26,9 +26,23 @@ def get_database():
     client = AsyncIOMotorClient(mongo_url)
     return client[os.environ['DB_NAME']]
 
-# Initialize AI services
-ai_coordinator = AICoordinator()
-categorization_service = CategorizationService()
+# Initialize AI services lazily to avoid import-time errors
+ai_coordinator = None
+categorization_service = None
+
+def get_ai_coordinator():
+    """Get AI coordinator instance, initializing if needed"""
+    global ai_coordinator
+    if ai_coordinator is None:
+        ai_coordinator = AICoordinator()
+    return ai_coordinator
+
+def get_categorization_service():
+    """Get categorization service instance, initializing if needed"""
+    global categorization_service
+    if categorization_service is None:
+        categorization_service = CategorizationService()
+    return categorization_service
 
 @router.post("/generate-ai", response_model=EnhancedQuestion)
 async def generate_ai_question(
