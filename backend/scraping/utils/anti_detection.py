@@ -70,7 +70,7 @@ class AntiDetectionManager:
         # User agent management
         self.user_agents = self._load_user_agents()
         self.current_user_agent = None
-        self.user_agent_rotation_frequency = config.get("user_agent_rotation_frequency", 50)
+        self.user_agent_rotation_frequency = self.config.get("user_agent_rotation_frequency", 50)
         
         # Request patterns
         self.request_patterns = {}
@@ -78,8 +78,8 @@ class AntiDetectionManager:
         self.max_history_size = 1000
         
         # Behavioral simulation
-        self.human_behavior_config = config.get("human_behavior", {})
-        self.session_duration_limits = config.get("session_duration", {"min": 300, "max": 1800})  # 5-30 minutes
+        self.human_behavior_config = self.config.get("human_behavior", {})
+        self.session_duration_limits = self.config.get("session_duration", {"min": 300, "max": 1800})  # 5-30 minutes
         
         logger.info(f"🛡️ AntiDetectionManager initialized for {source_name}")
     
