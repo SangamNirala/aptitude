@@ -33,6 +33,74 @@ class AIAptitudeAPITester:
             "test_details": [],
             "performance_metrics": {}
         }
+    
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+        
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.session:
+            await self.session.close()
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def run_all_tests(self):
+        """Run basic health check test"""
+        logger.info("🚀 Starting AI Services Health Check...")
+        start_time = time.time()
+        
+        # Test health endpoint
+        try:
+            start_time_test = time.time()
+            async with self.session.get(f"{self.base_url}/health") as response:
+                response_time = time.time() - start_time_test
+                data = await response.json()
+                
+                ai_services = data.get("ai_services", {})
+                success = (
+                    response.status == 200 and
+                    data.get("status") == "healthy" and
+                    ai_services.get("gemini") == "available" and
+                    ai_services.get("groq") == "available" and
+                    ai_services.get("huggingface") == "available"
+                )
+                
+                details = f"MongoDB: {data.get('mongodb')}, AI Services: {ai_services}"
+                self.log_test_result("Health Check", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Health Check", False, f"Exception: {str(e)}")
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 60)
+        logger.info("🎯 AI SERVICES TEST SUMMARY")
+        logger.info("=" * 60)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 60)
+        
+        return self.test_results
 
 class AntiDetectionSystemTester:
     """Tester for Anti-Detection & Rate Limiting System components"""
