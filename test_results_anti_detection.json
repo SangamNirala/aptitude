@@ -1,168 +1,231 @@
 {
-  "total_tests": 23,
-  "passed_tests": 21,
-  "failed_tests": 2,
+  "total_tests": 32,
+  "passed_tests": 31,
+  "failed_tests": 1,
   "test_details": [
     {
       "test_name": "AntiDetectionManager Import",
       "success": true,
       "details": "Successfully imported AntiDetectionManager and related classes",
       "response_time": 0,
-      "timestamp": "2025-08-16T20:49:02.562335"
+      "timestamp": "2025-08-16T20:49:50.507137"
     },
     {
       "test_name": "Rate Limiter Import",
       "success": true,
       "details": "Successfully imported rate limiter classes",
       "response_time": 0,
-      "timestamp": "2025-08-16T20:49:02.562387"
+      "timestamp": "2025-08-16T20:49:50.507184"
     },
     {
       "test_name": "ProxyManager Import",
       "success": true,
       "details": "Successfully imported proxy manager classes",
       "response_time": 0,
-      "timestamp": "2025-08-16T20:49:02.562424"
+      "timestamp": "2025-08-16T20:49:50.507219"
     },
     {
       "test_name": "EthicalCrawler Import",
       "success": true,
       "details": "Successfully imported ethical crawler classes",
       "response_time": 0,
-      "timestamp": "2025-08-16T20:49:02.562475"
+      "timestamp": "2025-08-16T20:49:50.507269"
     },
     {
-      "test_name": "AntiDetectionManager Test",
-      "success": false,
-      "details": "Exception: 'NoneType' object has no attribute 'get'",
-      "response_time": 0,
-      "timestamp": "2025-08-16T20:49:02.562591"
+      "test_name": "AntiDetectionManager Instantiation",
+      "success": true,
+      "details": "Manager created for source: test_source",
+      "response_time": 8.082389831542969e-05,
+      "timestamp": "2025-08-16T20:49:50.507409"
+    },
+    {
+      "test_name": "User Agent Rotation",
+      "success": true,
+      "details": "UA1 length: 111, UA2 length: 111",
+      "response_time": 4.124641418457031e-05,
+      "timestamp": "2025-08-16T20:49:50.507481"
+    },
+    {
+      "test_name": "Request Headers Generation",
+      "success": true,
+      "details": "Generated 12 headers, required headers present: True",
+      "response_time": 4.00543212890625e-05,
+      "timestamp": "2025-08-16T20:49:50.507554"
+    },
+    {
+      "test_name": "Human Delay Simulation",
+      "success": true,
+      "details": "Generated delay: 0.99s",
+      "response_time": 8.58306884765625e-06,
+      "timestamp": "2025-08-16T20:49:50.507589"
+    },
+    {
+      "test_name": "Reading Time Simulation",
+      "success": true,
+      "details": "Reading time for 1000 chars: 60.00s",
+      "response_time": 7.62939453125e-06,
+      "timestamp": "2025-08-16T20:49:50.507620"
+    },
+    {
+      "test_name": "Detection Risk Analysis",
+      "success": true,
+      "details": "Risk level for normal response: low",
+      "response_time": 7.62939453125e-06,
+      "timestamp": "2025-08-16T20:49:50.507676"
+    },
+    {
+      "test_name": "Request Tracking",
+      "success": true,
+      "details": "Tracked requests: 1",
+      "response_time": 1.6927719116210938e-05,
+      "timestamp": "2025-08-16T20:49:50.507719"
+    },
+    {
+      "test_name": "Factory Function",
+      "success": true,
+      "details": "Factory created manager for: indiabix",
+      "response_time": 5.054473876953125e-05,
+      "timestamp": "2025-08-16T20:49:50.507800"
     },
     {
       "test_name": "Basic RateLimiter Creation",
       "success": true,
       "details": "RPS: 2.0",
-      "response_time": 6.604194641113281e-05,
-      "timestamp": "2025-08-16T20:49:02.562714"
+      "response_time": 3.6716461181640625e-05,
+      "timestamp": "2025-08-16T20:49:50.507890"
     },
     {
       "test_name": "Rate Limiter Acquire",
       "success": true,
       "details": "First request delay: 0.000s",
-      "response_time": 5.4836273193359375e-06,
-      "timestamp": "2025-08-16T20:49:02.562744"
+      "response_time": 5.0067901611328125e-06,
+      "timestamp": "2025-08-16T20:49:50.507916"
     },
     {
       "test_name": "Request Recording",
       "success": true,
       "details": "Total requests: 1",
-      "response_time": 3.552436828613281e-05,
-      "timestamp": "2025-08-16T20:49:02.562807"
+      "response_time": 2.5987625122070312e-05,
+      "timestamp": "2025-08-16T20:49:50.507964"
     },
     {
       "test_name": "ExponentialBackoffLimiter Creation",
       "success": true,
       "details": "Initial backoff level: 0",
-      "response_time": 5.125999450683594e-05,
-      "timestamp": "2025-08-16T20:49:02.562880"
+      "response_time": 4.601478576660156e-05,
+      "timestamp": "2025-08-16T20:49:50.508029"
     },
     {
       "test_name": "Backoff Trigger",
       "success": true,
       "details": "Backoff level after failures: 1",
-      "response_time": 6.103515625e-05,
-      "timestamp": "2025-08-16T20:49:02.562963"
+      "response_time": 4.458427429199219e-05,
+      "timestamp": "2025-08-16T20:49:50.508093"
     },
     {
       "test_name": "Backoff Strategy linear",
       "success": true,
       "details": "Strategy limiter created",
-      "response_time": 4.172325134277344e-05,
-      "timestamp": "2025-08-16T20:49:02.563028"
+      "response_time": 3.814697265625e-05,
+      "timestamp": "2025-08-16T20:49:50.508154"
     },
     {
       "test_name": "Backoff Strategy fibonacci",
       "success": true,
       "details": "Strategy limiter created",
-      "response_time": 3.7670135498046875e-05,
-      "timestamp": "2025-08-16T20:49:02.563086"
+      "response_time": 3.814697265625e-05,
+      "timestamp": "2025-08-16T20:49:50.508211"
     },
     {
       "test_name": "Backoff Strategy exponential",
       "success": true,
       "details": "Strategy limiter created",
-      "response_time": 3.62396240234375e-05,
-      "timestamp": "2025-08-16T20:49:02.563142"
+      "response_time": 3.647804260253906e-05,
+      "timestamp": "2025-08-16T20:49:50.508267"
     },
     {
       "test_name": "Rate Limiter Factory",
       "success": true,
       "details": "Factory created limiter: ExponentialBackoffLimiter",
-      "response_time": 3.838539123535156e-05,
-      "timestamp": "2025-08-16T20:49:02.563200"
+      "response_time": 3.695487976074219e-05,
+      "timestamp": "2025-08-16T20:49:50.508323"
+    },
+    {
+      "test_name": "ProxyManager Creation",
+      "success": true,
+      "details": "Manager created with 0 proxies",
+      "response_time": 2.6464462280273438e-05,
+      "timestamp": "2025-08-16T20:49:50.508390"
+    },
+    {
+      "test_name": "Add Proxy",
+      "success": true,
+      "details": "Added proxy with ID: ProxyConfig(host='127.0.0.1', port=8080, proxy_type=<ProxyType.HTTP: 'http'>, username=None, password=None, response_time=0.0, success_count=0, failure_count=0, last_used=None, last_tested=None, status=<ProxyStatus.INACTIVE: 'inactive'>, country=None, city=None, anonymity_level='unknown', avg_response_time=0.0, reliability_score=0.0, ban_count=0, consecutive_failures=0), total proxies: 1",
+      "response_time": 2.2649765014648438e-05,
+      "timestamp": "2025-08-16T20:49:50.508450"
     },
     {
       "test_name": "ProxyManager Test",
       "success": false,
-      "details": "Exception: 'NoneType' object has no attribute 'get'",
+      "details": "Exception: unhashable type: 'ProxyConfig'",
       "response_time": 0,
-      "timestamp": "2025-08-16T20:49:02.563256"
+      "timestamp": "2025-08-16T20:49:50.508474"
     },
     {
       "test_name": "EthicalCrawler Creation",
       "success": true,
       "details": "Crawler created for: test_crawler",
-      "response_time": 0.0001347064971923828,
-      "timestamp": "2025-08-16T20:49:02.563432"
+      "response_time": 0.00011181831359863281,
+      "timestamp": "2025-08-16T20:49:50.508624"
     },
     {
       "test_name": "Component Integration",
       "success": true,
       "details": "Anti-detection: True, Rate limiter: True, Robots: True",
-      "response_time": 9.5367431640625e-07,
-      "timestamp": "2025-08-16T20:49:02.563467"
+      "response_time": 1.1920928955078125e-06,
+      "timestamp": "2025-08-16T20:49:50.508651"
     },
     {
       "test_name": "Configuration Update",
       "success": true,
       "details": "Updated delay: 0.2, concurrent: 2",
-      "response_time": 3.0040740966796875e-05,
-      "timestamp": "2025-08-16T20:49:02.563521"
+      "response_time": 2.3365020751953125e-05,
+      "timestamp": "2025-08-16T20:49:50.508703"
     },
     {
       "test_name": "Crawl Statistics",
       "success": true,
       "details": "Stats keys: ['crawler_name', 'session_duration_seconds', 'total_requests', 'successful_requests', 'failed_requests', 'blocked_requests', 'success_rate', 'requests_per_minute', 'anti_detection', 'rate_limiter']",
-      "response_time": 1.3828277587890625e-05,
-      "timestamp": "2025-08-16T20:49:02.563563"
+      "response_time": 1.049041748046875e-05,
+      "timestamp": "2025-08-16T20:49:50.508740"
     },
     {
       "test_name": "EthicalCrawler Factory",
       "success": true,
       "details": "Factory crawler: factory_test",
-      "response_time": 0.00013518333435058594,
-      "timestamp": "2025-08-16T20:49:02.563721"
+      "response_time": 0.00010132789611816406,
+      "timestamp": "2025-08-16T20:49:50.508859"
     },
     {
       "test_name": "Crawler Cleanup",
       "success": true,
       "details": "Cleanup completed",
-      "response_time": 7.677078247070312e-05,
-      "timestamp": "2025-08-16T20:49:02.563819"
+      "response_time": 6.651878356933594e-05,
+      "timestamp": "2025-08-16T20:49:50.508943"
     },
     {
       "test_name": "Factory Integration",
       "success": true,
       "details": "All components created successfully",
-      "response_time": 0.0002300739288330078,
-      "timestamp": "2025-08-16T20:49:02.564105"
+      "response_time": 0.00019598007202148438,
+      "timestamp": "2025-08-16T20:49:50.509186"
     },
     {
       "test_name": "Configuration Updates",
       "success": true,
       "details": "All configurations updated successfully",
-      "response_time": 7.605552673339844e-05,
-      "timestamp": "2025-08-16T20:49:02.564202"
+      "response_time": 6.341934204101562e-05,
+      "timestamp": "2025-08-16T20:49:50.509267"
     }
   ],
   "component_tests": {}
