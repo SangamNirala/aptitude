@@ -618,14 +618,7 @@ class AntiDetectionSystemTester:
                 logger.info(f"  - {test['test_name']}: {test['details']}")
         
         return self.test_results
-    async def __aenter__(self):
-        self.session = aiohttp.ClientSession()
-        return self
         
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if self.session:
-            await self.session.close()
-    
     def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
         """Log test result"""
         self.test_results["total_tests"] += 1
