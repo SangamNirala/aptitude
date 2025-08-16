@@ -193,7 +193,7 @@ const InterviewQuestions = () => {
 
       {/* Modal for Technical Interview Questions */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-amber-900 via-orange-900 to-red-900 border-amber-700/50 text-white">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-amber-900 via-orange-900 to-red-900 border-amber-700/50 text-white [&>button]:hidden">
           <DialogHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
