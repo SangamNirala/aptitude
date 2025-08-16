@@ -8,12 +8,17 @@ import logging
 from typing import List, Dict, Optional, Any
 from datetime import datetime, timedelta
 from motor.motor_asyncio import AsyncIOMotorDatabase
+import sys
+import os
 
-from ..models.scraping_models import (
+# Add backend to path for imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from models.scraping_models import (
     DataSourceConfig, ScrapingTarget, SourceReliabilityReport,
     ScrapingSourceType, ContentExtractionMethod, ScrapingJobStatus
 )
-from ..config.scraping_config import (
+from config.scraping_config import (
     get_source_config, get_source_targets, get_quality_thresholds,
     get_anti_detection_config, SOURCE_PRIORITY_CONFIG
 )
