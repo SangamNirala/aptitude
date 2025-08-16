@@ -14,7 +14,18 @@ class GroqService:
         if not self.api_key:
             raise ValueError("GROQ_API_KEY environment variable is required")
         
-        self.client = Groq(api_key=self.api_key)
+        # Initialize Groq client without proxy settings to avoid conflicts
+        try:
+            self.client = Groq(api_key=self.api_key)
+        except TypeError as e:
+            if "proxies" in str(e):
+                # Handle proxy parameter issue by creating client without proxy settings
+                import httpx
+                http_client = httpx.Client()
+                self.client = Groq(api_key=self.api_key, http_client=http_client)
+            else:
+                raise e
+        
         self.model = "llama-3.1-8b-instant"  # Ultra-fast model for real-time features
         logger.info("GroqService initialized successfully")
     
