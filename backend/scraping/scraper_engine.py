@@ -114,7 +114,7 @@ class ScrapingEngine:
         
         # Utilities
         self.performance_monitor = PerformanceMonitor()
-        self.anti_detection = AntiDetectionManager()
+        self.anti_detection = AntiDetectionManager(source_name="scraping_engine")
         self.content_validators = {}
         
         # Statistics
