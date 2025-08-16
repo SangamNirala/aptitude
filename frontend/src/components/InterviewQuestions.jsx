@@ -12,6 +12,8 @@ const InterviewQuestions = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedJobTitle, setSelectedJobTitle] = useState('');
 
+  const { toast } = useToast();
+
   const jobCategories = [
     {
       title: 'Software & Engineering',
