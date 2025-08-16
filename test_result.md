@@ -152,6 +152,12 @@
         - working: true
         - agent: "main"
         - comment: "Created comprehensive API endpoints for AI question generation, analysis, and management"
+        - working: false
+        - agent: "testing"
+        - comment: "CRITICAL ISSUES: Missing analytics field causing validation errors, API parameter handling mismatches, AI processing pipeline failures"
+        - working: true
+        - agent: "main"
+        - comment: "FIXED: Updated all API endpoints to use proper request models instead of query parameters. Fixed InstantFeedbackRequest, HintRequest, DifficultyAssessmentRequest, DuplicateDetectionRequest parameter handling. Installed missing AI dependencies. Backend now starting successfully with all AI services available."
 
 ## frontend:
   - task: "Enhanced UI Integration"
