@@ -3,8 +3,8 @@ from typing import List, Dict, Optional, Any, Tuple
 from datetime import datetime
 import asyncio
 
-from ..ai_services.ai_coordinator import AICoordinator
-from ..models.question_models import QuestionCategory, DifficultyLevel, EnhancedQuestion
+from ai_services.ai_coordinator import AICoordinator
+from models.question_models import QuestionCategory, DifficultyLevel, EnhancedQuestion
 
 logger = logging.getLogger(__name__)
 
