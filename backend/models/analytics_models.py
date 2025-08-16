@@ -141,6 +141,150 @@ class CompanyAnalytics(BaseModel):
     
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 
+# =============================================================================
+# SCRAPING ANALYTICS MODELS (Added for Phase 2)
+# =============================================================================
+
+class ScrapingSourceAnalytics(BaseModel):
+    """Analytics for individual scraping sources"""
+    source_id: str
+    source_name: str
+    source_type: str  # indiabix, geeksforgeeks, etc.
+    
+    # Performance Metrics
+    total_scraping_jobs: int = 0
+    successful_jobs: int = 0
+    failed_jobs: int = 0
+    success_rate: float = 0.0
+    
+    # Content Metrics
+    total_questions_scraped: int = 0
+    questions_approved: int = 0
+    questions_rejected: int = 0
+    avg_quality_score: float = 0.0
+    
+    # Timing Metrics
+    avg_job_duration_minutes: float = 0.0
+    avg_questions_per_minute: float = 0.0
+    last_successful_scrape: Optional[datetime] = None
+    
+    # Quality Trends
+    quality_trend: str = "stable"  # improving, declining, stable
+    reliability_score: float = 100.0
+    
+    # Issues & Errors
+    common_errors: List[str] = []
+    blocking_incidents: int = 0
+    
+    last_updated: datetime = Field(default_factory=datetime.utcnow)
+
+class ScrapingJobAnalytics(BaseModel):
+    """Analytics for scraping job performance"""
+    
+    # Job Performance Summary
+    total_jobs_executed: int = 0
+    jobs_in_progress: int = 0
+    successful_jobs: int = 0
+    failed_jobs: int = 0
+    
+    # Content Processing Summary
+    total_questions_extracted: int = 0
+    questions_auto_approved: int = 0
+    questions_auto_rejected: int = 0
+    questions_under_review: int = 0
+    
+    # Quality Distribution
+    quality_score_ranges: Dict[str, int] = {
+        "90-100": 0, "80-89": 0, "70-79": 0, "60-69": 0, "below-60": 0
+    }
+    
+    # Processing Efficiency
+    avg_processing_time_per_question: float = 0.0
+    duplicate_detection_rate: float = 0.0
+    ai_processing_success_rate: float = 0.0
+    
+    # Resource Utilization
+    peak_concurrent_jobs: int = 0
+    avg_memory_usage_mb: float = 0.0
+    avg_cpu_utilization: float = 0.0
+    
+    # Trend Analysis
+    daily_question_extraction: Dict[str, int] = {}  # date -> count
+    weekly_quality_trends: Dict[str, float] = {}    # week -> avg_quality
+    
+    last_updated: datetime = Field(default_factory=datetime.utcnow)
+
+class ContentQualityAnalytics(BaseModel):
+    """Analytics for scraped content quality assessment"""
+    
+    # Quality Gate Performance
+    auto_approval_rate: float = 0.0
+    auto_rejection_rate: float = 0.0
+    human_review_rate: float = 0.0
+    
+    # Quality Score Analysis
+    avg_quality_score: float = 0.0
+    median_quality_score: float = 0.0
+    quality_score_std_dev: float = 0.0
+    
+    # AI Processing Results
+    successful_ai_enhancements: int = 0
+    ai_processing_failures: int = 0
+    improvement_suggestions_generated: int = 0
+    
+    # Duplicate Detection Performance
+    total_duplicates_detected: int = 0
+    duplicate_clusters_created: int = 0
+    false_positive_rate: float = 0.0  # If available from human feedback
+    
+    # Source Quality Comparison
+    quality_by_source: Dict[str, float] = {}  # source_name -> avg_quality
+    reliability_by_source: Dict[str, float] = {}
+    
+    # Content Categories
+    quality_by_category: Dict[str, float] = {}
+    extraction_success_by_category: Dict[str, float] = {}
+    
+    last_updated: datetime = Field(default_factory=datetime.utcnow)
+
+class ScrapingSystemHealth(BaseModel):
+    """System health metrics for scraping infrastructure"""
+    
+    # System Status
+    active_scraping_jobs: int = 0
+    queued_jobs: int = 0
+    failed_jobs_last_24h: int = 0
+    
+    # Service Health
+    selenium_driver_health: str = "healthy"  # healthy, degraded, down
+    playwright_driver_health: str = "healthy"
+    ai_services_health: Dict[str, str] = {}  # service -> status
+    
+    # Performance Indicators
+    avg_response_time_ms: float = 0.0
+    job_queue_length: int = 0
+    memory_usage_percentage: float = 0.0
+    
+    # Error Rates
+    extraction_error_rate: float = 0.0
+    ai_processing_error_rate: float = 0.0
+    network_timeout_rate: float = 0.0
+    
+    # Resource Limits
+    concurrent_job_limit: int = 5
+    current_concurrent_jobs: int = 0
+    rate_limit_violations: int = 0
+    
+    # Alerts & Warnings
+    active_alerts: List[str] = []
+    performance_warnings: List[str] = []
+    
+    # Uptime
+    system_uptime_hours: float = 0.0
+    last_restart: Optional[datetime] = None
+    
+    last_checked: datetime = Field(default_factory=datetime.utcnow)
+
 class AnalyticsReport(BaseModel):
     report_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     report_type: str  # daily, weekly, monthly, custom
@@ -151,6 +295,12 @@ class AnalyticsReport(BaseModel):
     learning_path_analytics: List[LearningPathAnalytics] = []
     ai_performance: List[AIPerformanceMetrics] = []
     company_analytics: List[CompanyAnalytics] = []
+    
+    # Scraping Analytics (Added for Phase 2)
+    scraping_source_analytics: List[ScrapingSourceAnalytics] = []
+    scraping_job_analytics: Optional[ScrapingJobAnalytics] = None
+    content_quality_analytics: Optional[ContentQualityAnalytics] = None
+    scraping_system_health: Optional[ScrapingSystemHealth] = None
     
     # Summary Insights
     key_findings: List[str] = []
