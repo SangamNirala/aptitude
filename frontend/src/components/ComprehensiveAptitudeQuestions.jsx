@@ -807,9 +807,137 @@ const ComprehensiveAptitudeQuestions = () => {
                 ))}
               </div>
 
-              {/* Rest of the implementation continues... */}
-              {/* The component is getting quite large, so I'll continue with the key remaining sections */}
-              
+              {/* Enhanced Subtopics Selection */}
+              {selectedAptitudeCategory && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                    <ChevronRight className="w-5 h-5 text-cyan-400" />
+                    Choose Specific Topics with Smart Insights
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {aptitudeCategories
+                      .find(cat => cat.id === selectedAptitudeCategory)
+                      ?.subtopics.map((subtopic, index) => {
+                        const priority = getTopicPriority(subtopic.name);
+                        const timeInfo = timeManagementTips[subtopic.name];
+                        
+                        return (
+                          <Card
+                            key={index}
+                            className={`cursor-pointer transition-all duration-300 hover:scale-105 border-2 ${
+                              selectedSubtopic === subtopic.name
+                                ? 'border-cyan-400 bg-white/20'
+                                : 'border-white/20 bg-white/10'
+                            } hover:bg-white/20`}
+                            onClick={() => handleSubtopicSelect(subtopic.name)}
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between mb-2">
+                                <h4 className="font-semibold text-white text-sm">{subtopic.name}</h4>
+                                <Badge className={`${priority.color} text-white text-xs`}>
+                                  {priority.badge}
+                                </Badge>
+                              </div>
+                              
+                              <div className="space-y-2 text-xs text-blue-200">
+                                <div className="flex justify-between">
+                                  <span>⏱️ Avg Time:</span>
+                                  <span className="text-yellow-300">{subtopic.avgTime}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>📈 Success Rate:</span>
+                                  <span className="text-green-300">{subtopic.successRate}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>📝 Questions:</span>
+                                  <span className="text-blue-300">{subtopic.questions}</span>
+                                </div>
+                                {timeInfo && (
+                                  <div className="mt-2 p-2 bg-white/10 rounded text-xs">
+                                    💡 {timeInfo.tip}
+                                  </div>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+
+              {/* Smart Difficulty Level Selection */}
+              {selectedAptitudeCategory && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-cyan-400" />
+                    Smart Difficulty Progression
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {smartLevels.map((level) => (
+                      <Card
+                        key={level.id}
+                        className={`cursor-pointer transition-all duration-300 hover:scale-105 border-2 ${
+                          selectedDifficulty === level.id
+                            ? 'border-cyan-400 bg-white/20'
+                            : 'border-white/20 bg-white/10'
+                        } hover:bg-white/20`}
+                        onClick={() => handleDifficultySelect(level)}
+                      >
+                        <CardContent className="p-4 text-center">
+                          <div className={`w-12 h-12 mx-auto mb-3 rounded-full ${level.color} flex items-center justify-center`}>
+                            <level.icon className="w-6 h-6 text-white" />
+                          </div>
+                          <h4 className="text-white font-semibold text-lg">{level.name}</h4>
+                          <p className="text-blue-200 text-sm mt-1">{level.description}</p>
+                          <div className="mt-3 space-y-1 text-xs text-blue-300">
+                            <div>📝 {level.questionCount}</div>
+                            <div>⏰ {level.timeLimit}</div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Study Modes Selection */}
+              {selectedAptitudeCategory && selectedDifficulty && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                    <Gamepad2 className="w-5 h-5 text-cyan-400" />
+                    Choose Your Study Mode
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {studyModes.map((mode) => (
+                      <Card
+                        key={mode.id}
+                        className={`cursor-pointer transition-all duration-300 hover:scale-105 border-2 ${
+                          selectedStudyMode === mode.id
+                            ? 'border-cyan-400 bg-white/20'
+                            : 'border-white/20 bg-white/10'
+                        } hover:bg-white/20`}
+                        onClick={() => handleStudyModeSelect(mode)}
+                      >
+                        <CardContent className="p-4 text-center">
+                          <div className={`w-10 h-10 mx-auto mb-2 rounded-full ${mode.color} flex items-center justify-center`}>
+                            <mode.icon className="w-5 h-5 text-white" />
+                          </div>
+                          <h4 className="text-white font-semibold text-sm">{mode.name}</h4>
+                          <p className="text-blue-200 text-xs mt-1">{mode.description}</p>
+                          <div className="mt-2 text-xs text-blue-300">
+                            {mode.features?.map((feature, idx) => (
+                              <div key={idx}>• {feature}</div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {selectedAptitudeCategory && selectedDifficulty && (
                 <div className="flex justify-center pt-6">
                   <Button 
@@ -824,7 +952,453 @@ const ComprehensiveAptitudeQuestions = () => {
               )}
             </TabsContent>
 
-            {/* Other tabs content would continue here... */}
+            {/* Company-Specific Tab */}
+            <TabsContent value="companies" className="space-y-6">
+              <div className="text-center space-y-4">
+                <h3 className="text-2xl font-semibold text-white">
+                  🏢 Company-Specific Placement Practice
+                </h3>
+                <p className="text-blue-200">Practice with real placement exam patterns and difficulty levels</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {companies.map((company, index) => (
+                  <Card
+                    key={index}
+                    className={`cursor-pointer transition-all duration-300 hover:scale-105 border-2 ${
+                      selectedCompany === company.name
+                        ? 'border-cyan-400 bg-white/20'
+                        : 'border-white/20 bg-white/10'
+                    } hover:bg-white/20 hover:border-cyan-400`}
+                    onClick={() => handleCompanySelect(company)}
+                  >
+                    <CardContent className="p-4 text-center">
+                      <company.logo className="w-8 h-8 mx-auto mb-3 text-cyan-400" />
+                      <h4 className="text-white font-semibold mb-2">{company.name}</h4>
+                      <div className="space-y-1 text-xs text-blue-200">
+                        <div className="flex justify-between">
+                          <span>Difficulty:</span>
+                          <span className="text-yellow-300">{company.difficulty}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Pass Rate:</span>
+                          <span className="text-green-300">{company.passRate}</span>
+                        </div>
+                        {company.avgPackage && (
+                          <div className="flex justify-between">
+                            <span>Avg Package:</span>
+                            <span className="text-purple-300">{company.avgPackage}</span>
+                          </div>
+                        )}
+                      </div>
+                      {company.pattern && (
+                        <div className="mt-2 p-2 bg-white/10 rounded text-xs">
+                          💡 {company.pattern.pattern}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Detailed Company Analysis */}
+              {selectedCompany && (
+                <Card className="bg-white/10 border-white/20">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center gap-2">
+                      <Building2 className="w-5 h-5 text-cyan-400" />
+                      {selectedCompany} - Detailed Analysis
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {Object.entries(companyPatterns).map(([companyKey, pattern]) => {
+                      if (selectedCompany.includes(companyKey)) {
+                        return (
+                          <div key={companyKey} className="space-y-3">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-200">
+                              <div>
+                                <span className="font-semibold text-white">Pattern:</span>
+                                <p>{pattern.pattern}</p>
+                              </div>
+                              <div>
+                                <span className="font-semibold text-white">Difficulty:</span>
+                                <p>{pattern.difficulty}</p>
+                              </div>
+                              <div>
+                                <span className="font-semibold text-white">Total Questions:</span>
+                                <p>{pattern.totalQuestions} questions</p>
+                              </div>
+                              <div>
+                                <span className="font-semibold text-white">Time Limit:</span>
+                                <p>{pattern.timeLimit}</p>
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <span className="font-semibold text-white">Key Tips:</span>
+                              <ul className="list-disc list-inside mt-2 text-blue-200 text-sm">
+                                {pattern.tips.map((tip, idx) => (
+                                  <li key={idx}>{tip}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
+                  </CardContent>
+                </Card>
+              )}
+              
+              {/* Enhanced Mock Test Options */}
+              <div className="bg-white/10 rounded-xl p-6 border border-white/20">
+                <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-cyan-400" />
+                  Advanced Practice Modes
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <Target className="w-6 h-6 text-cyan-400" />
+                    <span>Topic-wise Practice</span>
+                    <span className="text-xs text-blue-300">Focus on weak areas</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <Timer className="w-6 h-6 text-green-400" />
+                    <span>Full Mock Tests</span>
+                    <span className="text-xs text-blue-300">Real exam simulation</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <BarChart3 className="w-6 h-6 text-yellow-400" />
+                    <span>Progress Analytics</span>
+                    <span className="text-xs text-blue-300">Detailed insights</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <Trophy className="w-6 h-6 text-purple-400" />
+                    <span>Daily Challenges</span>
+                    <span className="text-xs text-blue-300">Compete with peers</span>
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Performance Analytics Tab */}
+            <TabsContent value="analytics" className="space-y-6">
+              <div className="text-center space-y-4">
+                <h3 className="text-2xl font-semibold text-white flex items-center justify-center gap-2">
+                  <BarChart3 className="w-6 h-6 text-cyan-400" />
+                  📊 Your Performance Analytics Dashboard
+                </h3>
+                <p className="text-blue-200">Track your progress and identify areas for improvement</p>
+              </div>
+
+              {/* Performance Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="bg-white/10 border-white/20">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-green-400">85%</div>
+                    <div className="text-sm text-blue-200">Overall Accuracy</div>
+                    <Progress value={85} className="mt-2 h-2" />
+                  </CardContent>
+                </Card>
+                <Card className="bg-white/10 border-white/20">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-yellow-400">127</div>
+                    <div className="text-sm text-blue-200">Questions Solved</div>
+                    <div className="text-xs text-green-300 mt-1">↑ 23 this week</div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-white/10 border-white/20">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-blue-400">18</div>
+                    <div className="text-sm text-blue-200">Study Streak</div>
+                    <div className="text-xs text-green-300 mt-1">🔥 Keep it up!</div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-white/10 border-white/20">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-purple-400">Top 15%</div>
+                    <div className="text-sm text-blue-200">Class Ranking</div>
+                    <div className="text-xs text-green-300 mt-1">↑ 5 positions</div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Weak Areas Analysis */}
+              <Card className="bg-white/10 border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Target className="w-5 h-5 text-red-400" />
+                    🎯 Areas Needing Attention
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-white">Permutations & Combinations</span>
+                      <span className="text-red-400">45% accuracy</span>
+                    </div>
+                    <Progress value={45} className="h-2" />
+                    <p className="text-xs text-blue-300">💡 Suggested: Practice 15 more questions</p>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-white">Data Interpretation</span>
+                      <span className="text-yellow-400">62% accuracy</span>
+                    </div>
+                    <Progress value={62} className="h-2" />
+                    <p className="text-xs text-blue-300">💡 Focus on: Chart reading speed</p>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-white">Puzzles & Seating Arrangement</span>
+                      <span className="text-orange-400">58% accuracy</span>
+                    </div>
+                    <Progress value={58} className="h-2" />
+                    <p className="text-xs text-blue-300">💡 Practice: Complex arrangement patterns</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Study Recommendations */}
+              <Card className="bg-white/10 border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Lightbulb className="w-5 h-5 text-yellow-400" />
+                    🎓 Personalized Study Plan
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
+                    <Clock className="w-5 h-5 text-blue-400" />
+                    <div>
+                      <div className="text-white font-medium">Today's Goal</div>
+                      <div className="text-blue-200 text-sm">Complete 20 Percentage questions</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
+                    <Calendar className="w-5 h-5 text-green-400" />
+                    <div>
+                      <div className="text-white font-medium">This Week</div>
+                      <div className="text-blue-200 text-sm">Focus on Time & Work problems</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
+                    <Trophy className="w-5 h-5 text-purple-400" />
+                    <div>
+                      <div className="text-white font-medium">Monthly Target</div>
+                      <div className="text-blue-200 text-sm">Achieve 90% in Quantitative Aptitude</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Performance Charts */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="bg-white/10 border-white/20">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center gap-2">
+                      <LineChart className="w-5 h-5 text-cyan-400" />
+                      Weekly Progress
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-32 flex items-end justify-between gap-2">
+                      {[65, 72, 68, 75, 82, 78, 85].map((value, index) => (
+                        <div key={index} className="flex flex-col items-center">
+                          <div 
+                            className="bg-cyan-500 w-6 rounded-t"
+                            style={{ height: `${value}%` }}
+                          ></div>
+                          <span className="text-xs text-blue-300 mt-1">Day {index + 1}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white/10 border-white/20">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center gap-2">
+                      <PieChart className="w-5 h-5 text-cyan-400" />
+                      Category Performance
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-blue-200">Quantitative</span>
+                      <div className="flex items-center gap-2">
+                        <Progress value={78} className="w-20 h-2" />
+                        <span className="text-green-400 text-sm">78%</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-blue-200">Logical</span>
+                      <div className="flex items-center gap-2">
+                        <Progress value={65} className="w-20 h-2" />
+                        <span className="text-yellow-400 text-sm">65%</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-blue-200">Verbal</span>
+                      <div className="flex items-center gap-2">
+                        <Progress value={82} className="w-20 h-2" />
+                        <span className="text-green-400 text-sm">82%</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-blue-200">Data Interpretation</span>
+                      <div className="flex items-center gap-2">
+                        <Progress value={58} className="w-20 h-2" />
+                        <span className="text-red-400 text-sm">58%</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Learning Paths Tab */}
+            <TabsContent value="paths" className="space-y-6">
+              <div className="text-center space-y-4">
+                <h3 className="text-2xl font-semibold text-white flex items-center justify-center gap-2">
+                  <GraduationCap className="w-6 h-6 text-cyan-400" />
+                  🛤️ Personalized Learning Paths
+                </h3>
+                <p className="text-blue-200">Choose a path tailored to your career goals</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {Object.values(learningPaths).map((path, index) => (
+                  <Card
+                    key={index}
+                    className={`cursor-pointer transition-all duration-300 hover:scale-105 border-2 ${
+                      selectedLearningPath === path.name
+                        ? 'border-cyan-400 bg-white/20'
+                        : 'border-white/20 bg-white/10'
+                    } hover:bg-white/20`}
+                    onClick={() => handleLearningPathSelect(path)}
+                  >
+                    <CardHeader>
+                      <div className="flex items-center gap-3">
+                        <div className="p-3 rounded-lg bg-cyan-600">
+                          <path.icon className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-white">{path.name}</CardTitle>
+                          <CardDescription className="text-blue-200">
+                            {path.description}
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div>
+                        <div className="text-white font-medium text-sm mb-2">📚 Focus Areas:</div>
+                        <div className="flex flex-wrap gap-1">
+                          {path.focus.map((area, idx) => (
+                            <Badge key={idx} variant="secondary" className="bg-white/20 text-white text-xs">
+                              {area}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-white font-medium text-sm mb-2">🏢 Target Companies:</div>
+                        <div className="text-blue-200 text-xs">
+                          {path.companies ? path.companies.join(', ') : path.exams?.join(', ')}
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between text-xs text-blue-300">
+                        <span>⏰ Duration: {path.duration}</span>
+                        <span>🎯 Success Rate: 78%</span>
+                      </div>
+
+                      {path.weeklyPlan && (
+                        <div>
+                          <div className="text-white font-medium text-sm mb-2">📅 Weekly Plan:</div>
+                          <div className="space-y-1 text-xs text-blue-200">
+                            {Object.entries(path.weeklyPlan).map(([week, plan]) => (
+                              <div key={week} className="flex gap-2">
+                                <span className="text-cyan-400">{week}:</span>
+                                <span>{plan}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Community Features */}
+              <Card className="bg-white/10 border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Users2 className="w-5 h-5 text-cyan-400" />
+                    👥 Community Features
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
+                    <MessageCircle className="w-5 h-5 text-blue-400" />
+                    <div>
+                      <div className="text-white font-medium text-sm">Discussion Forums</div>
+                      <div className="text-blue-200 text-xs">Get doubts cleared instantly</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
+                    <Trophy className="w-5 h-5 text-yellow-400" />
+                    <div>
+                      <div className="text-white font-medium text-sm">Success Stories</div>
+                      <div className="text-blue-200 text-xs">Learn from toppers</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
+                    <Users2 className="w-5 h-5 text-green-400" />
+                    <div>
+                      <div className="text-white font-medium text-sm">Peer Comparison</div>
+                      <div className="text-blue-200 text-xs">See your college ranking</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Additional Learning Resources */}
+              <Card className="bg-white/10 border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-cyan-400" />
+                    📚 Additional Learning Resources
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <PlayCircle className="w-6 h-6 text-blue-400" />
+                    <span>Video Tutorials</span>
+                    <span className="text-xs text-blue-300">Step-by-step guides</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <Download className="w-6 h-6 text-green-400" />
+                    <span>PDF Materials</span>
+                    <span className="text-xs text-blue-300">Offline study guides</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <Share2 className="w-6 h-6 text-yellow-400" />
+                    <span>Share Progress</span>
+                    <span className="text-xs text-blue-300">Social learning</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <Bell className="w-6 h-6 text-purple-400" />
+                    <span>Study Reminders</span>
+                    <span className="text-xs text-blue-300">Stay consistent</span>
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </Tabs>
         </DialogContent>
       </Dialog>
