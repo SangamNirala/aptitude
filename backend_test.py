@@ -1043,6 +1043,487 @@ class AntiDetectionSystemTester:
         
         return self.test_results
 
+class ScrapingEnginesTester:
+    """Tester for TASK 4 & 5 - Selenium, Playwright, Content Validation, and Performance Monitoring"""
+    
+    def __init__(self):
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": [],
+            "component_tests": {}
+        }
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_selenium_driver_imports(self):
+        """Test Selenium driver imports and basic functionality"""
+        logger.info("🚗 Testing Selenium Driver Imports...")
+        
+        try:
+            # Test SeleniumDriver import
+            start_time = time.time()
+            from scraping.drivers.selenium_driver import (
+                SeleniumDriver, SeleniumConfig, PageLoadResult, 
+                ElementExtractionResult, create_selenium_driver,
+                create_indiabix_selenium_driver, create_geeksforgeeks_selenium_driver
+            )
+            response_time = time.time() - start_time
+            self.log_test_result("SeleniumDriver Import", True, "Successfully imported all Selenium classes", response_time)
+        except Exception as e:
+            self.log_test_result("SeleniumDriver Import", False, f"Import error: {str(e)}")
+            return
+        
+        # Test SeleniumConfig creation
+        try:
+            start_time = time.time()
+            config = SeleniumConfig(
+                browser="chrome",
+                headless=True,
+                page_load_timeout=30,
+                enable_anti_detection=True
+            )
+            response_time = time.time() - start_time
+            
+            success = (config.browser == "chrome" and 
+                      config.headless == True and 
+                      config.page_load_timeout == 30)
+            self.log_test_result("SeleniumConfig Creation", success, 
+                               f"Config created with browser: {config.browser}, headless: {config.headless}", response_time)
+        except Exception as e:
+            self.log_test_result("SeleniumConfig Creation", False, f"Config creation error: {str(e)}")
+        
+        # Test SeleniumDriver instantiation (without actual browser)
+        try:
+            start_time = time.time()
+            driver = SeleniumDriver("test_source", config)
+            response_time = time.time() - start_time
+            
+            success = (driver.source_name == "test_source" and 
+                      driver.config.browser == "chrome" and
+                      not driver.is_initialized)
+            self.log_test_result("SeleniumDriver Instantiation", success, 
+                               f"Driver created for source: {driver.source_name}, initialized: {driver.is_initialized}", response_time)
+        except Exception as e:
+            self.log_test_result("SeleniumDriver Instantiation", False, f"Driver instantiation error: {str(e)}")
+        
+        # Test factory functions
+        try:
+            start_time = time.time()
+            factory_driver = create_selenium_driver("factory_test", browser="chrome", headless=True)
+            indiabix_driver = create_indiabix_selenium_driver()
+            geeks_driver = create_geeksforgeeks_selenium_driver()
+            response_time = time.time() - start_time
+            
+            success = (factory_driver.source_name == "factory_test" and
+                      indiabix_driver.source_name == "indiabix" and
+                      geeks_driver.source_name == "geeksforgeeks")
+            self.log_test_result("Selenium Factory Functions", success, 
+                               f"Created drivers: {factory_driver.source_name}, {indiabix_driver.source_name}, {geeks_driver.source_name}", response_time)
+        except Exception as e:
+            self.log_test_result("Selenium Factory Functions", False, f"Factory function error: {str(e)}")
+    
+    async def test_playwright_driver_imports(self):
+        """Test Playwright driver imports and basic functionality"""
+        logger.info("🎭 Testing Playwright Driver Imports...")
+        
+        try:
+            # Test PlaywrightDriver import
+            start_time = time.time()
+            from scraping.drivers.playwright_driver import (
+                PlaywrightDriver, PlaywrightConfig, NavigationResult,
+                JavaScriptExecutionResult, DynamicContentResult,
+                create_playwright_driver, create_indiabix_playwright_driver,
+                create_geeksforgeeks_playwright_driver
+            )
+            response_time = time.time() - start_time
+            self.log_test_result("PlaywrightDriver Import", True, "Successfully imported all Playwright classes", response_time)
+        except Exception as e:
+            self.log_test_result("PlaywrightDriver Import", False, f"Import error: {str(e)}")
+            return
+        
+        # Test PlaywrightConfig creation
+        try:
+            start_time = time.time()
+            config = PlaywrightConfig(
+                browser_type="chromium",
+                headless=True,
+                enable_javascript=True,
+                enable_anti_detection=True,
+                stealth_mode=True
+            )
+            response_time = time.time() - start_time
+            
+            success = (config.browser_type == "chromium" and 
+                      config.headless == True and 
+                      config.enable_javascript == True and
+                      config.stealth_mode == True)
+            self.log_test_result("PlaywrightConfig Creation", success, 
+                               f"Config created with browser: {config.browser_type}, stealth: {config.stealth_mode}", response_time)
+        except Exception as e:
+            self.log_test_result("PlaywrightConfig Creation", False, f"Config creation error: {str(e)}")
+        
+        # Test PlaywrightDriver instantiation (without actual browser)
+        try:
+            start_time = time.time()
+            driver = PlaywrightDriver("test_source", config)
+            response_time = time.time() - start_time
+            
+            success = (driver.source_name == "test_source" and 
+                      driver.config.browser_type == "chromium" and
+                      not driver.is_initialized)
+            self.log_test_result("PlaywrightDriver Instantiation", success, 
+                               f"Driver created for source: {driver.source_name}, initialized: {driver.is_initialized}", response_time)
+        except Exception as e:
+            self.log_test_result("PlaywrightDriver Instantiation", False, f"Driver instantiation error: {str(e)}")
+        
+        # Test factory functions
+        try:
+            start_time = time.time()
+            factory_driver = create_playwright_driver("factory_test", browser_type="chromium")
+            indiabix_driver = create_indiabix_playwright_driver()
+            geeks_driver = create_geeksforgeeks_playwright_driver()
+            response_time = time.time() - start_time
+            
+            success = (factory_driver.source_name == "factory_test" and
+                      indiabix_driver.source_name == "indiabix" and
+                      geeks_driver.source_name == "geeksforgeeks")
+            self.log_test_result("Playwright Factory Functions", success, 
+                               f"Created drivers: {factory_driver.source_name}, {indiabix_driver.source_name}, {geeks_driver.source_name}", response_time)
+        except Exception as e:
+            self.log_test_result("Playwright Factory Functions", False, f"Factory function error: {str(e)}")
+    
+    async def test_content_validator(self):
+        """Test Content Validation utilities"""
+        logger.info("🔍 Testing Content Validator...")
+        
+        try:
+            # Test ContentValidator import
+            start_time = time.time()
+            from scraping.utils.content_validator import (
+                ContentValidator, ContentQualityScore, ValidationRule,
+                ContentType, ValidationSeverity, QualityGate,
+                create_indiabix_validator, create_geeksforgeeks_validator,
+                validate_extracted_question
+            )
+            response_time = time.time() - start_time
+            self.log_test_result("ContentValidator Import", True, "Successfully imported all content validation classes", response_time)
+        except Exception as e:
+            self.log_test_result("ContentValidator Import", False, f"Import error: {str(e)}")
+            return
+        
+        # Test ContentValidator instantiation
+        try:
+            start_time = time.time()
+            validator = ContentValidator("test_source")
+            response_time = time.time() - start_time
+            
+            success = (validator.source_name == "test_source" and
+                      len(validator.validation_rules) > 0 and
+                      validator.quality_thresholds is not None)
+            self.log_test_result("ContentValidator Instantiation", success, 
+                               f"Validator created for: {validator.source_name}, rules: {len(validator.validation_rules)}", response_time)
+        except Exception as e:
+            self.log_test_result("ContentValidator Instantiation", False, f"Validator instantiation error: {str(e)}")
+        
+        # Test content validation with sample data
+        try:
+            start_time = time.time()
+            sample_content = {
+                "question_text": "What is 25% of 200?",
+                "options": ["A) 40", "B) 50", "C) 60", "D) 70"],
+                "correct_answer": "B) 50",
+                "explanation": "25% of 200 = (25/100) × 200 = 50"
+            }
+            
+            quality_score = validator.validate_content(sample_content)
+            response_time = time.time() - start_time
+            
+            success = (isinstance(quality_score, ContentQualityScore) and
+                      quality_score.overall_score > 0 and
+                      quality_score.quality_gate in [QualityGate.APPROVE, QualityGate.REVIEW, QualityGate.REJECT])
+            self.log_test_result("Content Validation", success, 
+                               f"Quality score: {quality_score.overall_score:.1f}, Gate: {quality_score.quality_gate.value}", response_time)
+        except Exception as e:
+            self.log_test_result("Content Validation", False, f"Content validation error: {str(e)}")
+        
+        # Test specialized validators
+        try:
+            start_time = time.time()
+            indiabix_validator = create_indiabix_validator()
+            geeks_validator = create_geeksforgeeks_validator()
+            response_time = time.time() - start_time
+            
+            success = (indiabix_validator.source_name == "indiabix" and
+                      geeks_validator.source_name == "geeksforgeeks")
+            self.log_test_result("Specialized Validators", success, 
+                               f"Created validators: {indiabix_validator.source_name}, {geeks_validator.source_name}", response_time)
+        except Exception as e:
+            self.log_test_result("Specialized Validators", False, f"Specialized validator error: {str(e)}")
+        
+        # Test validation rule system
+        try:
+            start_time = time.time()
+            custom_rule = ValidationRule(
+                name="test_rule",
+                description="Test validation rule",
+                content_types=[ContentType.QUESTION_TEXT],
+                severity=ValidationSeverity.WARNING
+            )
+            
+            custom_validator = ContentValidator("custom_test", [custom_rule])
+            response_time = time.time() - start_time
+            
+            success = (len(custom_validator.validation_rules) > len(validator.validation_rules) and
+                      any(rule.name == "test_rule" for rule in custom_validator.validation_rules))
+            self.log_test_result("Custom Validation Rules", success, 
+                               f"Custom validator has {len(custom_validator.validation_rules)} rules", response_time)
+        except Exception as e:
+            self.log_test_result("Custom Validation Rules", False, f"Custom rule error: {str(e)}")
+    
+    async def test_performance_monitor(self):
+        """Test Performance Monitoring utilities"""
+        logger.info("📊 Testing Performance Monitor...")
+        
+        try:
+            # Test PerformanceMonitor import
+            start_time = time.time()
+            from scraping.utils.performance_monitor import (
+                PerformanceMonitor, PerformanceThresholds, OperationMetrics,
+                PerformanceAlert, ResourceSnapshot, PerformanceLevel,
+                create_scraping_performance_monitor, create_high_volume_monitor,
+                PerformanceAnalyzer, get_global_monitor
+            )
+            response_time = time.time() - start_time
+            self.log_test_result("PerformanceMonitor Import", True, "Successfully imported all performance monitoring classes", response_time)
+        except Exception as e:
+            self.log_test_result("PerformanceMonitor Import", False, f"Import error: {str(e)}")
+            return
+        
+        # Test PerformanceMonitor instantiation
+        try:
+            start_time = time.time()
+            monitor = PerformanceMonitor("test_monitor")
+            response_time = time.time() - start_time
+            
+            success = (monitor.monitor_name == "test_monitor" and
+                      monitor.thresholds is not None and
+                      not monitor.is_monitoring)
+            self.log_test_result("PerformanceMonitor Instantiation", success, 
+                               f"Monitor created: {monitor.monitor_name}, monitoring: {monitor.is_monitoring}", response_time)
+        except Exception as e:
+            self.log_test_result("PerformanceMonitor Instantiation", False, f"Monitor instantiation error: {str(e)}")
+        
+        # Test resource snapshot collection
+        try:
+            start_time = time.time()
+            snapshot = monitor._get_resource_snapshot()
+            response_time = time.time() - start_time
+            
+            success = (isinstance(snapshot, ResourceSnapshot) and
+                      snapshot.cpu_percent >= 0 and
+                      snapshot.memory_mb >= 0)
+            self.log_test_result("Resource Snapshot", success, 
+                               f"CPU: {snapshot.cpu_percent:.1f}%, Memory: {snapshot.memory_mb:.1f}MB", response_time)
+        except Exception as e:
+            self.log_test_result("Resource Snapshot", False, f"Resource snapshot error: {str(e)}")
+        
+        # Test operation monitoring context manager
+        try:
+            start_time = time.time()
+            with monitor.monitor_operation("test_operation", elements_processed=10) as op_id:
+                time.sleep(0.1)  # Simulate work
+                success_op = True
+            response_time = time.time() - start_time
+            
+            success = (len(monitor.operation_metrics) > 0 and
+                      monitor.operation_metrics[-1].operation_name == "test_operation" and
+                      monitor.operation_metrics[-1].success == True)
+            self.log_test_result("Operation Monitoring", success, 
+                               f"Monitored operation: {monitor.operation_metrics[-1].operation_name if monitor.operation_metrics else 'None'}", response_time)
+        except Exception as e:
+            self.log_test_result("Operation Monitoring", False, f"Operation monitoring error: {str(e)}")
+        
+        # Test performance summary
+        try:
+            start_time = time.time()
+            summary = monitor.get_performance_summary()
+            response_time = time.time() - start_time
+            
+            success = (isinstance(summary, dict) and
+                      "monitor_name" in summary and
+                      "resource_statistics" in summary and
+                      "operation_statistics" in summary)
+            self.log_test_result("Performance Summary", success, 
+                               f"Summary keys: {list(summary.keys())[:5]}", response_time)
+        except Exception as e:
+            self.log_test_result("Performance Summary", False, f"Performance summary error: {str(e)}")
+        
+        # Test factory functions
+        try:
+            start_time = time.time()
+            scraping_monitor = create_scraping_performance_monitor("scraping_test")
+            high_volume_monitor = create_high_volume_monitor("volume_test")
+            response_time = time.time() - start_time
+            
+            success = (scraping_monitor.monitor_name == "scraping_test_scraper" and
+                      high_volume_monitor.monitor_name == "volume_test_high_volume")
+            self.log_test_result("Performance Monitor Factories", success, 
+                               f"Created monitors: {scraping_monitor.monitor_name}, {high_volume_monitor.monitor_name}", response_time)
+        except Exception as e:
+            self.log_test_result("Performance Monitor Factories", False, f"Factory function error: {str(e)}")
+        
+        # Test PerformanceAnalyzer
+        try:
+            start_time = time.time()
+            bottlenecks = PerformanceAnalyzer.identify_bottlenecks(monitor)
+            response_time = time.time() - start_time
+            
+            success = isinstance(bottlenecks, list)
+            self.log_test_result("Performance Analysis", success, 
+                               f"Identified {len(bottlenecks)} bottlenecks", response_time)
+        except Exception as e:
+            self.log_test_result("Performance Analysis", False, f"Performance analysis error: {str(e)}")
+        
+        # Cleanup
+        try:
+            monitor.cleanup()
+            scraping_monitor.cleanup()
+            high_volume_monitor.cleanup()
+        except:
+            pass
+    
+    async def test_integration_compatibility(self):
+        """Test integration between scraping components"""
+        logger.info("🔗 Testing Integration Compatibility...")
+        
+        try:
+            # Test that all components can be imported together
+            start_time = time.time()
+            from scraping.drivers.selenium_driver import SeleniumDriver, SeleniumConfig
+            from scraping.drivers.playwright_driver import PlaywrightDriver, PlaywrightConfig
+            from scraping.utils.content_validator import ContentValidator
+            from scraping.utils.performance_monitor import PerformanceMonitor
+            from scraping.utils.anti_detection import AntiDetectionManager
+            from scraping.utils.rate_limiter import ExponentialBackoffLimiter
+            response_time = time.time() - start_time
+            
+            self.log_test_result("Component Integration Import", True, "All scraping components imported successfully", response_time)
+        except Exception as e:
+            self.log_test_result("Component Integration Import", False, f"Integration import error: {str(e)}")
+            return
+        
+        # Test component compatibility
+        try:
+            start_time = time.time()
+            
+            # Create components
+            selenium_config = SeleniumConfig(enable_anti_detection=True)
+            selenium_driver = SeleniumDriver("integration_test", selenium_config)
+            
+            playwright_config = PlaywrightConfig(enable_anti_detection=True)
+            playwright_driver = PlaywrightDriver("integration_test", playwright_config)
+            
+            validator = ContentValidator("integration_test")
+            monitor = PerformanceMonitor("integration_test")
+            
+            response_time = time.time() - start_time
+            
+            success = all([
+                selenium_driver.source_name == "integration_test",
+                playwright_driver.source_name == "integration_test", 
+                validator.source_name == "integration_test",
+                monitor.monitor_name == "integration_test"
+            ])
+            
+            self.log_test_result("Component Compatibility", success, 
+                               "All components created with consistent configuration", response_time)
+        except Exception as e:
+            self.log_test_result("Component Compatibility", False, f"Component compatibility error: {str(e)}")
+        
+        # Test anti-detection integration
+        try:
+            start_time = time.time()
+            
+            # Verify anti-detection is properly integrated
+            selenium_has_anti_detection = hasattr(selenium_driver, 'anti_detection') and selenium_driver.anti_detection is not None
+            playwright_has_anti_detection = hasattr(playwright_driver, 'anti_detection') and playwright_driver.anti_detection is not None
+            
+            response_time = time.time() - start_time
+            
+            success = selenium_has_anti_detection and playwright_has_anti_detection
+            self.log_test_result("Anti-Detection Integration", success, 
+                               f"Selenium anti-detection: {selenium_has_anti_detection}, Playwright: {playwright_has_anti_detection}", response_time)
+        except Exception as e:
+            self.log_test_result("Anti-Detection Integration", False, f"Anti-detection integration error: {str(e)}")
+        
+        # Test rate limiting integration
+        try:
+            start_time = time.time()
+            
+            # Verify rate limiting is properly integrated
+            selenium_has_rate_limiter = hasattr(selenium_driver, 'rate_limiter') and selenium_driver.rate_limiter is not None
+            playwright_has_rate_limiter = hasattr(playwright_driver, 'rate_limiter') and playwright_driver.rate_limiter is not None
+            
+            response_time = time.time() - start_time
+            
+            success = selenium_has_rate_limiter and playwright_has_rate_limiter
+            self.log_test_result("Rate Limiting Integration", success, 
+                               f"Selenium rate limiter: {selenium_has_rate_limiter}, Playwright: {playwright_has_rate_limiter}", response_time)
+        except Exception as e:
+            self.log_test_result("Rate Limiting Integration", False, f"Rate limiting integration error: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all scraping engines tests"""
+        logger.info("🚀 Starting TASK 4 & 5 - Scraping Engines Testing...")
+        start_time = time.time()
+        
+        # Run all test suites
+        await self.test_selenium_driver_imports()
+        await self.test_playwright_driver_imports()
+        await self.test_content_validator()
+        await self.test_performance_monitor()
+        await self.test_integration_compatibility()
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 60)
+        logger.info("🎯 SCRAPING ENGINES TEST SUMMARY")
+        logger.info("=" * 60)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 60)
+        
+        # Show failed tests
+        failed_tests = [t for t in self.test_results["test_details"] if not t["success"]]
+        if failed_tests:
+            logger.info("❌ FAILED TESTS:")
+            for test in failed_tests:
+                logger.info(f"  - {test['test_name']}: {test['details']}")
+        
+        return self.test_results
+
 async def main():
     """Main test execution"""
     
@@ -1052,6 +1533,13 @@ async def main():
     
     anti_detection_tester = AntiDetectionSystemTester()
     anti_detection_results = await anti_detection_tester.run_all_tests()
+    
+    # Test TASK 4 & 5 - Scraping Engines
+    logger.info("\n🚗🎭 TESTING TASK 4 & 5 - SCRAPING ENGINES")
+    logger.info("=" * 80)
+    
+    scraping_engines_tester = ScrapingEnginesTester()
+    scraping_engines_results = await scraping_engines_tester.run_all_tests()
     
     # Test existing AI API endpoints
     logger.info("\n🤖 TESTING AI-ENHANCED API ENDPOINTS")
@@ -1063,11 +1551,12 @@ async def main():
         # Combine results
         combined_results = {
             "anti_detection_system": anti_detection_results,
+            "scraping_engines": scraping_engines_results,
             "ai_api_endpoints": api_results,
             "overall_summary": {
-                "total_tests": anti_detection_results["total_tests"] + api_results["total_tests"],
-                "passed_tests": anti_detection_results["passed_tests"] + api_results["passed_tests"],
-                "failed_tests": anti_detection_results["failed_tests"] + api_results["failed_tests"]
+                "total_tests": anti_detection_results["total_tests"] + scraping_engines_results["total_tests"] + api_results["total_tests"],
+                "passed_tests": anti_detection_results["passed_tests"] + scraping_engines_results["passed_tests"] + api_results["passed_tests"],
+                "failed_tests": anti_detection_results["failed_tests"] + scraping_engines_results["failed_tests"] + api_results["failed_tests"]
             }
         }
         
@@ -1080,6 +1569,7 @@ async def main():
         logger.info("🎯 COMPREHENSIVE TEST SUMMARY")
         logger.info("=" * 80)
         logger.info(f"Anti-Detection System Tests: {anti_detection_results['passed_tests']}/{anti_detection_results['total_tests']} passed")
+        logger.info(f"Scraping Engines Tests: {scraping_engines_results['passed_tests']}/{scraping_engines_results['total_tests']} passed")
         logger.info(f"AI API Endpoint Tests: {api_results['passed_tests']}/{api_results['total_tests']} passed")
         logger.info(f"Overall Success Rate: {overall_success_rate:.1f}%")
         logger.info("=" * 80)
