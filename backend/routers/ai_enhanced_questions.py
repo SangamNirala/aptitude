@@ -207,27 +207,22 @@ async def get_filtered_questions(
         raise HTTPException(status_code=500, detail=f"Question filtering failed: {str(e)}")
 
 @router.post("/instant-feedback")
-async def get_instant_feedback(
-    question_id: str,
-    question_text: str,
-    user_answer: str,
-    correct_answer: str
-):
+async def get_instant_feedback(request: InstantFeedbackRequest):
     """Get instant AI-powered feedback on answer"""
     try:
-        logger.info(f"Providing instant feedback for question: {question_id}")
+        logger.info(f"Providing instant feedback for question: {request.question_id}")
         
         # Get ultra-fast feedback using Groq
         feedback = await get_ai_coordinator().instant_feedback_response(
-            question_text=question_text,
-            user_answer=user_answer,
-            correct_answer=correct_answer
+            question_text=request.question_text,
+            user_answer=request.user_answer,
+            correct_answer=request.correct_answer
         )
         
         # Log user attempt (background task)
         attempt_data = {
-            "question_id": question_id,
-            "user_answer": user_answer,
+            "question_id": request.question_id,
+            "user_answer": request.user_answer,
             "is_correct": feedback.get("is_correct", False),
             "timestamp": datetime.utcnow(),
             "response_time_ms": feedback.get("response_time_ms", 0)
