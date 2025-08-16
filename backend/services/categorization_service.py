@@ -86,14 +86,14 @@ class CategorizationService:
             logger.info(f"Smart categorization for question: {question_text[:50]}...")
             
             # Use HuggingFace for primary classification
-            hf_result = await self.ai_coordinator.huggingface.classify_question_category(question_text)
+            hf_result = await self.huggingface.classify_question_category(question_text)
             
             # Extract concepts
             predicted_category = hf_result.get("predicted_category", "quantitative")
-            concepts = await self.ai_coordinator.huggingface.extract_key_concepts(question_text, predicted_category)
+            concepts = await self.huggingface.extract_key_concepts(question_text, predicted_category)
             
             # Assess difficulty using Groq
-            groq_difficulty = await self.ai_coordinator.groq.assess_difficulty_instantly(question_text, options)
+            groq_difficulty = await self.groq.assess_difficulty_instantly(question_text, options)
             
             # Determine company patterns
             company_matches = await self._identify_company_patterns(question_text, concepts, groq_difficulty.get("difficulty_score", 5))
