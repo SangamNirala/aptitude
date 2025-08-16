@@ -19,12 +19,10 @@ logger = logging.getLogger(__name__)
 # Router setup
 router = APIRouter(prefix="/api/questions", tags=["AI Enhanced Questions"])
 
-# Database connection will be initialized when needed
-def get_database():
-    """Get database connection"""
-    mongo_url = os.environ['MONGO_URL']
-    client = AsyncIOMotorClient(mongo_url)
-    return client[os.environ['DB_NAME']]
+# Database connection
+mongo_url = os.environ['MONGO_URL']
+client = AsyncIOMotorClient(mongo_url)
+db = client[os.environ['DB_NAME']]
 
 # Initialize AI services
 ai_coordinator = AICoordinator()
@@ -58,7 +56,6 @@ async def generate_ai_question(
         enhanced_question = await ai_coordinator.process_new_question_complete(question_data)
         
         # Save to database
-        db = get_database()
         await db.enhanced_questions.insert_one(enhanced_question.dict())
         
         logger.info(f"AI question generated and saved with ID: {enhanced_question.id}")
@@ -89,7 +86,6 @@ async def create_enhanced_question(question_request: QuestionCreateRequest):
         enhanced_question = await ai_coordinator.process_new_question_complete(question_data)
         
         # Save to database
-        db = get_database()
         await db.enhanced_questions.insert_one(enhanced_question.dict())
         
         logger.info(f"Enhanced question created with ID: {enhanced_question.id}")
@@ -116,7 +112,6 @@ async def generate_personalized_questions(request: PersonalizedQuestionRequest):
             raise HTTPException(status_code=500, detail="Failed to generate personalized questions")
         
         # Save questions to database
-        db = get_database()
         for question in personalized_questions:
             await db.enhanced_questions.insert_one(question.dict())
         
@@ -158,9 +153,6 @@ async def get_filtered_questions(
             
         if concepts:
             filter_query["metadata.concepts"] = {"$in": concepts}
-        
-        # Get database connection
-        db = get_database()
         
         # Get total count
         total_count = await db.enhanced_questions.count_documents(filter_query)
@@ -220,7 +212,6 @@ async def get_instant_feedback(
         }
         
         # Store attempt in background
-        db = get_database()
         await db.question_attempts.insert_one(attempt_data)
         
         return feedback
@@ -267,9 +258,6 @@ async def detect_duplicate_questions(
     """Detect if question is duplicate of existing questions"""
     try:
         logger.info(f"Detecting duplicates for question: {question_text[:50]}...")
-        
-        # Get database connection
-        db = get_database()
         
         # Get existing questions from database (recent ones for efficiency)
         existing_cursor = db.enhanced_questions.find({"is_active": True}).limit(1000)
@@ -331,7 +319,6 @@ async def bulk_upload_questions(
                 enhanced_questions = await ai_coordinator.bulk_process_questions(question_data_list)
                 
                 # Save to database
-                db = get_database()
                 for question in enhanced_questions:
                     await db.enhanced_questions.insert_one(question.dict())
                 
@@ -358,7 +345,6 @@ async def bulk_upload_questions(
                 simple_questions.append(simple_question.dict())
             
             # Insert to database
-            db = get_database()
             await db.enhanced_questions.insert_many(simple_questions)
             
             processing_time = (datetime.utcnow() - start_time).total_seconds()
@@ -392,7 +378,6 @@ async def get_questions_by_weak_areas(
         }
         
         # Get questions
-        db = get_database()
         cursor = db.enhanced_questions.find(filter_query).limit(count)
         question_docs = await cursor.to_list(length=count)
         
@@ -426,7 +411,6 @@ async def get_company_specific_questions(
             filter_query["category"] = category.value
         
         # Get questions
-        db = get_database()
         cursor = db.enhanced_questions.find(filter_query).limit(count)
         question_docs = await cursor.to_list(length=count)
         
@@ -458,7 +442,6 @@ async def get_question_quality_stats():
             }}
         ]
         
-        db = get_database()
         cursor = db.enhanced_questions.aggregate(pipeline)
         stats = await cursor.to_list(length=1)
         
@@ -491,7 +474,6 @@ async def _process_bulk_questions_background(question_data_list: List[Dict], bat
         enhanced_questions = await ai_coordinator.bulk_process_questions(question_data_list)
         
         # Save to database
-        db = get_database()
         for question in enhanced_questions:
             await db.enhanced_questions.insert_one(question.dict())
         
@@ -511,7 +493,6 @@ async def _process_bulk_questions_background(question_data_list: List[Dict], bat
         
     except Exception as e:
         logger.error(f"Error in background processing: {str(e)}")
-        db = get_database()
         await db.bulk_processing_status.update_one(
             {"batch_id": batch_id},
             {"$set": {
