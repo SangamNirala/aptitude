@@ -158,6 +158,16 @@ class AICoordinator:
         except ValueError:
             difficulty = DifficultyLevel.PLACEMENT_READY
         
+        # Create Question Analytics (default values for new questions)
+        analytics = QuestionAnalytics(
+            success_rate=0.0,
+            avg_time_taken=0,
+            attempt_count=0,
+            correct_count=0,
+            common_mistakes=[],
+            skip_rate=0.0
+        )
+        
         # Create enhanced question
         enhanced_question = EnhancedQuestion(
             question_text=original_data["question_text"],
@@ -167,6 +177,7 @@ class AICoordinator:
             difficulty=difficulty,
             ai_metrics=ai_metrics,
             metadata=metadata,
+            analytics=analytics,
             ai_explanation=gemini_results.get("explanation"),
             source=original_data.get("source", "manual"),
             source_url=original_data.get("source_url"),
