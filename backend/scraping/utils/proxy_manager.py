@@ -113,9 +113,9 @@ class ProxyManager:
         self.test_interval = timedelta(minutes=15)
         
         # Rotation settings
-        self.rotation_strategy = config.get("rotation_strategy", "round_robin")  # round_robin, random, performance
+        self.rotation_strategy = self.config.get("rotation_strategy", "round_robin")  # round_robin, random, performance
         self.current_index = 0
-        self.max_failures_before_ban = config.get("max_failures_before_ban", 5)
+        self.max_failures_before_ban = self.config.get("max_failures_before_ban", 5)
         
         # Performance tracking
         self.proxy_usage_history = []
