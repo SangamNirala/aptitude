@@ -777,3 +777,53 @@ def validate_extracted_question(question_data: Dict[str, Any], source: str = "ge
         validator = ContentValidator(source)
     
     return validator.validate_content(question_data)
+
+def determine_quality_gate(quality_score: ContentQualityScore, 
+                          auto_approve_threshold: float = 80.0,
+                          auto_reject_threshold: float = 35.0) -> QualityGate:
+    """
+    Determine the appropriate quality gate based on content quality score
+    
+    Args:
+        quality_score: ContentQualityScore object with validation results
+        auto_approve_threshold: Minimum score for automatic approval
+        auto_reject_threshold: Maximum score for automatic rejection
+        
+    Returns:
+        QualityGate enum indicating the appropriate action
+    """
+    # Check for critical issues first
+    critical_issues = [issue for issue in quality_score.validation_issues 
+                      if issue.severity == ValidationSeverity.CRITICAL]
+    
+    if critical_issues:
+        return QualityGate.REJECT
+    
+    # Check overall quality score
+    if quality_score.overall_score >= auto_approve_threshold:
+        return QualityGate.APPROVE
+    elif quality_score.overall_score <= auto_reject_threshold:
+        return QualityGate.REJECT
+    else:
+        return QualityGate.REVIEW
+
+def validate_with_quality_gate(question_data: Dict[str, Any], 
+                              source: str = "general",
+                              auto_approve_threshold: float = 80.0,
+                              auto_reject_threshold: float = 35.0) -> Tuple[ContentQualityScore, QualityGate]:
+    """
+    Validate content and determine quality gate in one step
+    
+    Args:
+        question_data: Dictionary containing question fields
+        source: Source name for specialized validation
+        auto_approve_threshold: Minimum score for automatic approval
+        auto_reject_threshold: Maximum score for automatic rejection
+        
+    Returns:
+        Tuple of (ContentQualityScore, QualityGate)
+    """
+    quality_score = validate_extracted_question(question_data, source)
+    quality_gate = determine_quality_gate(quality_score, auto_approve_threshold, auto_reject_threshold)
+    
+    return quality_score, quality_gate
