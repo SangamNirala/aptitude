@@ -240,13 +240,13 @@ async def get_instant_feedback(request: InstantFeedbackRequest):
         raise HTTPException(status_code=500, detail=f"Instant feedback failed: {str(e)}")
 
 @router.post("/generate-hint")
-async def generate_hint(question_text: str, user_progress: Optional[str] = ""):
+async def generate_hint(request: HintRequest):
     """Generate contextual hint for question"""
     try:
-        logger.info(f"Generating hint for question: {question_text[:50]}...")
+        logger.info(f"Generating hint for question: {request.question_text[:50]}...")
         
         # Generate instant hint using Groq
-        hint_result = await get_ai_coordinator().groq.generate_instant_hint(question_text, user_progress)
+        hint_result = await get_ai_coordinator().groq.generate_instant_hint(request.question_text, request.user_progress)
         
         return hint_result
         
