@@ -374,6 +374,207 @@ const InterviewQuestions = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Modal for Aptitude Questions - Placement Preparation */}
+      <Dialog open={isAptitudeModalOpen} onOpenChange={setIsAptitudeModalOpen}>
+        <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto bg-gradient-to-br from-indigo-900 via-blue-900 to-cyan-900 border-blue-700/50 text-white [&>button]:hidden">
+          <DialogHeader className="pb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Target className="w-7 h-7 text-cyan-400" />
+                <DialogTitle className="text-3xl font-bold text-white">Aptitude Questions – Placement Preparation</DialogTitle>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsAptitudeModalOpen(false)}
+                className="text-white hover:bg-white/10"
+              >
+                <X className="w-6 h-6" />
+              </Button>
+            </div>
+            <p className="text-blue-200 text-lg mt-2">Choose an Aptitude Category for Your Tech Placement Preparation</p>
+          </DialogHeader>
+
+          <Tabs defaultValue="categories" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-2 bg-white/10 border border-white/20">
+              <TabsTrigger value="categories" className="data-[state=active]:bg-cyan-600 data-[state=active]:text-white">
+                Practice by Category
+              </TabsTrigger>
+              <TabsTrigger value="companies" className="data-[state=active]:bg-cyan-600 data-[state=active]:text-white">
+                Company-Specific
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="categories" className="space-y-6">
+              {/* Main Aptitude Categories */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {aptitudeCategories.map((category) => (
+                  <Card 
+                    key={category.id} 
+                    className={`cursor-pointer transition-all duration-300 hover:scale-105 border-2 ${
+                      selectedAptitudeCategory === category.id 
+                        ? 'border-cyan-400 bg-white/20' 
+                        : 'border-white/20 bg-white/10'
+                    } hover:bg-white/20`}
+                    onClick={() => handleAptitudeCategorySelect(category)}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center gap-4">
+                        <div className={`p-3 rounded-lg ${category.color}`}>
+                          <category.icon className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-white text-xl">{category.title}</CardTitle>
+                          <CardDescription className="text-blue-200 mt-1">
+                            {category.description}
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex flex-wrap gap-2">
+                        {category.subtopics.slice(0, 4).map((subtopic, index) => (
+                          <Badge 
+                            key={index} 
+                            variant="secondary" 
+                            className="bg-white/20 text-white text-xs px-2 py-1"
+                          >
+                            {subtopic}
+                          </Badge>
+                        ))}
+                        {category.subtopics.length > 4 && (
+                          <Badge variant="secondary" className="bg-white/20 text-white text-xs px-2 py-1">
+                            +{category.subtopics.length - 4} more
+                          </Badge>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Subtopics Selection */}
+              {selectedAptitudeCategory && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                    <ChevronRight className="w-5 h-5 text-cyan-400" />
+                    Choose Specific Topics (Optional)
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {aptitudeCategories
+                      .find(cat => cat.id === selectedAptitudeCategory)
+                      ?.subtopics.map((subtopic, index) => (
+                        <Button
+                          key={index}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleSubtopicSelect(subtopic)}
+                          className={`h-auto py-2 px-3 text-left justify-start ${
+                            selectedSubtopic === subtopic
+                              ? 'bg-cyan-600 border-cyan-400 text-white'
+                              : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+                          }`}
+                        >
+                          {subtopic}
+                        </Button>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Difficulty Level Selection */}
+              {selectedAptitudeCategory && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-cyan-400" />
+                    Select Difficulty Level
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {difficultyLevels.map((difficulty) => (
+                      <Card
+                        key={difficulty.id}
+                        className={`cursor-pointer transition-all duration-300 hover:scale-105 border-2 ${
+                          selectedDifficulty === difficulty.id
+                            ? 'border-cyan-400 bg-white/20'
+                            : 'border-white/20 bg-white/10'
+                        } hover:bg-white/20`}
+                        onClick={() => handleDifficultySelect(difficulty)}
+                      >
+                        <CardContent className="p-4 text-center">
+                          <div className={`w-12 h-12 mx-auto mb-3 rounded-full ${difficulty.color} flex items-center justify-center`}>
+                            <Trophy className="w-6 h-6 text-white" />
+                          </div>
+                          <h4 className="text-white font-semibold text-lg">{difficulty.name}</h4>
+                          <p className="text-blue-200 text-sm mt-1">{difficulty.description}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Start Practice Button */}
+              {selectedAptitudeCategory && selectedDifficulty && (
+                <div className="flex justify-center pt-4">
+                  <Button 
+                    onClick={handleStartPractice}
+                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white px-8 py-3 text-lg font-semibold rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+                  >
+                    <Clock className="w-5 h-5 mr-2" />
+                    Start Practice Session
+                  </Button>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="companies" className="space-y-6">
+              <h3 className="text-2xl font-semibold text-white text-center mb-6">
+                Company-Specific Placement Practice
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {companies.map((company, index) => (
+                  <Card
+                    key={index}
+                    className="cursor-pointer transition-all duration-300 hover:scale-105 border-2 border-white/20 bg-white/10 hover:bg-white/20 hover:border-cyan-400"
+                  >
+                    <CardContent className="p-4 text-center">
+                      <company.logo className="w-8 h-8 mx-auto mb-3 text-cyan-400" />
+                      <h4 className="text-white font-semibold">{company.name}</h4>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              
+              {/* Mock Test Options */}
+              <div className="bg-white/10 rounded-xl p-6 border border-white/20">
+                <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-cyan-400" />
+                  Practice Modes
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <Target className="w-6 h-6 text-cyan-400" />
+                    <span>Topic-wise Practice</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <Clock className="w-6 h-6 text-green-400" />
+                    <span>Mock Test Mode</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <BarChart3 className="w-6 h-6 text-yellow-400" />
+                    <span>Progress Tracker</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto py-4 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20 flex flex-col items-center gap-2">
+                    <Trophy className="w-6 h-6 text-purple-400" />
+                    <span>Daily Challenge</span>
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
