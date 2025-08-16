@@ -1045,17 +1045,53 @@ class AntiDetectionSystemTester:
 
 async def main():
     """Main test execution"""
+    
+    # Test Anti-Detection & Rate Limiting System first
+    logger.info("🛡️ TESTING ANTI-DETECTION & RATE LIMITING SYSTEM")
+    logger.info("=" * 80)
+    
+    anti_detection_tester = AntiDetectionSystemTester()
+    anti_detection_results = await anti_detection_tester.run_all_tests()
+    
+    # Test existing AI API endpoints
+    logger.info("\n🤖 TESTING AI-ENHANCED API ENDPOINTS")
+    logger.info("=" * 80)
+    
     async with AIAptitudeAPITester() as tester:
-        results = await tester.run_all_tests()
+        api_results = await tester.run_all_tests()
         
-        # Save results to file
-        with open('/app/test_results_backend.json', 'w') as f:
-            json.dump(results, f, indent=2, default=str)
+        # Combine results
+        combined_results = {
+            "anti_detection_system": anti_detection_results,
+            "ai_api_endpoints": api_results,
+            "overall_summary": {
+                "total_tests": anti_detection_results["total_tests"] + api_results["total_tests"],
+                "passed_tests": anti_detection_results["passed_tests"] + api_results["passed_tests"],
+                "failed_tests": anti_detection_results["failed_tests"] + api_results["failed_tests"]
+            }
+        }
         
-        logger.info("📊 Test results saved to test_results_backend.json")
+        # Calculate overall success rate
+        overall_success_rate = (combined_results["overall_summary"]["passed_tests"] / 
+                              max(combined_results["overall_summary"]["total_tests"], 1)) * 100
+        
+        # Final summary
+        logger.info("\n" + "=" * 80)
+        logger.info("🎯 COMPREHENSIVE TEST SUMMARY")
+        logger.info("=" * 80)
+        logger.info(f"Anti-Detection System Tests: {anti_detection_results['passed_tests']}/{anti_detection_results['total_tests']} passed")
+        logger.info(f"AI API Endpoint Tests: {api_results['passed_tests']}/{api_results['total_tests']} passed")
+        logger.info(f"Overall Success Rate: {overall_success_rate:.1f}%")
+        logger.info("=" * 80)
+        
+        # Save combined results to file
+        with open('/app/test_results_comprehensive.json', 'w') as f:
+            json.dump(combined_results, f, indent=2, default=str)
+        
+        logger.info("📊 Comprehensive test results saved to test_results_comprehensive.json")
         
         # Return exit code based on results
-        if results["failed_tests"] > 0:
+        if combined_results["overall_summary"]["failed_tests"] > 0:
             logger.error("Some tests failed!")
             return 1
         else:
