@@ -154,13 +154,41 @@ const InterviewQuestions = () => {
 
   const handleButtonClick = (type) => {
     if (type === 'technical') {
-      setIsModalOpen(true);
+      setIsTechnicalModalOpen(true);
+    } else if (type === 'aptitude') {
+      setIsAptitudeModalOpen(true);
     } else {
       toast({
         title: "Coming Soon!",
         description: `${type} questions will be available soon.`
       });
     }
+  };
+
+  const handleAptitudeCategorySelect = (category) => {
+    setSelectedAptitudeCategory(category.id);
+  };
+
+  const handleSubtopicSelect = (subtopic) => {
+    setSelectedSubtopic(subtopic);
+  };
+
+  const handleDifficultySelect = (difficulty) => {
+    setSelectedDifficulty(difficulty.id);
+  };
+
+  const handleStartPractice = () => {
+    if (!selectedAptitudeCategory || !selectedDifficulty) {
+      toast({
+        title: "Selection Required",
+        description: "Please select a category and difficulty level to start practice."
+      });
+      return;
+    }
+    toast({
+      title: "Starting Practice!",
+      description: `Loading ${selectedDifficulty} level questions for ${selectedAptitudeCategory}...`
+    });
   };
 
   return (
