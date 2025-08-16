@@ -189,11 +189,9 @@ class PlaywrightDriver:
         ) if self.config.enable_anti_detection else None
         
         # Rate limiting
-        self.rate_limiter = AdaptiveRateLimiter(
-            base_delay=1.0,
-            max_delay=15.0,
-            adaptation_factor=0.1
-        )
+        from ..utils.rate_limiter import RateLimitConfig
+        rate_config = RateLimitConfig(base_delay=1.0, max_delay=15.0)
+        self.rate_limiter = AdaptiveRateLimiter(rate_config)
         
         # Performance tracking
         self.performance_logs: List[ScrapingPerformanceLog] = []
