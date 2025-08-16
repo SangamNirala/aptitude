@@ -550,7 +550,6 @@ class AntiDetectionSystemTester:
                 logger.info(f"  - {test['test_name']}: {test['details']}")
         
         return self.test_results
-        
     async def __aenter__(self):
         self.session = aiohttp.ClientSession()
         return self
