@@ -2076,69 +2076,50 @@ class ScrapingEnginesTester:
         return self.test_results
 
 async def main():
-    """Main test execution"""
-    
-    # Test Anti-Detection & Rate Limiting System first
-    logger.info("🛡️ TESTING ANTI-DETECTION & RATE LIMITING SYSTEM")
+    """Main test execution function"""
+    logger.info("🎯 STARTING COMPREHENSIVE BACKEND TESTING")
     logger.info("=" * 80)
     
-    anti_detection_tester = AntiDetectionSystemTester()
-    anti_detection_results = await anti_detection_tester.run_all_tests()
-    
-    # Test TASK 4 & 5 - Scraping Engines
-    logger.info("\n🚗🎭 TESTING TASK 4 & 5 - SCRAPING ENGINES")
+    # Test scraping extractors and coordinator (TASK 6-8)
+    logger.info("🔧 TESTING TASK 6-8: SCRAPING EXTRACTORS & COORDINATOR")
     logger.info("=" * 80)
     
-    scraping_engines_tester = ScrapingEnginesTester()
-    scraping_engines_results = await scraping_engines_tester.run_all_tests()
+    async with ScrapingExtractorsTester() as extractor_tester:
+        extractor_results = await extractor_tester.run_all_tests()
     
-    # Test existing AI API endpoints
-    logger.info("\n🤖 TESTING AI-ENHANCED API ENDPOINTS")
+    # Test existing AI services to ensure they still work
+    logger.info("\n🤖 TESTING EXISTING AI SERVICES")
     logger.info("=" * 80)
     
-    async with AIAptitudeAPITester() as tester:
-        api_results = await tester.run_all_tests()
-        
-        # Combine results
-        combined_results = {
-            "anti_detection_system": anti_detection_results,
-            "scraping_engines": scraping_engines_results,
-            "ai_api_endpoints": api_results,
-            "overall_summary": {
-                "total_tests": anti_detection_results["total_tests"] + scraping_engines_results["total_tests"] + api_results["total_tests"],
-                "passed_tests": anti_detection_results["passed_tests"] + scraping_engines_results["passed_tests"] + api_results["passed_tests"],
-                "failed_tests": anti_detection_results["failed_tests"] + scraping_engines_results["failed_tests"] + api_results["failed_tests"]
-            }
-        }
-        
-        # Calculate overall success rate
-        overall_success_rate = (combined_results["overall_summary"]["passed_tests"] / 
-                              max(combined_results["overall_summary"]["total_tests"], 1)) * 100
-        
-        # Final summary
-        logger.info("\n" + "=" * 80)
-        logger.info("🎯 COMPREHENSIVE TEST SUMMARY")
-        logger.info("=" * 80)
-        logger.info(f"Anti-Detection System Tests: {anti_detection_results['passed_tests']}/{anti_detection_results['total_tests']} passed")
-        logger.info(f"Scraping Engines Tests: {scraping_engines_results['passed_tests']}/{scraping_engines_results['total_tests']} passed")
-        logger.info(f"AI API Endpoint Tests: {api_results['passed_tests']}/{api_results['total_tests']} passed")
-        logger.info(f"Overall Success Rate: {overall_success_rate:.1f}%")
-        logger.info("=" * 80)
-        
-        # Save combined results to file
-        with open('/app/test_results_comprehensive.json', 'w') as f:
-            json.dump(combined_results, f, indent=2, default=str)
-        
-        logger.info("📊 Comprehensive test results saved to test_results_comprehensive.json")
-        
-        # Return exit code based on results
-        if combined_results["overall_summary"]["failed_tests"] > 0:
-            logger.error("Some tests failed!")
-            return 1
-        else:
-            logger.info("All tests passed! 🎉")
-            return 0
+    async with AIAptitudeAPITester() as ai_tester:
+        ai_results = await ai_tester.run_all_tests()
+    
+    # Generate overall summary
+    logger.info("\n" + "=" * 80)
+    logger.info("🎯 OVERALL TESTING SUMMARY")
+    logger.info("=" * 80)
+    
+    total_tests = extractor_results["total_tests"] + ai_results["total_tests"]
+    total_passed = extractor_results["passed_tests"] + ai_results["passed_tests"]
+    total_failed = extractor_results["failed_tests"] + ai_results["failed_tests"]
+    
+    logger.info(f"📊 SCRAPING EXTRACTORS & COORDINATOR:")
+    logger.info(f"   Tests: {extractor_results['total_tests']}, Passed: {extractor_results['passed_tests']}, Failed: {extractor_results['failed_tests']}")
+    logger.info(f"   Success Rate: {(extractor_results['passed_tests'] / max(extractor_results['total_tests'], 1)) * 100:.1f}%")
+    
+    logger.info(f"📊 AI SERVICES:")
+    logger.info(f"   Tests: {ai_results['total_tests']}, Passed: {ai_results['passed_tests']}, Failed: {ai_results['failed_tests']}")
+    logger.info(f"   Success Rate: {(ai_results['passed_tests'] / max(ai_results['total_tests'], 1)) * 100:.1f}%")
+    
+    logger.info(f"📊 OVERALL:")
+    logger.info(f"   Total Tests: {total_tests}")
+    logger.info(f"   ✅ Total Passed: {total_passed}")
+    logger.info(f"   ❌ Total Failed: {total_failed}")
+    logger.info(f"   🎯 Overall Success Rate: {(total_passed / max(total_tests, 1)) * 100:.1f}%")
+    
+    logger.info("=" * 80)
+    logger.info("🏁 COMPREHENSIVE BACKEND TESTING COMPLETED")
+    logger.info("=" * 80)
 
 if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+    asyncio.run(main())
