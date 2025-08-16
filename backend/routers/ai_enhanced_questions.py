@@ -290,7 +290,7 @@ async def detect_duplicate_questions(
         existing_questions = await existing_cursor.to_list(length=1000)
         
         # Detect duplicates using HuggingFace
-        duplicate_result = await ai_coordinator.detect_duplicate_questions(question_text, existing_questions)
+        duplicate_result = await get_ai_coordinator().detect_duplicate_questions(question_text, existing_questions)
         
         return duplicate_result
         
