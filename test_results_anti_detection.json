@@ -1,0 +1,169 @@
+{
+  "total_tests": 23,
+  "passed_tests": 21,
+  "failed_tests": 2,
+  "test_details": [
+    {
+      "test_name": "AntiDetectionManager Import",
+      "success": true,
+      "details": "Successfully imported AntiDetectionManager and related classes",
+      "response_time": 0,
+      "timestamp": "2025-08-16T20:48:32.565241"
+    },
+    {
+      "test_name": "Rate Limiter Import",
+      "success": true,
+      "details": "Successfully imported rate limiter classes",
+      "response_time": 0,
+      "timestamp": "2025-08-16T20:48:32.565286"
+    },
+    {
+      "test_name": "ProxyManager Import",
+      "success": true,
+      "details": "Successfully imported proxy manager classes",
+      "response_time": 0,
+      "timestamp": "2025-08-16T20:48:32.565318"
+    },
+    {
+      "test_name": "EthicalCrawler Import",
+      "success": true,
+      "details": "Successfully imported ethical crawler classes",
+      "response_time": 0,
+      "timestamp": "2025-08-16T20:48:32.565367"
+    },
+    {
+      "test_name": "AntiDetectionManager Test",
+      "success": false,
+      "details": "Exception: 'NoneType' object has no attribute 'get'",
+      "response_time": 0,
+      "timestamp": "2025-08-16T20:48:32.565470"
+    },
+    {
+      "test_name": "Basic RateLimiter Creation",
+      "success": true,
+      "details": "RPS: 2.0",
+      "response_time": 3.981590270996094e-05,
+      "timestamp": "2025-08-16T20:48:32.565561"
+    },
+    {
+      "test_name": "Rate Limiter Acquire",
+      "success": true,
+      "details": "First request delay: 0.000s",
+      "response_time": 4.76837158203125e-06,
+      "timestamp": "2025-08-16T20:48:32.565589"
+    },
+    {
+      "test_name": "Request Recording",
+      "success": true,
+      "details": "Total requests: 1",
+      "response_time": 3.218650817871094e-05,
+      "timestamp": "2025-08-16T20:48:32.565671"
+    },
+    {
+      "test_name": "ExponentialBackoffLimiter Creation",
+      "success": true,
+      "details": "Initial backoff level: 0",
+      "response_time": 6.651878356933594e-05,
+      "timestamp": "2025-08-16T20:48:32.565762"
+    },
+    {
+      "test_name": "Backoff Trigger",
+      "success": true,
+      "details": "Backoff level after failures: 1",
+      "response_time": 6.103515625e-05,
+      "timestamp": "2025-08-16T20:48:32.565850"
+    },
+    {
+      "test_name": "Backoff Strategy linear",
+      "success": true,
+      "details": "Strategy limiter created",
+      "response_time": 4.291534423828125e-05,
+      "timestamp": "2025-08-16T20:48:32.565916"
+    },
+    {
+      "test_name": "Backoff Strategy fibonacci",
+      "success": true,
+      "details": "Strategy limiter created",
+      "response_time": 3.695487976074219e-05,
+      "timestamp": "2025-08-16T20:48:32.565973"
+    },
+    {
+      "test_name": "Backoff Strategy exponential",
+      "success": true,
+      "details": "Strategy limiter created",
+      "response_time": 3.600120544433594e-05,
+      "timestamp": "2025-08-16T20:48:32.566029"
+    },
+    {
+      "test_name": "Rate Limiter Factory",
+      "success": true,
+      "details": "Factory created limiter: ExponentialBackoffLimiter",
+      "response_time": 3.719329833984375e-05,
+      "timestamp": "2025-08-16T20:48:32.566085"
+    },
+    {
+      "test_name": "ProxyManager Test",
+      "success": false,
+      "details": "Exception: 'NoneType' object has no attribute 'get'",
+      "response_time": 0,
+      "timestamp": "2025-08-16T20:48:32.566142"
+    },
+    {
+      "test_name": "EthicalCrawler Creation",
+      "success": true,
+      "details": "Crawler created for: test_crawler",
+      "response_time": 0.00012993812561035156,
+      "timestamp": "2025-08-16T20:48:32.566314"
+    },
+    {
+      "test_name": "Component Integration",
+      "success": true,
+      "details": "Anti-detection: True, Rate limiter: True, Robots: True",
+      "response_time": 9.5367431640625e-07,
+      "timestamp": "2025-08-16T20:48:32.566337"
+    },
+    {
+      "test_name": "Configuration Update",
+      "success": true,
+      "details": "Updated delay: 0.2, concurrent: 2",
+      "response_time": 2.1457672119140625e-05,
+      "timestamp": "2025-08-16T20:48:32.566378"
+    },
+    {
+      "test_name": "Crawl Statistics",
+      "success": true,
+      "details": "Stats keys: ['crawler_name', 'session_duration_seconds', 'total_requests', 'successful_requests', 'failed_requests', 'blocked_requests', 'success_rate', 'requests_per_minute', 'anti_detection', 'rate_limiter']",
+      "response_time": 1.1682510375976562e-05,
+      "timestamp": "2025-08-16T20:48:32.566417"
+    },
+    {
+      "test_name": "EthicalCrawler Factory",
+      "success": true,
+      "details": "Factory crawler: factory_test",
+      "response_time": 0.00010085105895996094,
+      "timestamp": "2025-08-16T20:48:32.566537"
+    },
+    {
+      "test_name": "Crawler Cleanup",
+      "success": true,
+      "details": "Cleanup completed",
+      "response_time": 7.009506225585938e-05,
+      "timestamp": "2025-08-16T20:48:32.566627"
+    },
+    {
+      "test_name": "Factory Integration",
+      "success": true,
+      "details": "All components created successfully",
+      "response_time": 0.00023317337036132812,
+      "timestamp": "2025-08-16T20:48:32.566936"
+    },
+    {
+      "test_name": "Configuration Updates",
+      "success": true,
+      "details": "All configurations updated successfully",
+      "response_time": 7.700920104980469e-05,
+      "timestamp": "2025-08-16T20:48:32.567033"
+    }
+  ],
+  "component_tests": {}
+}
