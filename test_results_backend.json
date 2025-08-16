@@ -1,0 +1,103 @@
+{
+  "total_tests": 13,
+  "passed_tests": 1,
+  "failed_tests": 12,
+  "test_details": [
+    {
+      "test_name": "Root Endpoint",
+      "success": false,
+      "details": "Exception: 502, message='Attempt to decode JSON with unexpected mimetype: ', url='https://prep-genius-3.preview.emergentagent.com/api/'",
+      "response_time": 0,
+      "timestamp": "2025-08-16T18:47:56.370345"
+    },
+    {
+      "test_name": "Health Check",
+      "success": false,
+      "details": "Exception: 502, message='Attempt to decode JSON with unexpected mimetype: ', url='https://prep-genius-3.preview.emergentagent.com/api/health'",
+      "response_time": 0,
+      "timestamp": "2025-08-16T18:47:56.378142"
+    },
+    {
+      "test_name": "AI Question Generation",
+      "success": false,
+      "details": "Status: 502, Error: ",
+      "response_time": 0.011405229568481445,
+      "timestamp": "2025-08-16T18:47:56.389769"
+    },
+    {
+      "test_name": "Create Enhanced Question",
+      "success": false,
+      "details": "Status: 502, Error: ",
+      "response_time": 0.008441686630249023,
+      "timestamp": "2025-08-16T18:47:56.398406"
+    },
+    {
+      "test_name": "Instant Feedback",
+      "success": false,
+      "details": "Status: 502, Error: ",
+      "response_time": 0.015303850173950195,
+      "timestamp": "2025-08-16T18:47:56.413925"
+    },
+    {
+      "test_name": "Generate Hint",
+      "success": false,
+      "details": "Status: 502, Error: ",
+      "response_time": 0.011478185653686523,
+      "timestamp": "2025-08-16T18:47:56.425587"
+    },
+    {
+      "test_name": "Assess Difficulty",
+      "success": false,
+      "details": "Status: 502, Error: ",
+      "response_time": 0.00699925422668457,
+      "timestamp": "2025-08-16T18:47:56.432728"
+    },
+    {
+      "test_name": "Detect Duplicates",
+      "success": false,
+      "details": "Status: 502, Error: ",
+      "response_time": 0.008112192153930664,
+      "timestamp": "2025-08-16T18:47:56.440990"
+    },
+    {
+      "test_name": "Generate Personalized Questions",
+      "success": false,
+      "details": "Status: 502, Error: ",
+      "response_time": 0.0074977874755859375,
+      "timestamp": "2025-08-16T18:47:56.448685"
+    },
+    {
+      "test_name": "Quality Stats",
+      "success": false,
+      "details": "Status: 502, Error: ",
+      "response_time": 0.008359670639038086,
+      "timestamp": "2025-08-16T18:47:56.457160"
+    },
+    {
+      "test_name": "Filtered Questions",
+      "success": false,
+      "details": "Status: 502, Error: ",
+      "response_time": 0.007737398147583008,
+      "timestamp": "2025-08-16T18:47:56.465061"
+    },
+    {
+      "test_name": "Company-Specific Questions",
+      "success": false,
+      "details": "Status: 502, Error: ",
+      "response_time": 0.0077228546142578125,
+      "timestamp": "2025-08-16T18:47:56.472919"
+    },
+    {
+      "test_name": "Performance Benchmark",
+      "success": true,
+      "details": "Avg: 0.008s, Max: 0.008s",
+      "response_time": 0.008086284001668295,
+      "timestamp": "2025-08-16T18:47:56.497367"
+    }
+  ],
+  "performance_metrics": {
+    "avg_feedback_time": 0.008086284001668295,
+    "max_feedback_time": 0.008377313613891602,
+    "feedback_samples": 3
+  }
+}
