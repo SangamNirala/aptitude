@@ -250,7 +250,7 @@ async def generate_hint(question_text: str, user_progress: Optional[str] = ""):
         logger.info(f"Generating hint for question: {question_text[:50]}...")
         
         # Generate instant hint using Groq
-        hint_result = await ai_coordinator.groq.generate_instant_hint(question_text, user_progress)
+        hint_result = await get_ai_coordinator().groq.generate_instant_hint(question_text, user_progress)
         
         return hint_result
         
