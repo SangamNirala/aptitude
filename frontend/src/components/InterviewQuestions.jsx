@@ -295,7 +295,7 @@ const InterviewQuestions = () => {
       </div>
 
       {/* Modal for Technical Interview Questions */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Dialog open={isTechnicalModalOpen} onOpenChange={setIsTechnicalModalOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-amber-900 via-orange-900 to-red-900 border-amber-700/50 text-white [&>button]:hidden">
           <DialogHeader className="pb-4">
             <div className="flex items-center justify-between">
@@ -306,7 +306,7 @@ const InterviewQuestions = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => setIsTechnicalModalOpen(false)}
                 className="text-white hover:bg-white/10"
               >
                 <X className="w-5 h-5" />
