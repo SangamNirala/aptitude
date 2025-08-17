@@ -145,6 +145,30 @@ class SourceManagementService:
         except Exception as e:
             logger.error(f"Failed to get sources: {str(e)}")
             return []
+
+    async def get_sources(self, filters: Optional[Dict[str, Any]] = None) -> List[DataSourceConfig]:
+        """Get sources with optional filters"""
+        try:
+            # Start with basic active filter
+            query = {"is_active": True}
+            
+            # Add additional filters if provided
+            if filters:
+                query.update(filters)
+            
+            sources_cursor = self.sources_collection.find(query)
+            sources = []
+            
+            async for source_doc in sources_cursor:
+                source = DataSourceConfig(**source_doc)
+                sources.append(source)
+                
+            logger.info(f"Retrieved {len(sources)} sources with filters: {filters}")
+            return sources
+            
+        except Exception as e:
+            logger.error(f"Failed to get sources with filters {filters}: {str(e)}")
+            return []
     
     async def get_source_by_name(self, name: str) -> Optional[DataSourceConfig]:
         """Get source configuration by name"""
