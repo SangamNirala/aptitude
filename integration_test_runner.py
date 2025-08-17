@@ -159,10 +159,10 @@ class IntegrationTestRunner:
             start_time = time.time()
             payload = {
                 "job_name": "integration_test_job",
-                "source_type": "indiabix",
+                "source_names": ["indiabix"],
                 "target_categories": ["quantitative"],
-                "max_questions": 5,
-                "priority": 1
+                "max_questions_per_source": 5,
+                "priority_level": 1
             }
             
             async with self.session.post(
