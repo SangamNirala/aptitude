@@ -199,7 +199,7 @@ class MonitoringDashboardTester:
             ) as response:
                 response_time = time.time() - start_time
                 
-                if response.status == 200:
+                if response.status == 201:
                     data = await response.json()
                     success = (
                         "id" in data and
