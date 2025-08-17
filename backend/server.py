@@ -17,6 +17,8 @@ from routers.scraping_management import router as scraping_management_router
 from routers.scraping_analytics import router as scraping_analytics_router
 # Import monitoring dashboard router (Task 16)
 from routers.monitoring_dashboard import router as monitoring_dashboard_router
+# Import performance optimization router (Task 18)
+from routers.performance_optimization import router as performance_optimization_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
