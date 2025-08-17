@@ -105,7 +105,6 @@ cron-descriptor>=1.4.0
 python-crontab>=3.0.0
 croniter>=2.0.0
 
-# Dependencies for Task 16 (Real-Time Monitoring Dashboard)
-websockets>=12.0
-grpcio-tools>=1.74.0
-googleapis-common-protos>=1.65.0
+# Dependencies for Task 18 (Performance Optimization & Scaling)
+numpy>=1.26.0
+matplotlib>=3.9.0
