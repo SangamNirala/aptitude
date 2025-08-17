@@ -4972,6 +4972,13 @@ async def main():
     logger.info("🎯 STARTING COMPREHENSIVE BACKEND TESTING")
     logger.info("=" * 80)
     
+    # Test Tasks 11-13 (Quality Assurance, Job Management, Scheduling)
+    logger.info("\n🎯 TESTING TASKS 11-13: QUALITY ASSURANCE, JOB MANAGEMENT & SCHEDULING")
+    logger.info("=" * 80)
+    
+    tasks_11_13_tester = TasksElevenToThirteenTester()
+    tasks_11_13_results = await tasks_11_13_tester.run_all_tests()
+    
     # Test AI Content Processing Pipeline (TASK 9)
     logger.info("\n🤖 TESTING TASK 9: AI CONTENT PROCESSING PIPELINE")
     logger.info("=" * 80)
