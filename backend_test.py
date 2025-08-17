@@ -21,6 +21,32 @@ sys.path.append('/app/backend')
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+class MonitoringDashboardTester:
+    """Comprehensive tester for Real-Time Monitoring Dashboard Backend (Task 16)"""
+    
+    def __init__(self):
+        # Get backend URL from environment
+        try:
+            with open('/app/frontend/.env', 'r') as f:
+                for line in f:
+                    if line.startswith('REACT_APP_BACKEND_URL='):
+                        self.base_url = line.split('=')[1].strip() + "/api"
+                        break
+                else:
+                    self.base_url = "https://monitoring-review.preview.emergentagent.com/api"
+        except:
+            self.base_url = "https://monitoring-review.preview.emergentagent.com/api"
+        
+        self.session = None
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": [],
+            "performance_metrics": {}
+        }
+        self.created_alert_ids = []  # Track created alerts for cleanup
+
 class AIAptitudeAPITester:
     def __init__(self):
         # Get backend URL from environment
