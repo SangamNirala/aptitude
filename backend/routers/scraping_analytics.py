@@ -35,10 +35,9 @@ logger = logging.getLogger(__name__)
 # Initialize router
 router = APIRouter(prefix="/api/scraping/analytics", tags=["Scraping Analytics & Monitoring"])
 
-# Database connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# Database connection (will be initialized on startup)
+client: Optional[AsyncIOMotorClient] = None
+db = None
 
 # =============================================================================
 # REQUEST/RESPONSE MODELS
