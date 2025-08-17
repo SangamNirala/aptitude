@@ -830,7 +830,7 @@ class ScrapingEngine:
                     "completed_jobs": len(self.completed_jobs),
                     "worker_threads": len(self.worker_threads),
                     "statistics": asdict(self.stats),
-                    "performance_metrics": self.performance_monitor.get_summary_stats(),
+                    "performance_metrics": self.performance_monitor.get_performance_summary(),
                     "configuration": asdict(self.config)
                 }
         except Exception as e:
