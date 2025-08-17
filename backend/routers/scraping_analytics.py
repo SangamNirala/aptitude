@@ -1388,4 +1388,425 @@ async def _analyze_error_trends(start_time: datetime, end_time: datetime) -> Tre
         confidence_level=0.75
     )
 
+# =============================================================================
+# INTERNAL HELPER FUNCTIONS FOR REPORTS
+# =============================================================================
+
+async def _get_source_analytics_internal(
+    time_range: AnalyticsTimeRange,
+    start_time: datetime,
+    end_time: datetime,
+    source_type: Optional[ScrapingSourceType] = None,
+    include_inactive: bool = False
+) -> List[ScrapingSourceAnalytics]:
+    """Internal function to get source analytics with custom time parameters"""
+    try:
+        logger.info(f"Getting internal source analytics for custom time range")
+        
+        # Get sources from database
+        source_filter = {}
+        if source_type:
+            source_filter["source_type"] = source_type.value
+        if not include_inactive:
+            source_filter["is_active"] = True
+        
+        sources_cursor = db.data_sources.find(source_filter)
+        sources = await sources_cursor.to_list(length=100)
+        
+        source_analytics = []
+        
+        for source in sources:
+            source_id = source["id"]
+            
+            # Get jobs for this source
+            job_filter = {
+                "config.source_ids": source_id,
+                "created_at": {"$gte": start_time, "$lte": end_time}
+            }
+            jobs = await db.scraping_jobs.find(job_filter).to_list(length=1000)
+            
+            # Calculate metrics
+            total_jobs = len(jobs)
+            successful_jobs = len([j for j in jobs if j["status"] == ScrapingJobStatus.COMPLETED.value])
+            failed_jobs = len([j for j in jobs if j["status"] == ScrapingJobStatus.FAILED.value])
+            
+            success_rate = (successful_jobs / max(1, total_jobs)) * 100
+            
+            # Get quality metrics
+            quality_metrics = await db.scraping_quality_metrics.find({
+                "source_id": source_id,
+                "measured_at": {"$gte": start_time, "$lte": end_time}
+            }).to_list(length=100)
+            
+            avg_quality = 0.0
+            total_questions = 0
+            questions_approved = 0
+            questions_rejected = 0
+            
+            if quality_metrics:
+                quality_scores = [m["avg_quality_score"] for m in quality_metrics]
+                avg_quality = statistics.mean(quality_scores) if quality_scores else 0.0
+                
+                total_questions = sum(m["total_questions_extracted"] for m in quality_metrics)
+                questions_approved = sum(m["auto_approved_count"] for m in quality_metrics)
+                questions_rejected = sum(m["auto_rejected_count"] for m in quality_metrics)
+            
+            # Calculate timing metrics
+            completed_jobs = [j for j in jobs if j["status"] == ScrapingJobStatus.COMPLETED.value and j.get("started_at") and j.get("completed_at")]
+            
+            avg_duration = 0.0
+            avg_questions_per_minute = 0.0
+            
+            if completed_jobs:
+                durations = []
+                for job in completed_jobs:
+                    start = job["started_at"]
+                    end = job["completed_at"]
+                    duration = (end - start).total_seconds() / 60  # minutes
+                    durations.append(duration)
+                
+                avg_duration = statistics.mean(durations)
+                
+                if avg_duration > 0:
+                    total_extracted = sum(j.get("questions_extracted", 0) for j in completed_jobs)
+                    avg_questions_per_minute = total_extracted / (avg_duration * len(completed_jobs))
+            
+            # Get error analysis
+            error_logs = await db.scraping_performance_logs.find({
+                "job_id": {"$in": [j["id"] for j in jobs]},
+                "success": False
+            }).to_list(length=100)
+            
+            common_errors = {}
+            for log in error_logs:
+                error = log.get("error_message", "Unknown error")
+                common_errors[error] = common_errors.get(error, 0) + 1
+            
+            # Determine quality trend
+            quality_trend = "stable"
+            if len(quality_metrics) >= 2:
+                recent_quality = statistics.mean([m["avg_quality_score"] for m in quality_metrics[-5:]])
+                older_quality = statistics.mean([m["avg_quality_score"] for m in quality_metrics[:5]])
+                
+                if recent_quality > older_quality + 5:
+                    quality_trend = "improving"
+                elif recent_quality < older_quality - 5:
+                    quality_trend = "declining"
+            
+            source_analytics.append(ScrapingSourceAnalytics(
+                source_id=source_id,
+                source_name=source["name"],
+                source_type=source["source_type"],
+                total_scraping_jobs=total_jobs,
+                successful_jobs=successful_jobs,
+                failed_jobs=failed_jobs,
+                success_rate=success_rate,
+                total_questions_scraped=total_questions,
+                questions_approved=questions_approved,
+                questions_rejected=questions_rejected,
+                avg_quality_score=avg_quality,
+                avg_job_duration_minutes=avg_duration,
+                avg_questions_per_minute=avg_questions_per_minute,
+                last_successful_scrape=source.get("last_scraped"),
+                quality_trend=quality_trend,
+                reliability_score=source.get("reliability_score", 100.0),
+                common_errors=list(common_errors.keys())[:5],
+                blocking_incidents=0  # Would be calculated from anti-detection logs
+            ))
+        
+        logger.info(f"Generated internal analytics for {len(source_analytics)} sources")
+        return source_analytics
+        
+    except Exception as e:
+        logger.error(f"Error getting internal source analytics: {str(e)}")
+        return []
+
+async def _get_job_analytics_internal(
+    start_time: datetime,
+    end_time: datetime
+) -> ScrapingJobAnalytics:
+    """Internal function to get job analytics with custom time parameters"""
+    try:
+        logger.info(f"Getting internal job analytics for custom time range")
+        
+        # Get jobs from time period
+        jobs = await db.scraping_jobs.find({
+            "created_at": {"$gte": start_time, "$lte": end_time}
+        }).to_list(length=10000)
+        
+        # Job performance summary
+        total_jobs = len(jobs)
+        jobs_in_progress = len([j for j in jobs if j["status"] == ScrapingJobStatus.RUNNING.value])
+        successful_jobs = len([j for j in jobs if j["status"] == ScrapingJobStatus.COMPLETED.value])
+        failed_jobs = len([j for j in jobs if j["status"] == ScrapingJobStatus.FAILED.value])
+        
+        # Content processing summary
+        total_questions_extracted = sum(j.get("questions_extracted", 0) for j in jobs)
+        questions_auto_approved = sum(j.get("questions_approved", 0) for j in jobs)
+        questions_auto_rejected = sum(j.get("questions_rejected", 0) for j in jobs)
+        questions_under_review = sum(j.get("questions_pending_review", 0) for j in jobs)
+        
+        # Quality distribution from processed questions
+        processed_questions = await db.processed_scraped_questions.find({
+            "processing_timestamp": {"$gte": start_time, "$lte": end_time}
+        }).to_list(length=10000)
+        
+        quality_score_ranges = {
+            "90-100": 0, "80-89": 0, "70-79": 0, "60-69": 0, "below-60": 0
+        }
+        
+        ai_processing_success = 0
+        ai_processing_total = len(processed_questions)
+        
+        for question in processed_questions:
+            score = question.get("quality_score", 0.0)
+            
+            if score >= 90:
+                quality_score_ranges["90-100"] += 1
+            elif score >= 80:
+                quality_score_ranges["80-89"] += 1
+            elif score >= 70:
+                quality_score_ranges["70-79"] += 1
+            elif score >= 60:
+                quality_score_ranges["60-69"] += 1
+            else:
+                quality_score_ranges["below-60"] += 1
+            
+            if question.get("ai_processed"):
+                ai_processing_success += 1
+        
+        # Processing efficiency
+        avg_processing_time = 0.0
+        duplicate_detection_rate = 0.0
+        ai_processing_success_rate = (ai_processing_success / max(1, ai_processing_total)) * 100
+        
+        if processed_questions:
+            processing_times = [q.get("processing_duration_seconds", 0.0) for q in processed_questions]
+            avg_processing_time = statistics.mean(processing_times) if processing_times else 0.0
+            
+            duplicates_detected = len([q for q in processed_questions if q.get("is_duplicate")])
+            duplicate_detection_rate = (duplicates_detected / len(processed_questions)) * 100
+        
+        # Resource utilization (from performance logs)
+        performance_logs = await db.scraping_performance_logs.find({
+            "timestamp": {"$gte": start_time, "$lte": end_time}
+        }).to_list(length=1000)
+        
+        peak_concurrent_jobs = 0
+        avg_memory_usage = 0.0
+        avg_cpu_utilization = 0.0
+        
+        if performance_logs:
+            memory_usage = [log.get("memory_usage_mb", 0.0) for log in performance_logs if log.get("memory_usage_mb")]
+            cpu_usage = [log.get("cpu_usage_percent", 0.0) for log in performance_logs if log.get("cpu_usage_percent")]
+            
+            if memory_usage:
+                avg_memory_usage = statistics.mean(memory_usage)
+            if cpu_usage:
+                avg_cpu_utilization = statistics.mean(cpu_usage)
+        
+        # Trend analysis
+        daily_extraction = {}
+        weekly_quality = {}
+        
+        for job in jobs:
+            day = job["created_at"].strftime("%Y-%m-%d")
+            daily_extraction[day] = daily_extraction.get(day, 0) + job.get("questions_extracted", 0)
+        
+        # Calculate weekly quality trends (simplified)
+        for question in processed_questions:
+            week = question["processing_timestamp"].strftime("%Y-W%U")
+            if week not in weekly_quality:
+                weekly_quality[week] = []
+            weekly_quality[week].append(question.get("quality_score", 0.0))
+        
+        # Average weekly quality
+        for week in weekly_quality:
+            weekly_quality[week] = statistics.mean(weekly_quality[week])
+        
+        return ScrapingJobAnalytics(
+            total_jobs_executed=total_jobs,
+            jobs_in_progress=jobs_in_progress,
+            successful_jobs=successful_jobs,
+            failed_jobs=failed_jobs,
+            total_questions_extracted=total_questions_extracted,
+            questions_auto_approved=questions_auto_approved,
+            questions_auto_rejected=questions_auto_rejected,
+            questions_under_review=questions_under_review,
+            quality_score_ranges=quality_score_ranges,
+            avg_processing_time_per_question=avg_processing_time,
+            duplicate_detection_rate=duplicate_detection_rate,
+            ai_processing_success_rate=ai_processing_success_rate,
+            peak_concurrent_jobs=peak_concurrent_jobs,
+            avg_memory_usage_mb=avg_memory_usage,
+            avg_cpu_utilization=avg_cpu_utilization,
+            daily_question_extraction=daily_extraction,
+            weekly_quality_trends=weekly_quality
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting internal job analytics: {str(e)}")
+        # Return empty analytics object
+        return ScrapingJobAnalytics(
+            total_jobs_executed=0,
+            jobs_in_progress=0,
+            successful_jobs=0,
+            failed_jobs=0,
+            total_questions_extracted=0,
+            questions_auto_approved=0,
+            questions_auto_rejected=0,
+            questions_under_review=0,
+            quality_score_ranges={"90-100": 0, "80-89": 0, "70-79": 0, "60-69": 0, "below-60": 0},
+            avg_processing_time_per_question=0.0,
+            duplicate_detection_rate=0.0,
+            ai_processing_success_rate=0.0,
+            peak_concurrent_jobs=0,
+            avg_memory_usage_mb=0.0,
+            avg_cpu_utilization=0.0,
+            daily_question_extraction={},
+            weekly_quality_trends={}
+        )
+
+async def _get_system_health_internal() -> ScrapingSystemHealth:
+    """Internal function to get system health"""
+    try:
+        logger.info("Getting internal system health metrics")
+        
+        # Get current active jobs
+        active_jobs = await db.scraping_jobs.count_documents({
+            "status": ScrapingJobStatus.RUNNING.value
+        })
+        
+        # Get queued jobs
+        queued_jobs = await db.scraping_jobs.count_documents({
+            "status": ScrapingJobStatus.PENDING.value
+        })
+        
+        # Failed jobs in last 24 hours
+        twenty_four_hours_ago = datetime.utcnow() - timedelta(hours=24)
+        failed_jobs_24h = await db.scraping_jobs.count_documents({
+            "status": ScrapingJobStatus.FAILED.value,
+            "created_at": {"$gte": twenty_four_hours_ago}
+        })
+        
+        # Service health checks (simplified)
+        selenium_health = "healthy"  # Would check actual selenium service
+        playwright_health = "healthy"  # Would check actual playwright service
+        
+        ai_services_health = {
+            "gemini": "healthy" if os.getenv('GEMINI_API_KEY') else "not_configured",
+            "groq": "healthy" if os.getenv('GROQ_API_KEY') else "not_configured",
+            "huggingface": "healthy" if os.getenv('HUGGINGFACE_API_TOKEN') else "not_configured"
+        }
+        
+        # Performance indicators (from recent logs)
+        one_hour_ago = datetime.utcnow() - timedelta(hours=1)
+        performance_logs = await db.scraping_performance_logs.find({
+            "timestamp": {"$gte": one_hour_ago}
+        }).to_list(length=1000)
+        
+        avg_response_time = 0.0
+        extraction_error_count = 0
+        ai_processing_error_count = 0
+        network_timeout_count = 0
+        
+        if performance_logs:
+            response_times = [log.get("duration_seconds", 0.0) * 1000 for log in performance_logs]
+            avg_response_time = statistics.mean(response_times) if response_times else 0.0
+            
+            extraction_error_count = len([log for log in performance_logs if not log.get("success") and log.get("operation") == "extraction"])
+            ai_processing_error_count = len([log for log in performance_logs if not log.get("success") and log.get("operation") == "ai_processing"])
+            network_timeout_count = len([log for log in performance_logs if "timeout" in log.get("error_message", "").lower()])
+        
+        total_operations = len(performance_logs)
+        extraction_error_rate = (extraction_error_count / max(1, total_operations)) * 100
+        ai_processing_error_rate = (ai_processing_error_count / max(1, total_operations)) * 100
+        network_timeout_rate = (network_timeout_count / max(1, total_operations)) * 100
+        
+        # Resource limits and usage
+        concurrent_job_limit = 5  # From configuration
+        current_concurrent_jobs = active_jobs
+        
+        # Rate limit violations (from anti-detection logs)
+        rate_limit_violations = await db.anti_detection_logs.count_documents({
+            "rate_limit_triggered": True,
+            "timestamp": {"$gte": one_hour_ago}
+        })
+        
+        # Memory usage (simplified - would get from actual system monitoring)
+        memory_usage_percentage = 45.0  # Placeholder
+        
+        # Generate alerts and warnings
+        active_alerts = []
+        performance_warnings = []
+        
+        if failed_jobs_24h > 10:
+            active_alerts.append(f"High failure rate: {failed_jobs_24h} jobs failed in last 24 hours")
+        
+        if extraction_error_rate > 10:
+            performance_warnings.append(f"Extraction error rate: {extraction_error_rate:.1f}%")
+        
+        if ai_processing_error_rate > 15:
+            performance_warnings.append(f"AI processing error rate: {ai_processing_error_rate:.1f}%")
+        
+        if network_timeout_rate > 5:
+            performance_warnings.append(f"Network timeout rate: {network_timeout_rate:.1f}%")
+        
+        if current_concurrent_jobs >= concurrent_job_limit:
+            performance_warnings.append("Job queue at capacity")
+        
+        if memory_usage_percentage > 85:
+            active_alerts.append(f"High memory usage: {memory_usage_percentage:.1f}%")
+        
+        # System uptime (placeholder)
+        system_uptime_hours = 72.5
+        last_restart = datetime.utcnow() - timedelta(hours=system_uptime_hours)
+        
+        return ScrapingSystemHealth(
+            active_scraping_jobs=active_jobs,
+            queued_jobs=queued_jobs,
+            failed_jobs_last_24h=failed_jobs_24h,
+            selenium_driver_health=selenium_health,
+            playwright_driver_health=playwright_health,
+            ai_services_health=ai_services_health,
+            avg_response_time_ms=avg_response_time,
+            job_queue_length=queued_jobs,
+            memory_usage_percentage=memory_usage_percentage,
+            extraction_error_rate=extraction_error_rate,
+            ai_processing_error_rate=ai_processing_error_rate,
+            network_timeout_rate=network_timeout_rate,
+            concurrent_job_limit=concurrent_job_limit,
+            current_concurrent_jobs=current_concurrent_jobs,
+            rate_limit_violations=rate_limit_violations,
+            active_alerts=active_alerts,
+            performance_warnings=performance_warnings,
+            system_uptime_hours=system_uptime_hours,
+            last_restart=last_restart
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting internal system health: {str(e)}")
+        # Return basic health object
+        return ScrapingSystemHealth(
+            active_scraping_jobs=0,
+            queued_jobs=0,
+            failed_jobs_last_24h=0,
+            selenium_driver_health="unknown",
+            playwright_driver_health="unknown",
+            ai_services_health={},
+            avg_response_time_ms=0.0,
+            job_queue_length=0,
+            memory_usage_percentage=0.0,
+            extraction_error_rate=0.0,
+            ai_processing_error_rate=0.0,
+            network_timeout_rate=0.0,
+            concurrent_job_limit=5,
+            current_concurrent_jobs=0,
+            rate_limit_violations=0,
+            active_alerts=["Error retrieving system health"],
+            performance_warnings=[],
+            system_uptime_hours=0.0,
+            last_restart=datetime.utcnow()
+        )
+
 logger.info("✅ Scraping Analytics & Monitoring API endpoints loaded successfully")
