@@ -18,6 +18,7 @@ pyarrow
 multiprocess
 xxhash
 google-api-core
+googleapis-common-protos
 grpcio
 httplib2
 uritemplate
