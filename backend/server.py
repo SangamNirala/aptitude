@@ -12,6 +12,9 @@ from datetime import datetime
 
 # Import AI-enhanced routers (fix relative imports)
 from routers.ai_enhanced_questions import router as ai_questions_router
+# Import scraping management routers (Task 14 & 15)
+from routers.scraping_management import router as scraping_management_router
+from routers.scraping_analytics import router as scraping_analytics_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
