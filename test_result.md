@@ -194,9 +194,7 @@
   run_ui: false
 
 ## test_plan:
-  current_focus:
-    - "AI Content Processing Pipeline"
-    - "Advanced Duplicate Detection System"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
