@@ -2968,8 +2968,22 @@ async def main():
     logger.info("🎯 STARTING COMPREHENSIVE BACKEND TESTING")
     logger.info("=" * 80)
     
+    # Test AI Content Processing Pipeline (TASK 9)
+    logger.info("\n🤖 TESTING TASK 9: AI CONTENT PROCESSING PIPELINE")
+    logger.info("=" * 80)
+    
+    ai_processor_tester = ScrapingAIProcessorTester()
+    ai_processor_results = await ai_processor_tester.run_all_tests()
+    
+    # Test Advanced Duplicate Detection System (TASK 10)
+    logger.info("\n🔍 TESTING TASK 10: ADVANCED DUPLICATE DETECTION SYSTEM")
+    logger.info("=" * 80)
+    
+    duplicate_detector_tester = AdvancedDuplicateDetectorTester()
+    duplicate_detector_results = await duplicate_detector_tester.run_all_tests()
+    
     # Test scraping extractors and coordinator (TASK 6-8)
-    logger.info("🔧 TESTING TASK 6-8: SCRAPING EXTRACTORS & COORDINATOR")
+    logger.info("\n🔧 TESTING TASK 6-8: SCRAPING EXTRACTORS & COORDINATOR")
     logger.info("=" * 80)
     
     async with ScrapingExtractorsTester() as extractor_tester:
@@ -2987,9 +3001,26 @@ async def main():
     logger.info("🎯 OVERALL TESTING SUMMARY")
     logger.info("=" * 80)
     
-    total_tests = extractor_results["total_tests"] + ai_results["total_tests"]
-    total_passed = extractor_results["passed_tests"] + ai_results["passed_tests"]
-    total_failed = extractor_results["failed_tests"] + ai_results["failed_tests"]
+    total_tests = (ai_processor_results["total_tests"] + 
+                  duplicate_detector_results["total_tests"] +
+                  extractor_results["total_tests"] + 
+                  ai_results["total_tests"])
+    total_passed = (ai_processor_results["passed_tests"] + 
+                   duplicate_detector_results["passed_tests"] +
+                   extractor_results["passed_tests"] + 
+                   ai_results["passed_tests"])
+    total_failed = (ai_processor_results["failed_tests"] + 
+                   duplicate_detector_results["failed_tests"] +
+                   extractor_results["failed_tests"] + 
+                   ai_results["failed_tests"])
+    
+    logger.info(f"📊 TASK 9 - AI CONTENT PROCESSING PIPELINE:")
+    logger.info(f"   Tests: {ai_processor_results['total_tests']}, Passed: {ai_processor_results['passed_tests']}, Failed: {ai_processor_results['failed_tests']}")
+    logger.info(f"   Success Rate: {(ai_processor_results['passed_tests'] / max(ai_processor_results['total_tests'], 1)) * 100:.1f}%")
+    
+    logger.info(f"📊 TASK 10 - ADVANCED DUPLICATE DETECTION SYSTEM:")
+    logger.info(f"   Tests: {duplicate_detector_results['total_tests']}, Passed: {duplicate_detector_results['passed_tests']}, Failed: {duplicate_detector_results['failed_tests']}")
+    logger.info(f"   Success Rate: {(duplicate_detector_results['passed_tests'] / max(duplicate_detector_results['total_tests'], 1)) * 100:.1f}%")
     
     logger.info(f"📊 SCRAPING EXTRACTORS & COORDINATOR:")
     logger.info(f"   Tests: {extractor_results['total_tests']}, Passed: {extractor_results['passed_tests']}, Failed: {extractor_results['failed_tests']}")
@@ -3008,6 +3039,14 @@ async def main():
     logger.info("=" * 80)
     logger.info("🏁 COMPREHENSIVE BACKEND TESTING COMPLETED")
     logger.info("=" * 80)
+
+    return {
+        "ai_processor_tests": ai_processor_results,
+        "duplicate_detector_tests": duplicate_detector_results,
+        "extractor_tests": extractor_results,
+        "ai_services_tests": ai_results,
+        "overall_success_rate": (total_passed / max(total_tests, 1)) * 100.0
+    }
 
 if __name__ == "__main__":
     asyncio.run(main())
