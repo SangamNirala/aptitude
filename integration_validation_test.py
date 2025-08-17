@@ -236,11 +236,12 @@ class IntegrationValidationTester:
         try:
             start_time = time.time()
             payload = {
-                "source_type": "indiabix",
+                "job_name": "Job Status Workflow Test",
+                "description": "Testing job status transitions from PENDING to RUNNING",
+                "source_names": ["indiabix"],
+                "max_questions_per_source": 3,
                 "target_categories": ["quantitative"],
-                "max_questions": 3,
-                "difficulty": "foundation",
-                "priority": 1
+                "priority_level": 1
             }
             
             async with self.session.post(
