@@ -610,15 +610,16 @@ class IntegrationValidationTester:
         except Exception as e:
             self.log_test_result("Invalid Source Type Handling", False, f"Exception: {str(e)}")
         
-        # Test invalid difficulty level
+        # Test invalid job name (empty)
         try:
             start_time = time.time()
             payload = {
-                "source_type": "indiabix",
+                "job_name": "",  # Invalid empty job name
+                "description": "Testing invalid job name handling",
+                "source_names": ["indiabix"],
+                "max_questions_per_source": 5,
                 "target_categories": ["quantitative"],
-                "max_questions": 5,
-                "difficulty": "invalid_difficulty",
-                "priority": 1
+                "priority_level": 1
             }
             
             async with self.session.post(
