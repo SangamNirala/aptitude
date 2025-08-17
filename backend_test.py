@@ -87,10 +87,13 @@ class MonitoringDashboardTester:
                     data = await response.json()
                     success = (
                         "status" in data and
-                        "services" in data and
-                        "timestamp" in data
+                        "uptime_hours" in data and
+                        "timestamp" in data and
+                        "active_connections" in data and
+                        "events_processed" in data and
+                        "alerts_active" in data
                     )
-                    details = f"Status: {data.get('status')}, Services: {len(data.get('services', {}))}"
+                    details = f"Status: {data.get('status')}, Uptime: {data.get('uptime_hours', 0):.2f}h, Alerts: {data.get('alerts_active', 0)}"
                 else:
                     success = False
                     error_text = await response.text()
