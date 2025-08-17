@@ -55,3 +55,5 @@ attrs>=25.0.0
 -e yarl>=1.20.0
 propcache>=0.3.0
 aiohappyeyeballs>=2.6.0
+-e aiosignal>=1.4.0
+frozenlist>=1.7.0
