@@ -5067,5 +5067,729 @@ async def main():
         "overall_success_rate": (total_passed / max(total_tests, 1)) * 100.0
     }
 
+
+class ScrapingManagementTester:
+    """Tester for TASK 14 - Scraping Management API Endpoints"""
+    
+    def __init__(self, base_url: str):
+        self.base_url = base_url
+        self.session = None
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": []
+        }
+    
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+        
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.session:
+            await self.session.close()
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_job_lifecycle_endpoints(self):
+        """Test job lifecycle management endpoints"""
+        logger.info("🔄 Testing Job Lifecycle Management...")
+        
+        # Test create scraping job
+        try:
+            start_time = time.time()
+            payload = {
+                "job_name": "Test Scraping Job",
+                "description": "Test job for API validation",
+                "source_names": ["indiabix"],
+                "max_questions_per_source": 10,
+                "quality_threshold": 75.0,
+                "enable_ai_processing": True,
+                "enable_duplicate_detection": True,
+                "priority_level": 3
+            }
+            
+            async with self.session.post(
+                f"{self.base_url}/scraping/jobs",
+                json=payload
+            ) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 201:
+                    data = await response.json()
+                    success = (
+                        "job_id" in data and
+                        "status" in data and
+                        "message" in data and
+                        data["status"] == "pending"
+                    )
+                    details = f"Job created with ID: {data.get('job_id', 'unknown')}"
+                    
+                    # Store job_id for later tests
+                    if success:
+                        self.test_job_id = data["job_id"]
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Create Scraping Job", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Create Scraping Job", False, f"Exception: {str(e)}")
+        
+        # Test list scraping jobs
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/jobs") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        isinstance(data, list) and
+                        len(data) >= 0  # May be empty
+                    )
+                    details = f"Retrieved {len(data)} jobs"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("List Scraping Jobs", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("List Scraping Jobs", False, f"Exception: {str(e)}")
+        
+        # Test get job status (if we have a job_id)
+        if hasattr(self, 'test_job_id'):
+            try:
+                start_time = time.time()
+                async with self.session.get(f"{self.base_url}/scraping/jobs/{self.test_job_id}") as response:
+                    response_time = time.time() - start_time
+                    
+                    if response.status == 200:
+                        data = await response.json()
+                        success = (
+                            "job_id" in data and
+                            "status" in data and
+                            "progress_percentage" in data
+                        )
+                        details = f"Job status: {data.get('status')}, Progress: {data.get('progress_percentage', 0)}%"
+                    else:
+                        success = False
+                        error_text = await response.text()
+                        details = f"Status: {response.status}, Error: {error_text[:200]}"
+                    
+                    self.log_test_result("Get Job Status", success, details, response_time)
+                    
+            except Exception as e:
+                self.log_test_result("Get Job Status", False, f"Exception: {str(e)}")
+    
+    async def test_job_control_endpoints(self):
+        """Test job control operations"""
+        logger.info("🎮 Testing Job Control Operations...")
+        
+        if not hasattr(self, 'test_job_id'):
+            self.log_test_result("Job Control Tests", False, "No test job ID available")
+            return
+        
+        # Test start job
+        try:
+            start_time = time.time()
+            payload = {
+                "priority": "normal",
+                "custom_config": {}
+            }
+            
+            async with self.session.put(
+                f"{self.base_url}/scraping/jobs/{self.test_job_id}/start",
+                json=payload
+            ) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "job_id" in data and
+                        "action" in data and
+                        data["action"] == "start"
+                    )
+                    details = f"Start action: {data.get('status')}, Message: {data.get('message')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Start Job", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Start Job", False, f"Exception: {str(e)}")
+        
+        # Test pause job
+        try:
+            start_time = time.time()
+            async with self.session.put(f"{self.base_url}/scraping/jobs/{self.test_job_id}/pause") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "job_id" in data and
+                        "action" in data and
+                        data["action"] == "pause"
+                    )
+                    details = f"Pause action: {data.get('status')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Pause Job", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Pause Job", False, f"Exception: {str(e)}")
+        
+        # Test stop job
+        try:
+            start_time = time.time()
+            async with self.session.put(f"{self.base_url}/scraping/jobs/{self.test_job_id}/stop") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "job_id" in data and
+                        "action" in data and
+                        data["action"] == "stop"
+                    )
+                    details = f"Stop action: {data.get('status')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Stop Job", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Stop Job", False, f"Exception: {str(e)}")
+    
+    async def test_source_management_endpoints(self):
+        """Test source management endpoints"""
+        logger.info("📋 Testing Source Management...")
+        
+        # Test list sources
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/sources") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = isinstance(data, list)
+                    details = f"Retrieved {len(data)} sources"
+                    
+                    # Store first source ID for testing
+                    if data and len(data) > 0:
+                        self.test_source_id = data[0].get("id")
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("List Sources", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("List Sources", False, f"Exception: {str(e)}")
+        
+        # Test get specific source (if we have a source ID)
+        if hasattr(self, 'test_source_id') and self.test_source_id:
+            try:
+                start_time = time.time()
+                async with self.session.get(f"{self.base_url}/scraping/sources/{self.test_source_id}") as response:
+                    response_time = time.time() - start_time
+                    
+                    if response.status == 200:
+                        data = await response.json()
+                        success = (
+                            "id" in data and
+                            "name" in data and
+                            "source_type" in data
+                        )
+                        details = f"Source: {data.get('name')}, Type: {data.get('source_type')}"
+                    else:
+                        success = False
+                        error_text = await response.text()
+                        details = f"Status: {response.status}, Error: {error_text[:200]}"
+                    
+                    self.log_test_result("Get Source Details", success, details, response_time)
+                    
+            except Exception as e:
+                self.log_test_result("Get Source Details", False, f"Exception: {str(e)}")
+    
+    async def test_system_status_endpoints(self):
+        """Test system status and monitoring endpoints"""
+        logger.info("📊 Testing System Status...")
+        
+        # Test queue status
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/queue-status") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "total_queued" in data and
+                        "active_jobs" in data and
+                        "system_load" in data
+                    )
+                    details = f"Queued: {data.get('total_queued')}, Active: {data.get('active_jobs')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Queue Status", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Queue Status", False, f"Exception: {str(e)}")
+        
+        # Test system status
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/system-status") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "status" in data and
+                        "services" in data and
+                        "active_jobs" in data
+                    )
+                    details = f"Status: {data.get('status')}, Services: {len(data.get('services', {}))}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("System Status", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("System Status", False, f"Exception: {str(e)}")
+        
+        # Test health check
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/health") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = "status" in data
+                    details = f"Health status: {data.get('status')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Health Check", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Health Check", False, f"Exception: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all scraping management tests"""
+        logger.info("🚀 Starting Scraping Management API Testing...")
+        start_time = time.time()
+        
+        await self.test_job_lifecycle_endpoints()
+        await self.test_job_control_endpoints()
+        await self.test_source_management_endpoints()
+        await self.test_system_status_endpoints()
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 60)
+        logger.info("🎯 SCRAPING MANAGEMENT TEST SUMMARY")
+        logger.info("=" * 60)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 60)
+        
+        return self.test_results
+
+
+class ScrapingAnalyticsTester:
+    """Tester for TASK 15 - Analytics & Monitoring API Endpoints"""
+    
+    def __init__(self, base_url: str):
+        self.base_url = base_url
+        self.session = None
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": []
+        }
+    
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+        
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.session:
+            await self.session.close()
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_performance_analytics(self):
+        """Test performance analytics endpoints"""
+        logger.info("📈 Testing Performance Analytics...")
+        
+        # Test performance metrics
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/analytics/performance") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "job_performance" in data and
+                        "system_performance" in data and
+                        "extraction_performance" in data
+                    )
+                    details = f"Performance metrics retrieved with {len(data)} sections"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Performance Metrics", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Performance Metrics", False, f"Exception: {str(e)}")
+    
+    async def test_source_analytics(self):
+        """Test source analytics endpoints"""
+        logger.info("🔍 Testing Source Analytics...")
+        
+        # Test source analytics
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/analytics/sources") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = isinstance(data, list)
+                    details = f"Retrieved analytics for {len(data)} sources"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Source Analytics", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Source Analytics", False, f"Exception: {str(e)}")
+    
+    async def test_quality_analytics(self):
+        """Test quality analytics endpoints"""
+        logger.info("⭐ Testing Quality Analytics...")
+        
+        # Test quality distribution
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/analytics/quality") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "quality_distribution" in data and
+                        "avg_quality_score" in data and
+                        "quality_trends" in data
+                    )
+                    details = f"Quality score: {data.get('avg_quality_score', 0):.1f}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Quality Distribution", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Quality Distribution", False, f"Exception: {str(e)}")
+    
+    async def test_job_analytics(self):
+        """Test job analytics endpoints"""
+        logger.info("📊 Testing Job Analytics...")
+        
+        # Test job analytics
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/analytics/jobs") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "total_jobs_executed" in data and
+                        "successful_jobs" in data and
+                        "failed_jobs" in data
+                    )
+                    details = f"Jobs: {data.get('total_jobs_executed', 0)}, Success: {data.get('successful_jobs', 0)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Job Analytics", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Job Analytics", False, f"Exception: {str(e)}")
+    
+    async def test_system_health_analytics(self):
+        """Test system health analytics"""
+        logger.info("🏥 Testing System Health Analytics...")
+        
+        # Test system health
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/analytics/system-health") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "active_scraping_jobs" in data and
+                        "queued_jobs" in data and
+                        "system_uptime_hours" in data
+                    )
+                    details = f"Active: {data.get('active_scraping_jobs', 0)}, Queued: {data.get('queued_jobs', 0)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("System Health Analytics", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("System Health Analytics", False, f"Exception: {str(e)}")
+    
+    async def test_trend_analysis(self):
+        """Test trend analysis endpoints"""
+        logger.info("📈 Testing Trend Analysis...")
+        
+        # Test trend analysis
+        try:
+            start_time = time.time()
+            params = {
+                "trend_types": ["quality", "performance", "volume"],
+                "time_range": "last_week"
+            }
+            async with self.session.get(f"{self.base_url}/scraping/analytics/trends", params=params) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = isinstance(data, list)
+                    details = f"Retrieved {len(data)} trend analyses"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Trend Analysis", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Trend Analysis", False, f"Exception: {str(e)}")
+    
+    async def test_real_time_monitoring(self):
+        """Test real-time monitoring endpoints"""
+        logger.info("⚡ Testing Real-time Monitoring...")
+        
+        # Test real-time monitoring
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/analytics/monitoring/real-time") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "active_jobs" in data and
+                        "system_resources" in data and
+                        "queue_status" in data
+                    )
+                    details = f"Active jobs: {len(data.get('active_jobs', []))}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Real-time Monitoring", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Real-time Monitoring", False, f"Exception: {str(e)}")
+    
+    async def test_analytics_reports(self):
+        """Test analytics reports endpoints"""
+        logger.info("📋 Testing Analytics Reports...")
+        
+        # Test analytics report generation
+        try:
+            start_time = time.time()
+            params = {
+                "report_type": "weekly",
+                "include_scraping_analytics": True
+            }
+            async with self.session.get(f"{self.base_url}/scraping/analytics/reports", params=params) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "report_type" in data and
+                        "global_analytics" in data and
+                        "key_findings" in data
+                    )
+                    details = f"Report type: {data.get('report_type')}, Findings: {len(data.get('key_findings', []))}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Analytics Reports", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Analytics Reports", False, f"Exception: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all analytics tests"""
+        logger.info("🚀 Starting Scraping Analytics API Testing...")
+        start_time = time.time()
+        
+        await self.test_performance_analytics()
+        await self.test_source_analytics()
+        await self.test_quality_analytics()
+        await self.test_job_analytics()
+        await self.test_system_health_analytics()
+        await self.test_trend_analysis()
+        await self.test_real_time_monitoring()
+        await self.test_analytics_reports()
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 60)
+        logger.info("🎯 SCRAPING ANALYTICS TEST SUMMARY")
+        logger.info("=" * 60)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 60)
+        
+        return self.test_results
+
+
+async def test_tasks_14_15():
+    """Main test execution function for Tasks 14 & 15"""
+    logger.info("🎯 Starting Comprehensive Backend Testing for Tasks 14 & 15...")
+    
+    # Get backend URL
+    try:
+        with open('/app/frontend/.env', 'r') as f:
+            for line in f:
+                if line.startswith('REACT_APP_BACKEND_URL='):
+                    base_url = line.split('=')[1].strip() + "/api"
+                    break
+            else:
+                base_url = "https://scrape-analytics-api.preview.emergentagent.com/api"
+    except:
+        base_url = "https://scrape-analytics-api.preview.emergentagent.com/api"
+    
+    logger.info(f"Testing backend at: {base_url}")
+    
+    all_results = {
+        "scraping_management": {},
+        "scraping_analytics": {},
+        "overall_summary": {}
+    }
+    
+    # Test Scraping Management APIs (Task 14)
+    async with ScrapingManagementTester(base_url) as management_tester:
+        management_results = await management_tester.run_all_tests()
+        all_results["scraping_management"] = management_results
+    
+    # Test Scraping Analytics APIs (Task 15)
+    async with ScrapingAnalyticsTester(base_url) as analytics_tester:
+        analytics_results = await analytics_tester.run_all_tests()
+        all_results["scraping_analytics"] = analytics_results
+    
+    # Generate overall summary
+    total_tests = management_results["total_tests"] + analytics_results["total_tests"]
+    total_passed = management_results["passed_tests"] + analytics_results["passed_tests"]
+    total_failed = management_results["failed_tests"] + analytics_results["failed_tests"]
+    
+    all_results["overall_summary"] = {
+        "total_tests": total_tests,
+        "passed_tests": total_passed,
+        "failed_tests": total_failed,
+        "success_rate": (total_passed / max(total_tests, 1)) * 100
+    }
+    
+    # Final summary
+    logger.info("=" * 80)
+    logger.info("🎯 FINAL TEST SUMMARY - TASKS 14 & 15")
+    logger.info("=" * 80)
+    logger.info(f"📋 TASK 14 - Scraping Management: {management_results['passed_tests']}/{management_results['total_tests']} passed ({(management_results['passed_tests']/max(management_results['total_tests'],1))*100:.1f}%)")
+    logger.info(f"📊 TASK 15 - Analytics & Monitoring: {analytics_results['passed_tests']}/{analytics_results['total_tests']} passed ({(analytics_results['passed_tests']/max(analytics_results['total_tests'],1))*100:.1f}%)")
+    logger.info(f"🎯 OVERALL: {total_passed}/{total_tests} tests passed ({(total_passed/max(total_tests,1))*100:.1f}%)")
+    logger.info("=" * 80)
+    
+    return all_results
+
 if __name__ == "__main__":
     asyncio.run(main())
