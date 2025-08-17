@@ -41,8 +41,12 @@ class HuggingFaceService:
         
         # Initialize models for different tasks
         try:
-            # For semantic similarity and duplicate detection
-            self.sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
+            # For semantic similarity and duplicate detection - only if available
+            if SENTENCE_TRANSFORMERS_AVAILABLE:
+                self.sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
+            else:
+                self.sentence_model = None
+                logger.warning("SentenceTransformers not available - semantic features disabled")
             
             # For text classification - only if transformers is available
             self.classifier = None  # Will be initialized when needed
