@@ -629,9 +629,9 @@ class IntegrationValidationTester:
                 response_time = time.time() - start_time
                 
                 success = response.status in [400, 422]  # Should return validation error
-                details = f"Invalid difficulty handled correctly, Status: {response.status}"
+                details = f"Invalid job name handled correctly, Status: {response.status}"
                 
-                self.log_test_result("Invalid Difficulty Handling", success, details, response_time)
+                self.log_test_result("Invalid Job Name Handling", success, details, response_time)
                 
         except Exception as e:
             self.log_test_result("Invalid Difficulty Handling", False, f"Exception: {str(e)}")
