@@ -204,7 +204,7 @@ class ScrapingEngineTester:
             # Test PerformanceMonitor functionality
             if has_performance_monitor:
                 start_time = time.time()
-                stats = engine.performance_monitor.get_summary_stats()
+                stats = engine.performance_monitor.get_performance_summary()
                 response_time = time.time() - start_time
                 
                 success = isinstance(stats, dict)
