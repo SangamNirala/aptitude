@@ -634,7 +634,7 @@ class IntegrationValidationTester:
                 self.log_test_result("Invalid Job Name Handling", success, details, response_time)
                 
         except Exception as e:
-            self.log_test_result("Invalid Difficulty Handling", False, f"Exception: {str(e)}")
+            self.log_test_result("Invalid Job Name Handling", False, f"Exception: {str(e)}")
         
         # Test operation on non-existent job
         try:
