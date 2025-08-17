@@ -194,9 +194,7 @@
   run_ui: false
 
 ## test_plan:
-  current_focus:
-    - "Scraping Management API Endpoints (Task 14)"
-    - "Analytics & Monitoring API Endpoints (Task 15)"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
