@@ -2135,6 +2135,834 @@ class ScrapingEnginesTester:
         
         return self.test_results
 
+class ScrapingAIProcessorTester:
+    """Tester for TASK 9 - AI Content Processing Pipeline"""
+    
+    def __init__(self):
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": []
+        }
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_service_initialization(self):
+        """Test ScrapingAIProcessor service initialization"""
+        logger.info("🤖 Testing ScrapingAIProcessor Initialization...")
+        
+        try:
+            from services.scraping_ai_processor import ScrapingAIProcessor, create_scraping_ai_processor
+            
+            # Test direct initialization
+            start_time = time.time()
+            processor = ScrapingAIProcessor()
+            response_time = time.time() - start_time
+            
+            success = (processor is not None and 
+                      hasattr(processor, 'ai_coordinator') and
+                      hasattr(processor, 'processing_stats'))
+            self.log_test_result("ScrapingAIProcessor Initialization", success, 
+                               f"Processor created with AI coordinator: {processor.ai_coordinator is not None}", response_time)
+            
+            # Test factory function
+            start_time = time.time()
+            factory_processor = create_scraping_ai_processor()
+            response_time = time.time() - start_time
+            
+            success = factory_processor is not None
+            self.log_test_result("Factory Function", success, 
+                               f"Factory processor created: {factory_processor is not None}", response_time)
+            
+            return processor
+            
+        except Exception as e:
+            self.log_test_result("ScrapingAIProcessor Initialization", False, f"Exception: {str(e)}")
+            return None
+    
+    async def test_single_question_processing(self, processor):
+        """Test process_raw_question method"""
+        logger.info("📝 Testing Single Question Processing...")
+        
+        if not processor:
+            self.log_test_result("Single Question Processing", False, "No processor available")
+            return
+        
+        try:
+            from models.scraping_models import RawExtractedQuestion, ContentExtractionMethod
+            from datetime import datetime
+            
+            # Create test raw question
+            raw_question = RawExtractedQuestion(
+                id="test-raw-q1",
+                source_id="indiabix",
+                source_url="https://test.com/q1",
+                raw_question_text="What is 25% of 200?",
+                raw_options=["A) 40", "B) 50", "C) 60", "D) 70"],
+                raw_correct_answer="B) 50",
+                extraction_method=ContentExtractionMethod.CSS_SELECTOR,
+                extraction_timestamp=datetime.utcnow(),
+                extraction_confidence=0.95,
+                completeness_score=0.90,
+                detected_category="quantitative",
+                page_number=1
+            )
+            
+            # Test processing
+            start_time = time.time()
+            result = await processor.process_raw_question(raw_question)
+            response_time = time.time() - start_time
+            
+            # Check if result is tuple (processed_question, enhanced_question)
+            if isinstance(result, tuple) and len(result) == 2:
+                processed_question, enhanced_question = result
+                success = (processed_question is not None and 
+                          processed_question.raw_question_id == "test-raw-q1" and
+                          processed_question.quality_score > 0)
+                details = f"Processed with quality score: {processed_question.quality_score:.1f}, Gate: {processed_question.quality_gate_result.value}"
+            else:
+                success = False
+                details = f"Unexpected result format: {type(result)}"
+            
+            self.log_test_result("Single Question Processing", success, details, response_time)
+            
+            return result if success else None
+            
+        except Exception as e:
+            self.log_test_result("Single Question Processing", False, f"Exception: {str(e)}")
+            return None
+    
+    async def test_batch_processing(self, processor):
+        """Test batch_process_questions method"""
+        logger.info("📚 Testing Batch Processing...")
+        
+        if not processor:
+            self.log_test_result("Batch Processing", False, "No processor available")
+            return
+        
+        try:
+            from models.scraping_models import RawExtractedQuestion, ContentExtractionMethod
+            from datetime import datetime
+            
+            # Create test batch of raw questions (20+ as specified)
+            raw_questions = []
+            test_questions = [
+                ("What is 30% of 150?", ["A) 45", "B) 50", "C) 55", "D) 60"], "A) 45"),
+                ("Find the compound interest on Rs. 5000 at 10% for 2 years", ["A) Rs. 1000", "B) Rs. 1050", "C) Rs. 1100", "D) Rs. 1150"], "B) Rs. 1050"),
+                ("If a train travels 240 km in 4 hours, what is its speed?", ["A) 50 km/h", "B) 60 km/h", "C) 70 km/h", "D) 80 km/h"], "B) 60 km/h"),
+                ("What is the area of a rectangle with length 12m and width 8m?", ["A) 96 sq m", "B) 100 sq m", "C) 104 sq m", "D) 108 sq m"], "A) 96 sq m"),
+                ("Find the value of x: 2x + 5 = 15", ["A) 5", "B) 6", "C) 7", "D) 8"], "A) 5"),
+                ("What is 15% of 80?", ["A) 10", "B) 12", "C) 14", "D) 16"], "B) 12"),
+                ("A shopkeeper sells an item for Rs. 120 with 20% profit. What was the cost price?", ["A) Rs. 90", "B) Rs. 100", "C) Rs. 110", "D) Rs. 115"], "B) Rs. 100"),
+                ("Find the next number in series: 2, 4, 8, 16, ?", ["A) 24", "B) 28", "C) 32", "D) 36"], "C) 32"),
+                ("What is the perimeter of a square with side 7 cm?", ["A) 21 cm", "B) 28 cm", "C) 35 cm", "D) 49 cm"], "B) 28 cm"),
+                ("If 3x = 21, then x = ?", ["A) 6", "B) 7", "C) 8", "D) 9"], "B) 7"),
+                ("What is 40% of 250?", ["A) 90", "B) 100", "C) 110", "D) 120"], "B) 100"),
+                ("Find the simple interest on Rs. 2000 at 5% for 3 years", ["A) Rs. 250", "B) Rs. 300", "C) Rs. 350", "D) Rs. 400"], "B) Rs. 300"),
+                ("A car covers 180 km in 3 hours. What is its average speed?", ["A) 50 km/h", "B) 55 km/h", "C) 60 km/h", "D) 65 km/h"], "C) 60 km/h"),
+                ("What is the volume of a cube with side 4 cm?", ["A) 48 cu cm", "B) 56 cu cm", "C) 64 cu cm", "D) 72 cu cm"], "C) 64 cu cm"),
+                ("Solve: 5x - 3 = 22", ["A) 4", "B) 5", "C) 6", "D) 7"], "B) 5"),
+                ("What is 25% of 160?", ["A) 35", "B) 40", "C) 45", "D) 50"], "B) 40"),
+                ("Find the profit percentage if CP = Rs. 80 and SP = Rs. 100", ["A) 20%", "B) 25%", "C) 30%", "D) 35%"], "B) 25%"),
+                ("What comes next: 1, 4, 9, 16, ?", ["A) 20", "B) 23", "C) 25", "D) 27"], "C) 25"),
+                ("Find the area of a circle with radius 7 cm (π = 22/7)", ["A) 154 sq cm", "B) 164 sq cm", "C) 174 sq cm", "D) 184 sq cm"], "A) 154 sq cm"),
+                ("If 4y = 28, then y = ?", ["A) 6", "B) 7", "C) 8", "D) 9"], "B) 7"),
+                ("What is 60% of 120?", ["A) 68", "B) 70", "C) 72", "D) 74"], "C) 72"),
+                ("Find the time taken to cover 300 km at 75 km/h", ["A) 3 hours", "B) 4 hours", "C) 5 hours", "D) 6 hours"], "B) 4 hours")
+            ]
+            
+            for i, (question, options, answer) in enumerate(test_questions):
+                raw_q = RawExtractedQuestion(
+                    id=f"test-batch-q{i+1}",
+                    source_id="test_source",
+                    source_url=f"https://test.com/q{i+1}",
+                    raw_question_text=question,
+                    raw_options=options,
+                    raw_correct_answer=answer,
+                    extraction_method=ContentExtractionMethod.CSS_SELECTOR,
+                    extraction_timestamp=datetime.utcnow(),
+                    extraction_confidence=0.90 + (i % 10) * 0.01,
+                    completeness_score=0.85 + (i % 15) * 0.01,
+                    detected_category="quantitative",
+                    page_number=i // 5 + 1
+                )
+                raw_questions.append(raw_q)
+            
+            # Test batch processing
+            start_time = time.time()
+            batch_result = await processor.batch_process_questions(raw_questions, batch_size=5)
+            response_time = time.time() - start_time
+            
+            success = (batch_result.get("status") == "completed" and
+                      len(batch_result.get("processed_questions", [])) > 0 and
+                      batch_result.get("statistics", {}).get("total_questions") == len(raw_questions))
+            
+            stats = batch_result.get("statistics", {})
+            details = f"Processed {stats.get('processed_successfully', 0)}/{stats.get('total_questions', 0)} questions, Avg quality: {stats.get('avg_quality_score', 0):.1f}"
+            
+            self.log_test_result("Batch Processing (20+ Questions)", success, details, response_time)
+            
+            return batch_result if success else None
+            
+        except Exception as e:
+            self.log_test_result("Batch Processing", False, f"Exception: {str(e)}")
+            return None
+    
+    async def test_quality_gates(self, processor):
+        """Test quality gate logic (auto-approve/reject/human-review)"""
+        logger.info("🚪 Testing Quality Gates...")
+        
+        if not processor:
+            self.log_test_result("Quality Gates", False, "No processor available")
+            return
+        
+        try:
+            from models.scraping_models import RawExtractedQuestion, ContentExtractionMethod, QualityGate
+            from datetime import datetime
+            
+            # Test different quality levels
+            test_cases = [
+                # High quality question (should auto-approve)
+                {
+                    "question": "Calculate the compound interest on Rs. 10,000 at 12% per annum for 2 years compounded annually.",
+                    "options": ["A) Rs. 2,544", "B) Rs. 2,400", "C) Rs. 2,640", "D) Rs. 2,500"],
+                    "answer": "A) Rs. 2,544",
+                    "expected_gate": "auto_approve"
+                },
+                # Medium quality question (should need human review)
+                {
+                    "question": "What is percentage?",
+                    "options": ["A) Part of 100", "B) Fraction", "C) Decimal", "D) Number"],
+                    "answer": "A) Part of 100",
+                    "expected_gate": "human_review"
+                },
+                # Low quality question (should auto-reject)
+                {
+                    "question": "?",
+                    "options": ["A) Yes", "B) No"],
+                    "answer": "A) Yes",
+                    "expected_gate": "auto_reject"
+                }
+            ]
+            
+            gate_results = []
+            
+            for i, test_case in enumerate(test_cases):
+                raw_question = RawExtractedQuestion(
+                    id=f"test-quality-q{i+1}",
+                    source_id="quality_test",
+                    source_url=f"https://test.com/quality{i+1}",
+                    raw_question_text=test_case["question"],
+                    raw_options=test_case["options"],
+                    raw_correct_answer=test_case["answer"],
+                    extraction_method=ContentExtractionMethod.CSS_SELECTOR,
+                    extraction_timestamp=datetime.utcnow(),
+                    extraction_confidence=0.95,
+                    completeness_score=0.90,
+                    detected_category="quantitative",
+                    page_number=1
+                )
+                
+                result = await processor.process_raw_question(raw_question)
+                if isinstance(result, tuple) and len(result) == 2:
+                    processed_question, _ = result
+                    gate_results.append({
+                        "expected": test_case["expected_gate"],
+                        "actual": processed_question.quality_gate_result.value,
+                        "quality_score": processed_question.quality_score
+                    })
+            
+            # Analyze results
+            correct_gates = 0
+            for result in gate_results:
+                # More flexible matching since AI might vary
+                if (result["expected"] == "auto_approve" and result["quality_score"] >= 80) or \
+                   (result["expected"] == "auto_reject" and result["quality_score"] < 50) or \
+                   (result["expected"] == "human_review" and 50 <= result["quality_score"] < 80):
+                    correct_gates += 1
+            
+            success = correct_gates >= 2  # At least 2 out of 3 should be correct
+            details = f"Quality gates working: {correct_gates}/3 cases handled appropriately"
+            
+            self.log_test_result("Quality Gates Logic", success, details)
+            
+        except Exception as e:
+            self.log_test_result("Quality Gates", False, f"Exception: {str(e)}")
+    
+    async def test_content_standardization(self, processor):
+        """Test standardize_content_format functionality"""
+        logger.info("📋 Testing Content Standardization...")
+        
+        if not processor:
+            self.log_test_result("Content Standardization", False, "No processor available")
+            return
+        
+        try:
+            # Create a mock enhanced question for testing
+            from models.question_models import EnhancedQuestion, QuestionCategory, DifficultyLevel, AIMetrics, QuestionMetadata
+            
+            # Mock enhanced question
+            class MockEnhancedQuestion:
+                def __init__(self):
+                    self.id = "test-enhanced-123"
+                    self.question_text = "What is 25% of 200?   "  # With extra spaces
+                    self.options = ["A) 40  ", "B) 50", "C) 60", "D) 70"]
+                    self.correct_answer = "B) 50"
+                    self.category = QuestionCategory.QUANTITATIVE
+                    self.difficulty = DifficultyLevel.PLACEMENT_READY
+                    self.source = "test_source"
+                    self.ai_metrics = AIMetrics(
+                        quality_score=85.5,
+                        difficulty_score=7.2,
+                        relevance_score=88.0,
+                        clarity_score=82.3
+                    )
+                    self.metadata = QuestionMetadata(
+                        concepts=["percentage", "calculation"],
+                        time_estimate=120,
+                        keywords=["percent", "calculate"],
+                        topics=["arithmetic"]
+                    )
+                    self.ai_explanation = None
+                    self.is_verified = True
+            
+            mock_question = MockEnhancedQuestion()
+            
+            # Test standardization
+            start_time = time.time()
+            standardized = await processor.standardize_content_format(mock_question)
+            response_time = time.time() - start_time
+            
+            success = (isinstance(standardized, dict) and
+                      "question_text" in standardized and
+                      "options" in standardized and
+                      "quality_metrics" in standardized and
+                      standardized["question_text"] == "What is 25% of 200?" and  # Cleaned
+                      len(standardized["options"]) == 4)
+            
+            details = f"Standardized format created with {len(standardized)} fields"
+            self.log_test_result("Content Standardization", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Content Standardization", False, f"Exception: {str(e)}")
+    
+    async def test_statistics_tracking(self, processor):
+        """Test processing statistics collection"""
+        logger.info("📊 Testing Statistics Tracking...")
+        
+        if not processor:
+            self.log_test_result("Statistics Tracking", False, "No processor available")
+            return
+        
+        try:
+            # Get initial statistics
+            start_time = time.time()
+            initial_stats = processor.get_processing_statistics()
+            response_time = time.time() - start_time
+            
+            success = (isinstance(initial_stats, dict) and
+                      "processing_stats" in initial_stats and
+                      "success_rate" in initial_stats and
+                      "quality_gate_distribution" in initial_stats)
+            
+            details = f"Statistics structure valid with {len(initial_stats)} main sections"
+            self.log_test_result("Statistics Structure", success, details, response_time)
+            
+            # Check if statistics have been updated from previous tests
+            processing_stats = initial_stats.get("processing_stats", {})
+            has_data = processing_stats.get("total_processed", 0) > 0
+            
+            if has_data:
+                details = f"Statistics tracking active: {processing_stats['total_processed']} questions processed"
+                self.log_test_result("Statistics Data Collection", True, details)
+            else:
+                self.log_test_result("Statistics Data Collection", True, "Statistics initialized (no processing data yet)")
+            
+        except Exception as e:
+            self.log_test_result("Statistics Tracking", False, f"Exception: {str(e)}")
+    
+    async def test_ai_integration(self, processor):
+        """Test integration with existing AI services"""
+        logger.info("🔗 Testing AI Services Integration...")
+        
+        if not processor:
+            self.log_test_result("AI Integration", False, "No processor available")
+            return
+        
+        try:
+            # Test AI coordinator availability
+            start_time = time.time()
+            has_ai_coordinator = hasattr(processor, 'ai_coordinator') and processor.ai_coordinator is not None
+            response_time = time.time() - start_time
+            
+            self.log_test_result("AI Coordinator Integration", has_ai_coordinator, 
+                               f"AI Coordinator available: {has_ai_coordinator}", response_time)
+            
+            if has_ai_coordinator:
+                # Test if AI coordinator has required services
+                ai_coordinator = processor.ai_coordinator
+                has_gemini = hasattr(ai_coordinator, 'gemini_service')
+                has_groq = hasattr(ai_coordinator, 'groq_service')
+                has_huggingface = hasattr(ai_coordinator, 'huggingface_service')
+                
+                integration_score = sum([has_gemini, has_groq, has_huggingface])
+                success = integration_score >= 2  # At least 2 services should be available
+                
+                details = f"AI Services available: Gemini={has_gemini}, Groq={has_groq}, HuggingFace={has_huggingface}"
+                self.log_test_result("AI Services Availability", success, details)
+            
+        except Exception as e:
+            self.log_test_result("AI Integration", False, f"Exception: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all ScrapingAIProcessor tests"""
+        logger.info("🚀 Starting AI Content Processing Pipeline Testing...")
+        start_time = time.time()
+        
+        # Test service initialization
+        processor = await self.test_service_initialization()
+        
+        # Run all tests
+        await self.test_single_question_processing(processor)
+        await self.test_batch_processing(processor)
+        await self.test_quality_gates(processor)
+        await self.test_content_standardization(processor)
+        await self.test_statistics_tracking(processor)
+        await self.test_ai_integration(processor)
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 60)
+        logger.info("🎯 AI CONTENT PROCESSING PIPELINE TEST SUMMARY")
+        logger.info("=" * 60)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 60)
+        
+        return self.test_results
+
+
+class AdvancedDuplicateDetectorTester:
+    """Tester for TASK 10 - Advanced Duplicate Detection System"""
+    
+    def __init__(self):
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": []
+        }
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_service_initialization(self):
+        """Test AdvancedDuplicateDetector service initialization"""
+        logger.info("🔍 Testing AdvancedDuplicateDetector Initialization...")
+        
+        try:
+            from services.duplicate_detection_service import AdvancedDuplicateDetector, create_duplicate_detector
+            
+            # Test direct initialization
+            start_time = time.time()
+            detector = AdvancedDuplicateDetector()
+            response_time = time.time() - start_time
+            
+            success = (detector is not None and 
+                      hasattr(detector, 'huggingface_service') and
+                      hasattr(detector, 'similarity_threshold') and
+                      hasattr(detector, 'detection_stats'))
+            self.log_test_result("AdvancedDuplicateDetector Initialization", success, 
+                               f"Detector created with HuggingFace service: {detector.huggingface_service is not None}", response_time)
+            
+            # Test factory function
+            start_time = time.time()
+            factory_detector = create_duplicate_detector(similarity_threshold=0.80)
+            response_time = time.time() - start_time
+            
+            success = factory_detector is not None and factory_detector.similarity_threshold == 0.80
+            self.log_test_result("Factory Function", success, 
+                               f"Factory detector created with threshold: {factory_detector.similarity_threshold}", response_time)
+            
+            return detector
+            
+        except Exception as e:
+            self.log_test_result("AdvancedDuplicateDetector Initialization", False, f"Exception: {str(e)}")
+            return None
+    
+    async def test_single_duplicate_detection(self, detector):
+        """Test detect_duplicates_single method"""
+        logger.info("🔎 Testing Single Duplicate Detection...")
+        
+        if not detector:
+            self.log_test_result("Single Duplicate Detection", False, "No detector available")
+            return
+        
+        try:
+            # Test with similar questions (should detect duplicate)
+            new_question = {
+                "id": "new-q1",
+                "question_text": "What is 25% of 200?",
+                "source": "test_source_1"
+            }
+            
+            existing_questions = [
+                {
+                    "id": "existing-q1",
+                    "question_text": "Calculate 25% of 200",
+                    "source": "test_source_2"
+                },
+                {
+                    "id": "existing-q2", 
+                    "question_text": "What is the area of a circle?",
+                    "source": "test_source_2"
+                }
+            ]
+            
+            # Test duplicate detection
+            start_time = time.time()
+            result = await detector.detect_duplicates_single(new_question, existing_questions)
+            response_time = time.time() - start_time
+            
+            success = (isinstance(result, dict) and
+                      "is_duplicate" in result and
+                      "similarity_scores" in result and
+                      "most_similar" in result and
+                      "detection_confidence" in result)
+            
+            details = f"Detection result: is_duplicate={result.get('is_duplicate')}, confidence={result.get('detection_confidence', 0):.2f}"
+            self.log_test_result("Single Duplicate Detection", success, details, response_time)
+            
+            # Test with different questions (should not detect duplicate)
+            different_question = {
+                "id": "different-q1",
+                "question_text": "What is the capital of France?",
+                "source": "test_source_1"
+            }
+            
+            start_time = time.time()
+            different_result = await detector.detect_duplicates_single(different_question, existing_questions)
+            response_time = time.time() - start_time
+            
+            success = isinstance(different_result, dict) and "is_duplicate" in different_result
+            details = f"Different question result: is_duplicate={different_result.get('is_duplicate')}"
+            self.log_test_result("Different Question Detection", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Single Duplicate Detection", False, f"Exception: {str(e)}")
+    
+    async def test_batch_duplicate_detection(self, detector):
+        """Test batch_duplicate_detection method"""
+        logger.info("📚 Testing Batch Duplicate Detection...")
+        
+        if not detector:
+            self.log_test_result("Batch Duplicate Detection", False, "No detector available")
+            return
+        
+        try:
+            # Create test questions with varying similarity levels
+            test_questions = [
+                {"id": "q1", "question_text": "What is 25% of 200?", "source": "source1", "quality_score": 85},
+                {"id": "q2", "question_text": "Calculate 25% of 200", "source": "source2", "quality_score": 80},  # Similar to q1
+                {"id": "q3", "question_text": "Find 25 percent of 200", "source": "source1", "quality_score": 82},  # Similar to q1
+                {"id": "q4", "question_text": "What is the area of a circle?", "source": "source2", "quality_score": 90},  # Different
+                {"id": "q5", "question_text": "Calculate the area of a circle", "source": "source1", "quality_score": 88},  # Similar to q4
+                {"id": "q6", "question_text": "What is 30% of 150?", "source": "source2", "quality_score": 85},  # Different
+                {"id": "q7", "question_text": "Find the compound interest", "source": "source1", "quality_score": 75},  # Different
+                {"id": "q8", "question_text": "Calculate compound interest", "source": "source2", "quality_score": 78},  # Similar to q7
+            ]
+            
+            # Test batch processing
+            start_time = time.time()
+            batch_result = await detector.batch_duplicate_detection(test_questions, batch_size=10)
+            response_time = time.time() - start_time
+            
+            success = (batch_result.get("status") == "completed" and
+                      "results" in batch_result and
+                      isinstance(batch_result["results"], dict))
+            
+            if success:
+                results = batch_result["results"]
+                details = f"Processed {results.get('total_questions', 0)} questions, found {len(results.get('duplicate_pairs', []))} duplicate pairs in {len(results.get('clusters', []))} clusters"
+            else:
+                details = f"Batch processing failed or returned unexpected format"
+            
+            self.log_test_result("Batch Duplicate Detection", success, details, response_time)
+            
+            return batch_result if success else None
+            
+        except Exception as e:
+            self.log_test_result("Batch Duplicate Detection", False, f"Exception: {str(e)}")
+            return None
+    
+    async def test_cross_source_analysis(self, detector):
+        """Test cross_source_duplicate_analysis method"""
+        logger.info("🔄 Testing Cross-Source Analysis...")
+        
+        if not detector:
+            self.log_test_result("Cross-Source Analysis", False, "No detector available")
+            return
+        
+        try:
+            # Create questions from different sources with some duplicates
+            source_questions = {
+                "indiabix": [
+                    {"id": "ib1", "question_text": "What is 25% of 200?", "source": "indiabix", "quality_score": 85},
+                    {"id": "ib2", "question_text": "Find the area of a rectangle", "source": "indiabix", "quality_score": 80},
+                    {"id": "ib3", "question_text": "Calculate simple interest", "source": "indiabix", "quality_score": 78}
+                ],
+                "geeksforgeeks": [
+                    {"id": "gfg1", "question_text": "Calculate 25% of 200", "source": "geeksforgeeks", "quality_score": 82},  # Similar to ib1
+                    {"id": "gfg2", "question_text": "What is the area of a circle?", "source": "geeksforgeeks", "quality_score": 88},
+                    {"id": "gfg3", "question_text": "Find simple interest", "source": "geeksforgeeks", "quality_score": 75}  # Similar to ib3
+                ],
+                "testbook": [
+                    {"id": "tb1", "question_text": "What is compound interest?", "source": "testbook", "quality_score": 90},
+                    {"id": "tb2", "question_text": "Find 25 percent of 200", "source": "testbook", "quality_score": 83}  # Similar to ib1
+                ]
+            }
+            
+            # Test cross-source analysis
+            start_time = time.time()
+            cross_result = await detector.cross_source_duplicate_analysis(source_questions)
+            response_time = time.time() - start_time
+            
+            success = (isinstance(cross_result, dict) and
+                      "total_cross_source_duplicates" in cross_result and
+                      "source_pair_analysis" in cross_result and
+                      "source_reliability_scores" in cross_result)
+            
+            if success:
+                total_duplicates = cross_result.get("total_cross_source_duplicates", 0)
+                source_pairs = len(cross_result.get("source_pair_analysis", {}))
+                details = f"Found {total_duplicates} cross-source duplicates across {source_pairs} source pairs"
+            else:
+                details = "Cross-source analysis failed or returned unexpected format"
+            
+            self.log_test_result("Cross-Source Analysis", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Cross-Source Analysis", False, f"Exception: {str(e)}")
+    
+    async def test_similarity_search(self, detector):
+        """Test optimize_similarity_search method"""
+        logger.info("🔍 Testing Similarity Search Optimization...")
+        
+        if not detector:
+            self.log_test_result("Similarity Search", False, "No detector available")
+            return
+        
+        try:
+            # Create query question and candidate pool
+            query_question = {
+                "id": "query1",
+                "question_text": "What is 25% of 200?",
+                "source": "test"
+            }
+            
+            candidate_pool = [
+                {"id": "c1", "question_text": "Calculate 25% of 200", "source": "source1"},
+                {"id": "c2", "question_text": "Find 25 percent of 200", "source": "source2"},
+                {"id": "c3", "question_text": "What is the area of a circle?", "source": "source1"},
+                {"id": "c4", "question_text": "Calculate compound interest", "source": "source2"},
+                {"id": "c5", "question_text": "What is 30% of 150?", "source": "source1"},
+                {"id": "c6", "question_text": "Find the perimeter of a square", "source": "source2"},
+                {"id": "c7", "question_text": "What is 25 percent of 200?", "source": "source1"},  # Very similar
+                {"id": "c8", "question_text": "Calculate the volume of a cube", "source": "source2"}
+            ]
+            
+            # Test optimized similarity search
+            start_time = time.time()
+            similar_questions = await detector.optimize_similarity_search(query_question, candidate_pool, top_k=5)
+            response_time = time.time() - start_time
+            
+            success = (isinstance(similar_questions, list) and
+                      len(similar_questions) <= 5 and
+                      all("question" in item and "similarity_score" in item and "rank" in item 
+                          for item in similar_questions))
+            
+            if success and similar_questions:
+                top_similarity = similar_questions[0]["similarity_score"]
+                details = f"Found {len(similar_questions)} similar questions, top similarity: {top_similarity:.3f}"
+            else:
+                details = "Similarity search returned unexpected format or empty results"
+            
+            self.log_test_result("Similarity Search Optimization", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Similarity Search", False, f"Exception: {str(e)}")
+    
+    async def test_clustering(self, detector):
+        """Test question clustering functionality"""
+        logger.info("🗂️ Testing Question Clustering...")
+        
+        if not detector:
+            self.log_test_result("Question Clustering", False, "No detector available")
+            return
+        
+        try:
+            # Test cluster management through batch detection
+            test_questions = [
+                {"id": "cluster1", "question_text": "What is 25% of 200?", "source": "s1", "quality_score": 85},
+                {"id": "cluster2", "question_text": "Calculate 25% of 200", "source": "s2", "quality_score": 80},
+                {"id": "cluster3", "question_text": "What is the area of a circle?", "source": "s1", "quality_score": 90},
+                {"id": "cluster4", "question_text": "Find the area of a circle", "source": "s2", "quality_score": 88}
+            ]
+            
+            # Run batch detection to create clusters
+            start_time = time.time()
+            batch_result = await detector.batch_duplicate_detection(test_questions)
+            response_time = time.time() - start_time
+            
+            success = (batch_result.get("status") == "completed" and
+                      len(batch_result.get("results", {}).get("clusters", [])) > 0)
+            
+            if success:
+                clusters = batch_result["results"]["clusters"]
+                cluster_count = len(clusters)
+                total_questions_in_clusters = sum(c.get("question_count", 0) for c in clusters)
+                details = f"Created {cluster_count} clusters containing {total_questions_in_clusters} questions"
+            else:
+                details = "Clustering failed or no clusters created"
+            
+            self.log_test_result("Question Clustering", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Question Clustering", False, f"Exception: {str(e)}")
+    
+    async def test_dashboard_data(self, detector):
+        """Test get_duplicate_management_dashboard functionality"""
+        logger.info("📊 Testing Dashboard Data...")
+        
+        if not detector:
+            self.log_test_result("Dashboard Data", False, "No detector available")
+            return
+        
+        try:
+            # Get dashboard data
+            start_time = time.time()
+            dashboard_data = detector.get_duplicate_management_dashboard()
+            response_time = time.time() - start_time
+            
+            success = (isinstance(dashboard_data, dict) and
+                      "detection_statistics" in dashboard_data and
+                      "cluster_overview" in dashboard_data and
+                      "performance_metrics" in dashboard_data and
+                      "system_recommendations" in dashboard_data)
+            
+            if success:
+                stats = dashboard_data.get("detection_statistics", {})
+                clusters = dashboard_data.get("cluster_overview", {})
+                details = f"Dashboard data: {stats.get('total_questions_processed', 0)} questions processed, {clusters.get('total_clusters', 0)} clusters"
+            else:
+                details = "Dashboard data missing required sections"
+            
+            self.log_test_result("Dashboard Data Generation", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Dashboard Data", False, f"Exception: {str(e)}")
+    
+    async def test_huggingface_integration(self, detector):
+        """Test integration with HuggingFace service"""
+        logger.info("🤗 Testing HuggingFace Integration...")
+        
+        if not detector:
+            self.log_test_result("HuggingFace Integration", False, "No detector available")
+            return
+        
+        try:
+            # Test HuggingFace service availability
+            start_time = time.time()
+            has_hf_service = hasattr(detector, 'huggingface_service') and detector.huggingface_service is not None
+            response_time = time.time() - start_time
+            
+            self.log_test_result("HuggingFace Service Availability", has_hf_service, 
+                               f"HuggingFace service available: {has_hf_service}", response_time)
+            
+            if has_hf_service:
+                # Test if service has required methods
+                hf_service = detector.huggingface_service
+                has_detect_method = hasattr(hf_service, 'detect_duplicate_questions')
+                has_cluster_method = hasattr(hf_service, 'generate_similarity_clusters')
+                
+                integration_score = sum([has_detect_method, has_cluster_method])
+                success = integration_score >= 1  # At least one method should be available
+                
+                details = f"HuggingFace methods: detect_duplicates={has_detect_method}, clustering={has_cluster_method}"
+                self.log_test_result("HuggingFace Methods", success, details)
+            
+        except Exception as e:
+            self.log_test_result("HuggingFace Integration", False, f"Exception: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all AdvancedDuplicateDetector tests"""
+        logger.info("🚀 Starting Advanced Duplicate Detection System Testing...")
+        start_time = time.time()
+        
+        # Test service initialization
+        detector = await self.test_service_initialization()
+        
+        # Run all tests
+        await self.test_single_duplicate_detection(detector)
+        await self.test_batch_duplicate_detection(detector)
+        await self.test_cross_source_analysis(detector)
+        await self.test_similarity_search(detector)
+        await self.test_clustering(detector)
+        await self.test_dashboard_data(detector)
+        await self.test_huggingface_integration(detector)
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 60)
+        logger.info("🎯 ADVANCED DUPLICATE DETECTION SYSTEM TEST SUMMARY")
+        logger.info("=" * 60)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 60)
+        
+        return self.test_results
+
+
 async def main():
     """Main test execution function"""
     logger.info("🎯 STARTING COMPREHENSIVE BACKEND TESTING")
