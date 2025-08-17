@@ -195,8 +195,7 @@
 
 ## test_plan:
   current_focus:
-    - "Scraping Management API Endpoints (Task 14)"
-    - "Analytics & Monitoring API Endpoints (Task 15)"
+    - "Real-Time Monitoring Dashboard Backend (Task 16)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
