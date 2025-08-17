@@ -5012,18 +5012,25 @@ async def main():
     logger.info("🎯 OVERALL TESTING SUMMARY")
     logger.info("=" * 80)
     
-    total_tests = (ai_processor_results["total_tests"] + 
+    total_tests = (tasks_11_13_results["total_tests"] +
+                  ai_processor_results["total_tests"] + 
                   duplicate_detector_results["total_tests"] +
                   extractor_results["total_tests"] + 
                   ai_results["total_tests"])
-    total_passed = (ai_processor_results["passed_tests"] + 
+    total_passed = (tasks_11_13_results["passed_tests"] +
+                   ai_processor_results["passed_tests"] + 
                    duplicate_detector_results["passed_tests"] +
                    extractor_results["passed_tests"] + 
                    ai_results["passed_tests"])
-    total_failed = (ai_processor_results["failed_tests"] + 
+    total_failed = (tasks_11_13_results["failed_tests"] +
+                   ai_processor_results["failed_tests"] + 
                    duplicate_detector_results["failed_tests"] +
                    extractor_results["failed_tests"] + 
                    ai_results["failed_tests"])
+    
+    logger.info(f"📊 TASKS 11-13 - QUALITY ASSURANCE, JOB MANAGEMENT & SCHEDULING:")
+    logger.info(f"   Tests: {tasks_11_13_results['total_tests']}, Passed: {tasks_11_13_results['passed_tests']}, Failed: {tasks_11_13_results['failed_tests']}")
+    logger.info(f"   Success Rate: {(tasks_11_13_results['passed_tests'] / max(tasks_11_13_results['total_tests'], 1)) * 100:.1f}%")
     
     logger.info(f"📊 TASK 9 - AI CONTENT PROCESSING PIPELINE:")
     logger.info(f"   Tests: {ai_processor_results['total_tests']}, Passed: {ai_processor_results['passed_tests']}, Failed: {ai_processor_results['failed_tests']}")
@@ -5052,6 +5059,7 @@ async def main():
     logger.info("=" * 80)
 
     return {
+        "tasks_11_13_tests": tasks_11_13_results,
         "ai_processor_tests": ai_processor_results,
         "duplicate_detector_tests": duplicate_detector_results,
         "extractor_tests": extractor_results,
