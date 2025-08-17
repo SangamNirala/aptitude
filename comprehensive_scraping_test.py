@@ -376,7 +376,7 @@ class ComprehensiveScrapingTester:
         
         try:
             start_time = time.time()
-            async with self.session.get(f"{self.base_url}/scraping/queue") as response:
+            async with self.session.get(f"{self.base_url}/scraping/queue-status") as response:
                 response_time = time.time() - start_time
                 
                 if response.status == 200:
