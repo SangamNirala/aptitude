@@ -137,9 +137,10 @@ class IntegrationTestRunner:
                     success = (
                         "system_health" in data and
                         "active_jobs" in data and
-                        "timestamp" in data
+                        "timestamp" in data and
+                        isinstance(data.get("active_jobs"), int)
                     )
-                    details = f"System health: {data.get('system_health')}, Active jobs: {data.get('active_jobs', 0)}"
+                    details = f"System health: {data.get('system_health', {}).get('overall_status', 'N/A')}, Active jobs: {data.get('active_jobs', 0)}"
                     if success:
                         tests_passed += 1
                 else:
