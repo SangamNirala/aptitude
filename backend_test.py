@@ -24,7 +24,17 @@ logger = logging.getLogger(__name__)
 class AIAptitudeAPITester:
     def __init__(self):
         # Get backend URL from environment
-        self.base_url = "https://scraping-test-debug.preview.emergentagent.com/api"
+        try:
+            with open('/app/frontend/.env', 'r') as f:
+                for line in f:
+                    if line.startswith('REACT_APP_BACKEND_URL='):
+                        self.base_url = line.split('=')[1].strip() + "/api"
+                        break
+                else:
+                    self.base_url = "https://8ed8af9d-dd5c-48d6-b248-14fe747d0df1.preview.emergentagent.com/api"
+        except:
+            self.base_url = "https://8ed8af9d-dd5c-48d6-b248-14fe747d0df1.preview.emergentagent.com/api"
+        
         self.session = None
         self.test_results = {
             "total_tests": 0,
