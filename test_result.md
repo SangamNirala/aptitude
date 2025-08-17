@@ -195,9 +195,8 @@
 
 ## test_plan:
   current_focus:
-    - "Content Quality Assurance System"
-    - "Background Job Management System" 
-    - "Cron-Based Scheduling System"
+    - "Scraping Management API Endpoints (Task 14)"
+    - "Analytics & Monitoring API Endpoints (Task 15)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
