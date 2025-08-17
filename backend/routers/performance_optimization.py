@@ -125,9 +125,9 @@ async def optimize_database(request: DatabaseOptimizationRequest, background_tas
     try:
         logger.info(f"🔧 Starting database optimization with {request.strategy} strategy")
         
-        if not db or not client:
+        if db is None or client is None:
             initialize_db_connection()
-            if not db or not client:
+            if db is None or client is None:
                 raise HTTPException(status_code=500, detail="Database connection not available")
         
         # Execute database optimization
