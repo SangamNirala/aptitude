@@ -479,7 +479,7 @@ class ComprehensiveScrapingTester:
         
         try:
             start_time = time.time()
-            async with self.session.get(f"{self.base_url}/scraping/analytics/source") as response:
+            async with self.session.get(f"{self.base_url}/scraping/analytics/sources") as response:
                 response_time = time.time() - start_time
                 
                 if response.status == 200:
