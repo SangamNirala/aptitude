@@ -212,6 +212,7 @@ class FocusedIntegrationTester:
         try:
             start_time = time.time()
             payload = {
+                "question_id": "test-question-id-123",
                 "question_text": "What is the result of 15 + 25?",
                 "user_answer": "40",
                 "correct_answer": "40"
