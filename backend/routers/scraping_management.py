@@ -420,10 +420,10 @@ async def start_job(
                     priority=priority
                 )
                 
-                # Update status in database to reflect it's been restarted
+                # Update status in database to reflect it's running
                 await db.scraping_jobs.update_one(
                     {"id": job_id},
-                    {"$set": {"status": ScrapingJobStatus.PENDING.value, "updated_at": datetime.utcnow()}}
+                    {"$set": {"status": ScrapingJobStatus.RUNNING.value, "updated_at": datetime.utcnow()}}
                 )
                 
             except Exception as e:
