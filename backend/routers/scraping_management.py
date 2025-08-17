@@ -386,7 +386,7 @@ async def start_job(
         else:
             current_job_status = current_status.status
         
-        if current_status.status == ScrapingJobStatus.RUNNING:
+        if current_job_status == ScrapingJobStatus.RUNNING:
             return JobControlResponse(
                 job_id=job_id,
                 action="start",
@@ -394,7 +394,7 @@ async def start_job(
                 message="Job is already running"
             )
         
-        if current_status.status == ScrapingJobStatus.COMPLETED:
+        if current_job_status == ScrapingJobStatus.COMPLETED:
             return JobControlResponse(
                 job_id=job_id,
                 action="start",
@@ -402,13 +402,49 @@ async def start_job(
                 message="Job has already completed"
             )
         
-        # Update job priority or restart logic would go here
-        # For now, return success message
+        # For PENDING jobs, resubmit to job manager
+        if current_job_status == ScrapingJobStatus.PENDING and job_manager:
+            try:
+                # Recreate job object from database
+                scraping_job = ScrapingJob(**job_doc)
+                priority = JobPriority.HIGH
+                
+                async def execute_scraping_job(job: ScrapingJob):
+                    """Job execution function"""
+                    return await scraping_engine.execute_job(job)
+                
+                # Resubmit job 
+                await job_manager.submit_job(
+                    scraping_job,
+                    execute_scraping_job,
+                    priority=priority
+                )
+                
+                # Update status in database to reflect it's been restarted
+                await db.scraping_jobs.update_one(
+                    {"id": job_id},
+                    {"$set": {"status": ScrapingJobStatus.PENDING.value, "updated_at": datetime.utcnow()}}
+                )
+                
+            except Exception as e:
+                logger.warning(f"Failed to resubmit job to manager: {str(e)}")
+        
+        # For PAUSED jobs, update status to PENDING to restart
+        if current_job_status == ScrapingJobStatus.PAUSED:
+            await db.scraping_jobs.update_one(
+                {"id": job_id},
+                {"$set": {
+                    "status": ScrapingJobStatus.PENDING.value, 
+                    "updated_at": datetime.utcnow(),
+                    "current_phase": "restarted"
+                }}
+            )
+        
         return JobControlResponse(
             job_id=job_id,
             action="start",
             status="started",
-            message="Job start request processed"
+            message="Job start request processed successfully"
         )
         
     except HTTPException:
