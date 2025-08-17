@@ -44,7 +44,7 @@ async def test_task_9_ai_content_processing():
             raw_question_text="What is 25% of 200?",
             raw_options=["A) 40", "B) 50", "C) 60", "D) 70"],
             raw_correct_answer="B) 50",
-            extraction_method=ContentExtractionMethod.CSS_SELECTOR,
+            extraction_method=ContentExtractionMethod.SELENIUM,
             extraction_confidence=0.95,
             completeness_score=0.90,
             detected_category="quantitative",
