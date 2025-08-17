@@ -108,3 +108,11 @@ croniter>=2.0.0
 # Dependencies for Task 18 (Performance Optimization & Scaling)
 numpy>=1.26.0
 matplotlib>=3.9.0
+
+# Google Auth dependencies
+google-auth>=2.40.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0
+cachetools>=5.5.0
+pyasn1-modules>=0.4.0
+pyparsing>=3.2.0
