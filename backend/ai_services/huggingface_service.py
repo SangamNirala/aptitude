@@ -35,8 +35,9 @@ class HuggingFaceService:
             # For semantic similarity and duplicate detection
             self.sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
             
-            # For text classification
+            # For text classification - only if transformers is available
             self.classifier = None  # Will be initialized when needed
+            self.transformers_available = TRANSFORMERS_AVAILABLE
             
             # For quality assessment
             self.quality_model_url = "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium"
