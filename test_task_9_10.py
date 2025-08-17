@@ -71,7 +71,7 @@ async def test_task_9_ai_content_processing():
                 raw_question_text=f"Calculate {10 + i*5}% of {100 + i*20}",
                 raw_options=[f"A) {10 + i*5}", f"B) {15 + i*5}", f"C) {20 + i*5}", f"D) {25 + i*5}"],
                 raw_correct_answer=f"B) {15 + i*5}",
-                extraction_method=ContentExtractionMethod.CSS_SELECTOR,
+                extraction_method=ContentExtractionMethod.SELENIUM,
                 extraction_confidence=0.85 + i*0.02,
                 completeness_score=0.80 + i*0.03,
                 detected_category="quantitative",
