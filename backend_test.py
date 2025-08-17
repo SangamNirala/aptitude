@@ -140,10 +140,11 @@ class MonitoringDashboardTester:
                     data = await response.json()
                     success = (
                         "timestamp" in data and
-                        "uptime_hours" in data and
-                        "metrics" in data
+                        "cpu_usage" in data and
+                        "memory_usage" in data and
+                        "disk_usage" in data
                     )
-                    details = f"Uptime: {data.get('uptime_hours', 0):.2f}h, Metrics: {len(data.get('metrics', {}))}"
+                    details = f"CPU: {data.get('cpu_usage', 0):.1f}%, Memory: {data.get('memory_usage', 0):.1f}%, Disk: {data.get('disk_usage', 0):.1f}%"
                 else:
                     success = False
                     error_text = await response.text()
