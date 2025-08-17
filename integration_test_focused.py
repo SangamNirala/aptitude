@@ -246,16 +246,8 @@ class FocusedIntegrationTester:
         try:
             start_time = time.time()
             payload = {
-                "questions": [
-                    {
-                        "question_text": "What is 2 + 2?",
-                        "options": ["3", "4", "5", "6"]
-                    },
-                    {
-                        "question_text": "What is two plus two?",
-                        "options": ["3", "4", "5", "6"]
-                    }
-                ]
+                "question_text": "What is 2 + 2?",
+                "similarity_threshold": 0.85
             }
             
             async with self.session.post(
