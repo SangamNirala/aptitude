@@ -524,9 +524,26 @@ async def pause_job(
     try:
         logger.info(f"Pausing job {job_id}")
         
+        # Check if job exists first
+        job_doc = await db.scraping_jobs.find_one({"id": job_id})
+        if not job_doc:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Job {job_id} not found"
+            )
+        
+        current_status = ScrapingJobStatus(job_doc["status"])
+        
+        # Check if job is in a pausable state
+        if current_status not in [ScrapingJobStatus.RUNNING, ScrapingJobStatus.PENDING]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Job {job_id} is in {current_status.value} state and cannot be paused"
+            )
+        
         # Update job status in database
         result = await db.scraping_jobs.update_one(
-            {"id": job_id, "status": ScrapingJobStatus.RUNNING.value},
+            {"id": job_id},
             {
                 "$set": {
                     "status": ScrapingJobStatus.PAUSED.value,
@@ -538,9 +555,16 @@ async def pause_job(
         
         if result.modified_count == 0:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Job not found or not in running state"
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to update job status"
             )
+        
+        # Try to pause in job manager if available
+        if job_manager:
+            try:
+                await job_manager.cancel_job(job_id)
+            except Exception as e:
+                logger.warning(f"Failed to pause job in manager: {str(e)}")
         
         return JobControlResponse(
             job_id=job_id,
