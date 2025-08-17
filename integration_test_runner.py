@@ -88,6 +88,9 @@ class IntegrationTestRunner:
                 return success
                 
         except Exception as e:
+            import traceback
+            logger.error(f"Exception in health test: {e}")
+            logger.error(traceback.format_exc())
             self.log_test_result("System Health & AI Services", False, f"Exception: {str(e)}")
             return False
     
