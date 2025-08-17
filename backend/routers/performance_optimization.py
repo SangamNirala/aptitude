@@ -233,7 +233,7 @@ async def initialize_full_performance_optimization():
         initialize_db_connection()
         
         # Initialize comprehensive performance optimization
-        if db and client:
+        if db is not None and client is not None:
             optimization_results = await initialize_performance_optimization(
                 db, client, IndexStrategy.COMPREHENSIVE
             )
