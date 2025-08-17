@@ -5663,7 +5663,7 @@ class ScrapingAnalyticsTester:
         try:
             start_time = time.time()
             params = {
-                "trend_types": ["quality", "performance", "volume"],
+                "trend_types": "quality,performance,volume",
                 "time_range": "last_week"
             }
             async with self.session.get(f"{self.base_url}/scraping/analytics/trends", params=params) as response:
@@ -5720,7 +5720,7 @@ class ScrapingAnalyticsTester:
             start_time = time.time()
             params = {
                 "report_type": "weekly",
-                "include_scraping_analytics": True
+                "include_scraping_analytics": "true"
             }
             async with self.session.get(f"{self.base_url}/scraping/analytics/reports", params=params) as response:
                 response_time = time.time() - start_time
