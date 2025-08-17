@@ -157,6 +157,7 @@ class IntegrationTestRunner:
         try:
             start_time = time.time()
             payload = {
+                "job_name": "integration_test_job",
                 "source_type": "indiabix",
                 "target_categories": ["quantitative"],
                 "max_questions": 5,
