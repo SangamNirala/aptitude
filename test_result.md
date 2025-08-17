@@ -195,7 +195,7 @@
 
 ## test_plan:
   current_focus:
-    - "Real-Time Monitoring Dashboard Backend (Task 16) - COMPLETED"
+    - "End-to-End Integration Testing (Task 17) - IN PROGRESS"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
