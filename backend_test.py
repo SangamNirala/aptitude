@@ -4253,14 +4253,14 @@ async def main():
     logger.info("\n🤖 TESTING TASK 9: AI CONTENT PROCESSING PIPELINE")
     logger.info("=" * 80)
     
-    ai_processor_tester = ScrapingAIProcessorTester()
+    ai_processor_tester = AIContentProcessingTester()
     ai_processor_results = await ai_processor_tester.run_all_tests()
     
     # Test Advanced Duplicate Detection System (TASK 10)
     logger.info("\n🔍 TESTING TASK 10: ADVANCED DUPLICATE DETECTION SYSTEM")
     logger.info("=" * 80)
     
-    duplicate_detector_tester = AdvancedDuplicateDetectorTester()
+    duplicate_detector_tester = AdvancedDuplicateDetectionTester()
     duplicate_detector_results = await duplicate_detector_tester.run_all_tests()
     
     # Test scraping extractors and coordinator (TASK 6-8)
