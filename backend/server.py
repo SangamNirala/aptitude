@@ -101,6 +101,10 @@ app.include_router(api_router)
 # Include AI-enhanced question router  
 app.include_router(ai_questions_router)
 
+# Include scraping management routers (Task 14 & 15)
+app.include_router(scraping_management_router)
+app.include_router(scraping_analytics_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
