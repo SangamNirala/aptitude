@@ -480,18 +480,20 @@ class IntegrationValidationTester:
         
         job_configs = [
             {
-                "source_type": "indiabix",
+                "job_name": "Large Scale Test - IndiaBix",
+                "description": "Large scale processing test for IndiaBix source",
+                "source_names": ["indiabix"],
+                "max_questions_per_source": 50,
                 "target_categories": ["quantitative", "logical"],
-                "max_questions": 50,
-                "difficulty": "placement_ready",
-                "priority": 1
+                "priority_level": 1
             },
             {
-                "source_type": "geeksforgeeks", 
+                "job_name": "Large Scale Test - GeeksforGeeks",
+                "description": "Large scale processing test for GeeksforGeeks source", 
+                "source_names": ["geeksforgeeks"],
+                "max_questions_per_source": 50,
                 "target_categories": ["cs_fundamentals", "programming"],
-                "max_questions": 50,
-                "difficulty": "campus_expert",
-                "priority": 1
+                "priority_level": 1
             }
         ]
         
