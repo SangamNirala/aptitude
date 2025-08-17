@@ -69,6 +69,7 @@ async def test_task_9_ai_content_processing():
                 id=str(uuid.uuid4()),
                 source_id=f"batch_test_{i}",
                 source_url=f"https://test.com/batch/{i+1}",
+                job_id=f"batch_job_{i}",
                 raw_question_text=f"Calculate {10 + i*5}% of {100 + i*20}",
                 raw_options=[f"A) {10 + i*5}", f"B) {15 + i*5}", f"C) {20 + i*5}", f"D) {25 + i*5}"],
                 raw_correct_answer=f"B) {15 + i*5}",
