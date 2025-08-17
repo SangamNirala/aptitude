@@ -588,11 +588,12 @@ class IntegrationValidationTester:
         try:
             start_time = time.time()
             payload = {
-                "source_type": "invalid_source",
+                "job_name": "Invalid Source Test",
+                "description": "Testing invalid source type handling",
+                "source_names": ["invalid_source"],
+                "max_questions_per_source": 5,
                 "target_categories": ["test"],
-                "max_questions": 5,
-                "difficulty": "foundation",
-                "priority": 1
+                "priority_level": 1
             }
             
             async with self.session.post(
