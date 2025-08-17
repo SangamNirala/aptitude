@@ -405,23 +405,34 @@ class IntegrationTestRunner:
     async def run_comprehensive_integration_tests(self):
         """Run all integration tests"""
         logger.info("🚀 Starting Comprehensive End-to-End Integration Testing Suite")
+        logger.info(f"Testing backend at: {self.base_url}")
         
         overall_start_time = time.time()
         
         # Test 1: System Health and AI Services
+        logger.info("Running Test 1: System Health and AI Services")
         health_success = await self.test_system_health_and_ai_services()
+        logger.info(f"Test 1 result: {health_success}")
         
         # Test 2: Scraping Management
+        logger.info("Running Test 2: Scraping Management")
         scraping_passed, scraping_total = await self.test_scraping_management_endpoints()
+        logger.info(f"Test 2 result: {scraping_passed}/{scraping_total}")
         
         # Test 3: Analytics
+        logger.info("Running Test 3: Analytics")
         analytics_passed, analytics_total = await self.test_analytics_endpoints()
+        logger.info(f"Test 3 result: {analytics_passed}/{analytics_total}")
         
         # Test 4: Monitoring Dashboard
+        logger.info("Running Test 4: Monitoring Dashboard")
         monitoring_passed, monitoring_total = await self.test_monitoring_dashboard_endpoints()
+        logger.info(f"Test 4 result: {monitoring_passed}/{monitoring_total}")
         
         # Test 5: AI-Enhanced Questions
+        logger.info("Running Test 5: AI-Enhanced Questions")
         ai_passed, ai_total = await self.test_ai_enhanced_endpoints()
+        logger.info(f"Test 5 result: {ai_passed}/{ai_total}")
         
         # Calculate overall results
         total_duration = time.time() - overall_start_time
