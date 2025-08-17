@@ -4244,6 +4244,729 @@ class AdvancedDuplicateDetectorTester:
         return self.test_results
 
 
+class TasksElevenToThirteenTester:
+    """Tester for Tasks 11, 12, and 13 - Quality Assurance, Job Management, and Scheduling"""
+    
+    def __init__(self):
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": [],
+            "component_tests": {},
+            "performance_metrics": {}
+        }
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_task_11_quality_assurance_system(self):
+        """Test Task 11 - Content Quality Assurance System"""
+        logger.info("🔍 Testing Task 11 - Content Quality Assurance System...")
+        
+        try:
+            # Test ContentQualityAssuranceService import and initialization
+            from services.quality_assurance_service import (
+                ContentQualityAssuranceService, QualityAssuranceLevel, 
+                ValidationRuleConfig, QualityGateDecision, create_quality_assurance_service
+            )
+            
+            start_time = time.time()
+            qa_service = ContentQualityAssuranceService()
+            response_time = time.time() - start_time
+            
+            success = qa_service is not None
+            self.log_test_result("QA Service Initialization", success, 
+                               f"Service initialized: {success}", response_time)
+            
+            if not success:
+                return
+            
+            # Test quality assessment with validation rules
+            start_time = time.time()
+            test_content = {
+                "question_text": "What is 25% of 200?",
+                "options": ["A) 40", "B) 50", "C) 60", "D) 70"],
+                "correct_answer": "B) 50",
+                "explanation": "25% of 200 = 0.25 × 200 = 50"
+            }
+            
+            assessment_result = await qa_service.assess_content_quality(test_content)
+            response_time = time.time() - start_time
+            
+            success = (
+                assessment_result is not None and
+                "quality_score" in assessment_result and
+                "validation_results" in assessment_result and
+                "quality_gate_decision" in assessment_result
+            )
+            
+            details = f"Quality score: {assessment_result.get('quality_score', 0):.1f}, Gate: {assessment_result.get('quality_gate_decision', 'unknown')}"
+            self.log_test_result("Quality Assessment", success, details, response_time)
+            
+            # Test quality gate implementation
+            start_time = time.time()
+            gate_decision = assessment_result.get('quality_gate_decision')
+            gate_valid = gate_decision in ['auto_approve', 'auto_reject', 'human_review']
+            response_time = time.time() - start_time
+            
+            self.log_test_result("Quality Gate Implementation", gate_valid, 
+                               f"Gate decision: {gate_decision}", response_time)
+            
+            # Test source reliability tracking
+            start_time = time.time()
+            reliability_score = await qa_service.track_source_reliability("test_source", assessment_result)
+            response_time = time.time() - start_time
+            
+            success = isinstance(reliability_score, (int, float)) and 0 <= reliability_score <= 100
+            self.log_test_result("Source Reliability Tracking", success, 
+                               f"Reliability score: {reliability_score}", response_time)
+            
+            # Test human review queue management
+            start_time = time.time()
+            if gate_decision == 'human_review':
+                queue_result = await qa_service.add_to_human_review_queue(test_content, assessment_result)
+                success = queue_result.get('queued', False)
+                details = f"Added to queue: {success}, Priority: {queue_result.get('priority', 'unknown')}"
+            else:
+                success = True
+                details = "No human review needed"
+            response_time = time.time() - start_time
+            
+            self.log_test_result("Human Review Queue Management", success, details, response_time)
+            
+            # Test batch quality assessment
+            start_time = time.time()
+            batch_content = [test_content] * 5  # Test with 5 items
+            batch_results = await qa_service.assess_batch_quality(batch_content)
+            response_time = time.time() - start_time
+            
+            success = (
+                isinstance(batch_results, list) and
+                len(batch_results) == 5 and
+                all('quality_score' in result for result in batch_results)
+            )
+            
+            avg_score = sum(r.get('quality_score', 0) for r in batch_results) / len(batch_results)
+            self.log_test_result("Batch Quality Assessment", success, 
+                               f"Processed {len(batch_results)} items, avg score: {avg_score:.1f}", response_time)
+            
+            # Test quality dashboard data generation
+            start_time = time.time()
+            dashboard_data = await qa_service.get_quality_dashboard()
+            response_time = time.time() - start_time
+            
+            success = (
+                isinstance(dashboard_data, dict) and
+                "total_assessments" in dashboard_data and
+                "quality_distribution" in dashboard_data and
+                "gate_decisions" in dashboard_data
+            )
+            
+            self.log_test_result("Quality Dashboard Generation", success, 
+                               f"Dashboard keys: {list(dashboard_data.keys()) if isinstance(dashboard_data, dict) else 'Invalid'}", response_time)
+            
+            # Test factory function
+            start_time = time.time()
+            factory_service = create_quality_assurance_service({
+                "quality_threshold": 80.0,
+                "enable_human_review": True
+            })
+            response_time = time.time() - start_time
+            
+            success = factory_service is not None
+            self.log_test_result("QA Service Factory Function", success, 
+                               f"Factory service created: {success}", response_time)
+            
+        except Exception as e:
+            self.log_test_result("Task 11 Quality Assurance System", False, f"Exception: {str(e)}")
+    
+    async def test_task_12_background_job_management(self):
+        """Test Task 12 - Background Job Management System"""
+        logger.info("⚙️ Testing Task 12 - Background Job Management System...")
+        
+        try:
+            # Test BackgroundJobManager import and initialization
+            from services.job_manager_service import (
+                BackgroundJobManager, JobPriority, JobStatus, BackgroundTaskExecutor,
+                create_job_manager
+            )
+            
+            start_time = time.time()
+            job_manager = BackgroundJobManager(max_concurrent_jobs=3)
+            response_time = time.time() - start_time
+            
+            success = job_manager is not None
+            self.log_test_result("Job Manager Initialization", success, 
+                               f"Manager initialized with max_concurrent: {job_manager.max_concurrent_jobs if job_manager else 'None'}", response_time)
+            
+            if not success:
+                return
+            
+            # Test job manager startup
+            start_time = time.time()
+            await job_manager.start()
+            response_time = time.time() - start_time
+            
+            success = job_manager.is_running
+            self.log_test_result("Job Manager Startup", success, 
+                               f"Manager running: {job_manager.is_running}", response_time)
+            
+            # Test job submission and tracking
+            start_time = time.time()
+            
+            async def test_job_function(data):
+                await asyncio.sleep(0.1)  # Simulate work
+                return {"processed": data.get("items", 0), "status": "completed"}
+            
+            job_data = {"items": 10, "source": "test"}
+            job_id = await job_manager.submit_job(
+                job_data, 
+                test_job_function, 
+                JobPriority.NORMAL,
+                job_name="Test Job"
+            )
+            response_time = time.time() - start_time
+            
+            success = job_id is not None and isinstance(job_id, str)
+            self.log_test_result("Job Submission", success, 
+                               f"Job ID: {job_id}", response_time)
+            
+            # Test job execution and tracking
+            start_time = time.time()
+            await asyncio.sleep(0.5)  # Wait for job to process
+            
+            job_status = await job_manager.get_job_status(job_id)
+            response_time = time.time() - start_time
+            
+            success = (
+                job_status is not None and
+                "status" in job_status and
+                "progress" in job_status
+            )
+            
+            self.log_test_result("Job Execution and Tracking", success, 
+                               f"Status: {job_status.get('status', 'unknown')}, Progress: {job_status.get('progress', 0)}%", response_time)
+            
+            # Test resource monitoring
+            start_time = time.time()
+            resource_stats = await job_manager.get_resource_statistics()
+            response_time = time.time() - start_time
+            
+            success = (
+                isinstance(resource_stats, dict) and
+                "active_jobs" in resource_stats and
+                "resource_usage" in resource_stats
+            )
+            
+            self.log_test_result("Resource Monitoring", success, 
+                               f"Active jobs: {resource_stats.get('active_jobs', 0)}, Resource usage tracked: {'resource_usage' in resource_stats}", response_time)
+            
+            # Test concurrent job execution
+            start_time = time.time()
+            concurrent_jobs = []
+            
+            for i in range(3):  # Submit 3 concurrent jobs
+                job_data = {"items": 5, "job_num": i}
+                job_id = await job_manager.submit_job(
+                    job_data, 
+                    test_job_function, 
+                    JobPriority.HIGH,
+                    job_name=f"Concurrent Job {i}"
+                )
+                concurrent_jobs.append(job_id)
+            
+            await asyncio.sleep(0.5)  # Wait for processing
+            response_time = time.time() - start_time
+            
+            # Check all jobs were processed
+            completed_jobs = 0
+            for job_id in concurrent_jobs:
+                status = await job_manager.get_job_status(job_id)
+                if status and status.get('status') in ['completed', 'success']:
+                    completed_jobs += 1
+            
+            success = completed_jobs >= 2  # At least 2 should complete
+            self.log_test_result("Concurrent Job Execution", success, 
+                               f"Completed {completed_jobs}/3 concurrent jobs", response_time)
+            
+            # Test job cancellation
+            start_time = time.time()
+            
+            async def long_running_job(data):
+                await asyncio.sleep(2.0)  # Long running job
+                return {"status": "completed"}
+            
+            long_job_id = await job_manager.submit_job(
+                {"test": "data"}, 
+                long_running_job, 
+                JobPriority.LOW,
+                job_name="Long Running Job"
+            )
+            
+            await asyncio.sleep(0.1)  # Let it start
+            cancel_result = await job_manager.cancel_job(long_job_id)
+            response_time = time.time() - start_time
+            
+            success = cancel_result.get('cancelled', False)
+            self.log_test_result("Job Cancellation", success, 
+                               f"Job cancelled: {success}", response_time)
+            
+            # Test performance metrics collection
+            start_time = time.time()
+            performance_metrics = await job_manager.get_performance_metrics()
+            response_time = time.time() - start_time
+            
+            success = (
+                isinstance(performance_metrics, dict) and
+                "total_jobs_processed" in performance_metrics and
+                "avg_execution_time" in performance_metrics
+            )
+            
+            self.log_test_result("Performance Metrics Collection", success, 
+                               f"Total jobs: {performance_metrics.get('total_jobs_processed', 0)}, Avg time: {performance_metrics.get('avg_execution_time', 0):.2f}s", response_time)
+            
+            # Test BackgroundTaskExecutor utilities
+            start_time = time.time()
+            task_executor = BackgroundTaskExecutor(job_manager)
+            
+            batch_tasks = [{"id": i, "data": f"task_{i}"} for i in range(5)]
+            batch_results = await task_executor.execute_batch_tasks(batch_tasks, test_job_function)
+            response_time = time.time() - start_time
+            
+            success = (
+                isinstance(batch_results, list) and
+                len(batch_results) == 5 and
+                all('status' in result for result in batch_results)
+            )
+            
+            self.log_test_result("Background Task Executor", success, 
+                               f"Batch processed {len(batch_results)}/5 tasks", response_time)
+            
+            # Test job dashboard
+            start_time = time.time()
+            dashboard_data = await job_manager.get_job_dashboard()
+            response_time = time.time() - start_time
+            
+            success = (
+                isinstance(dashboard_data, dict) and
+                "job_statistics" in dashboard_data and
+                "system_health" in dashboard_data
+            )
+            
+            self.log_test_result("Job Management Dashboard", success, 
+                               f"Dashboard sections: {list(dashboard_data.keys()) if isinstance(dashboard_data, dict) else 'Invalid'}", response_time)
+            
+            # Test graceful shutdown
+            start_time = time.time()
+            await job_manager.shutdown(graceful=True)
+            response_time = time.time() - start_time
+            
+            success = not job_manager.is_running
+            self.log_test_result("Job Manager Shutdown", success, 
+                               f"Manager stopped: {not job_manager.is_running}", response_time)
+            
+        except Exception as e:
+            self.log_test_result("Task 12 Background Job Management", False, f"Exception: {str(e)}")
+    
+    async def test_task_13_cron_scheduling_system(self):
+        """Test Task 13 - Cron-Based Scheduling System"""
+        logger.info("⏰ Testing Task 13 - Cron-Based Scheduling System...")
+        
+        try:
+            # Test CronScheduler import and initialization
+            from scheduling.cron_scheduler import (
+                CronScheduler, ScheduledTask, ScheduleType, ScheduleStatus,
+                create_cron_scheduler, add_system_maintenance_schedules
+            )
+            from scheduling.schedule_optimizer import (
+                ScheduleOptimizer, OptimizationStrategy, create_schedule_optimizer
+            )
+            
+            start_time = time.time()
+            scheduler = CronScheduler(check_interval_seconds=5, max_concurrent_schedules=3)
+            response_time = time.time() - start_time
+            
+            success = scheduler is not None
+            self.log_test_result("Cron Scheduler Initialization", success, 
+                               f"Scheduler initialized with {scheduler.max_concurrent_schedules} max concurrent", response_time)
+            
+            if not success:
+                return
+            
+            # Test scheduler startup
+            start_time = time.time()
+            await scheduler.start()
+            response_time = time.time() - start_time
+            
+            success = scheduler.is_running
+            self.log_test_result("Scheduler Startup", success, 
+                               f"Scheduler running: {scheduler.is_running}", response_time)
+            
+            # Test scheduled task creation with cron expressions
+            start_time = time.time()
+            
+            async def test_scheduled_task():
+                return {"executed_at": datetime.utcnow().isoformat(), "status": "success"}
+            
+            schedule_id = scheduler.add_schedule(
+                name="Test Schedule",
+                cron_expression="*/1 * * * *",  # Every minute
+                task_function=test_scheduled_task,
+                schedule_type=ScheduleType.CUSTOM,
+                description="Test scheduled task"
+            )
+            response_time = time.time() - start_time
+            
+            success = schedule_id is not None and isinstance(schedule_id, str)
+            self.log_test_result("Schedule Creation", success, 
+                               f"Schedule ID: {schedule_id}", response_time)
+            
+            # Test schedule management (pause/resume)
+            start_time = time.time()
+            pause_result = scheduler.pause_schedule(schedule_id)
+            resume_result = scheduler.resume_schedule(schedule_id)
+            response_time = time.time() - start_time
+            
+            success = pause_result and resume_result
+            self.log_test_result("Schedule Management", success, 
+                               f"Pause: {pause_result}, Resume: {resume_result}", response_time)
+            
+            # Test schedule execution and monitoring
+            start_time = time.time()
+            
+            # Create a schedule that should execute soon
+            immediate_schedule_id = scheduler.add_schedule(
+                name="Immediate Test",
+                cron_expression="* * * * *",  # Every minute
+                task_function=test_scheduled_task,
+                schedule_type=ScheduleType.CUSTOM
+            )
+            
+            # Wait a bit and check execution
+            await asyncio.sleep(2.0)
+            
+            schedule_info = scheduler.get_schedule(immediate_schedule_id)
+            response_time = time.time() - start_time
+            
+            success = (
+                schedule_info is not None and
+                "metrics" in schedule_info and
+                schedule_info["status"] == "active"
+            )
+            
+            self.log_test_result("Schedule Execution Monitoring", success, 
+                               f"Schedule status: {schedule_info.get('status', 'unknown') if schedule_info else 'None'}", response_time)
+            
+            # Test system maintenance schedules
+            start_time = time.time()
+            await add_system_maintenance_schedules(scheduler)
+            
+            maintenance_schedules = scheduler.list_schedules(schedule_type_filter=ScheduleType.CLEANUP)
+            response_time = time.time() - start_time
+            
+            success = len(maintenance_schedules) > 0
+            self.log_test_result("System Maintenance Schedules", success, 
+                               f"Added {len(maintenance_schedules)} maintenance schedules", response_time)
+            
+            # Test schedule optimization with ScheduleOptimizer
+            start_time = time.time()
+            optimizer = ScheduleOptimizer(scheduler, optimization_strategy=OptimizationStrategy.ADAPTIVE)
+            
+            # Test source pattern analysis
+            source_analyses = await optimizer.analyze_source_patterns()
+            response_time = time.time() - start_time
+            
+            success = isinstance(source_analyses, dict)
+            self.log_test_result("Schedule Optimization - Source Analysis", success, 
+                               f"Analyzed {len(source_analyses)} sources", response_time)
+            
+            # Test schedule distribution optimization
+            start_time = time.time()
+            distribution_recommendations = await optimizer.optimize_schedule_distribution()
+            response_time = time.time() - start_time
+            
+            success = isinstance(distribution_recommendations, list)
+            self.log_test_result("Schedule Distribution Optimization", success, 
+                               f"Generated {len(distribution_recommendations)} recommendations", response_time)
+            
+            # Test adaptive optimization
+            start_time = time.time()
+            adaptive_results = await optimizer.adaptive_optimization()
+            response_time = time.time() - start_time
+            
+            success = (
+                isinstance(adaptive_results, dict) and
+                "recommendations" in adaptive_results and
+                "system_analysis" in adaptive_results
+            )
+            
+            self.log_test_result("Adaptive Optimization", success, 
+                               f"Optimization type: {adaptive_results.get('optimization_type', 'unknown')}", response_time)
+            
+            # Test traffic-aware scheduling
+            start_time = time.time()
+            from scheduling.schedule_optimizer import TrafficWindow
+            
+            traffic_recommendations = await optimizer.optimize_schedule_distribution(
+                target_window=TrafficWindow.LOW
+            )
+            response_time = time.time() - start_time
+            
+            success = isinstance(traffic_recommendations, list)
+            self.log_test_result("Traffic-Aware Scheduling", success, 
+                               f"Generated {len(traffic_recommendations)} traffic-aware recommendations", response_time)
+            
+            # Test scheduler dashboard and status
+            start_time = time.time()
+            scheduler_status = scheduler.get_scheduler_status()
+            response_time = time.time() - start_time
+            
+            success = (
+                isinstance(scheduler_status, dict) and
+                "is_running" in scheduler_status and
+                "statistics" in scheduler_status and
+                "upcoming_executions" in scheduler_status
+            )
+            
+            self.log_test_result("Scheduler Dashboard", success, 
+                               f"Status keys: {list(scheduler_status.keys()) if isinstance(scheduler_status, dict) else 'Invalid'}", response_time)
+            
+            # Test optimization dashboard
+            start_time = time.time()
+            optimization_dashboard = optimizer.get_optimization_dashboard()
+            response_time = time.time() - start_time
+            
+            success = (
+                isinstance(optimization_dashboard, dict) and
+                "optimization_strategy" in optimization_dashboard and
+                "system_health" in optimization_dashboard
+            )
+            
+            self.log_test_result("Optimization Dashboard", success, 
+                               f"Strategy: {optimization_dashboard.get('optimization_strategy', 'unknown')}", response_time)
+            
+            # Test execution logs
+            start_time = time.time()
+            execution_logs = scheduler.get_execution_logs(schedule_id, limit=10)
+            response_time = time.time() - start_time
+            
+            success = isinstance(execution_logs, list)
+            self.log_test_result("Execution Logs", success, 
+                               f"Retrieved {len(execution_logs)} log entries", response_time)
+            
+            # Test factory functions
+            start_time = time.time()
+            factory_scheduler = create_cron_scheduler(check_interval_seconds=10)
+            factory_optimizer = create_schedule_optimizer(factory_scheduler)
+            response_time = time.time() - start_time
+            
+            success = factory_scheduler is not None and factory_optimizer is not None
+            self.log_test_result("Factory Functions", success, 
+                               f"Factory scheduler and optimizer created: {success}", response_time)
+            
+            # Test graceful shutdown
+            start_time = time.time()
+            await scheduler.stop(graceful=True)
+            response_time = time.time() - start_time
+            
+            success = not scheduler.is_running
+            self.log_test_result("Scheduler Shutdown", success, 
+                               f"Scheduler stopped: {not scheduler.is_running}", response_time)
+            
+        except Exception as e:
+            self.log_test_result("Task 13 Cron Scheduling System", False, f"Exception: {str(e)}")
+    
+    async def test_integration_between_systems(self):
+        """Test integration between quality assurance, job management, and scheduling"""
+        logger.info("🔗 Testing Integration Between All Three Systems...")
+        
+        try:
+            # Import all systems
+            from services.quality_assurance_service import ContentQualityAssuranceService
+            from services.job_manager_service import BackgroundJobManager, JobPriority
+            from scheduling.cron_scheduler import CronScheduler, ScheduleType
+            
+            start_time = time.time()
+            
+            # Initialize all systems
+            qa_service = ContentQualityAssuranceService()
+            job_manager = BackgroundJobManager(max_concurrent_jobs=2)
+            scheduler = CronScheduler(check_interval_seconds=10)
+            
+            await job_manager.start()
+            await scheduler.start()
+            
+            response_time = time.time() - start_time
+            
+            success = all([qa_service, job_manager.is_running, scheduler.is_running])
+            self.log_test_result("System Integration Initialization", success, 
+                               f"All systems initialized: QA={qa_service is not None}, Jobs={job_manager.is_running}, Scheduler={scheduler.is_running}", response_time)
+            
+            # Test quality assurance with job management integration
+            start_time = time.time()
+            
+            async def quality_assessment_job(content_batch):
+                results = []
+                for content in content_batch:
+                    assessment = await qa_service.assess_content_quality(content)
+                    results.append(assessment)
+                return {"processed": len(results), "results": results}
+            
+            test_content_batch = [
+                {"question_text": "What is 2+2?", "options": ["A) 3", "B) 4", "C) 5"], "correct_answer": "B) 4"},
+                {"question_text": "What is 3+3?", "options": ["A) 5", "B) 6", "C) 7"], "correct_answer": "B) 6"}
+            ]
+            
+            job_id = await job_manager.submit_job(
+                test_content_batch,
+                quality_assessment_job,
+                JobPriority.HIGH,
+                job_name="QA Integration Test"
+            )
+            
+            await asyncio.sleep(1.0)  # Wait for processing
+            job_result = await job_manager.get_job_status(job_id)
+            response_time = time.time() - start_time
+            
+            success = (
+                job_result is not None and
+                job_result.get('status') in ['completed', 'success'] and
+                job_result.get('result', {}).get('processed', 0) == 2
+            )
+            
+            self.log_test_result("Quality Assurance + Job Management Integration", success, 
+                               f"Job status: {job_result.get('status', 'unknown')}, Processed: {job_result.get('result', {}).get('processed', 0)}", response_time)
+            
+            # Test scheduling with background jobs integration
+            start_time = time.time()
+            
+            async def scheduled_quality_check():
+                # Simulate scheduled quality check that uses job manager
+                job_id = await job_manager.submit_job(
+                    test_content_batch,
+                    quality_assessment_job,
+                    JobPriority.NORMAL,
+                    job_name="Scheduled QA Check"
+                )
+                return {"scheduled_job_id": job_id, "timestamp": datetime.utcnow().isoformat()}
+            
+            # Register the task function
+            scheduler.register_task_function("scheduled_qa_check", scheduled_quality_check)
+            
+            schedule_id = scheduler.add_schedule(
+                name="Quality Check Schedule",
+                cron_expression="*/2 * * * *",  # Every 2 minutes
+                task_function="scheduled_qa_check",
+                schedule_type=ScheduleType.CUSTOM,
+                description="Scheduled quality assurance check"
+            )
+            
+            response_time = time.time() - start_time
+            
+            success = schedule_id is not None
+            self.log_test_result("Scheduling + Job Management Integration", success, 
+                               f"Scheduled task created: {schedule_id is not None}", response_time)
+            
+            # Test overall system coordination
+            start_time = time.time()
+            
+            # Get status from all systems
+            qa_dashboard = await qa_service.get_quality_dashboard()
+            job_dashboard = await job_manager.get_job_dashboard()
+            scheduler_status = scheduler.get_scheduler_status()
+            
+            response_time = time.time() - start_time
+            
+            success = all([
+                isinstance(qa_dashboard, dict),
+                isinstance(job_dashboard, dict),
+                isinstance(scheduler_status, dict)
+            ])
+            
+            self.log_test_result("Overall System Coordination", success, 
+                               f"All dashboards accessible: QA={isinstance(qa_dashboard, dict)}, Jobs={isinstance(job_dashboard, dict)}, Scheduler={isinstance(scheduler_status, dict)}", response_time)
+            
+            # Test error handling and recovery
+            start_time = time.time()
+            
+            async def failing_job(data):
+                raise Exception("Simulated job failure")
+            
+            failing_job_id = await job_manager.submit_job(
+                {"test": "data"},
+                failing_job,
+                JobPriority.LOW,
+                job_name="Failing Job Test"
+            )
+            
+            await asyncio.sleep(0.5)  # Wait for failure
+            failed_job_status = await job_manager.get_job_status(failing_job_id)
+            response_time = time.time() - start_time
+            
+            success = (
+                failed_job_status is not None and
+                failed_job_status.get('status') in ['failed', 'error']
+            )
+            
+            self.log_test_result("Error Handling and Recovery", success, 
+                               f"Failed job handled correctly: {failed_job_status.get('status', 'unknown')}", response_time)
+            
+            # Cleanup
+            await job_manager.shutdown(graceful=True)
+            await scheduler.stop(graceful=True)
+            
+        except Exception as e:
+            self.log_test_result("System Integration Testing", False, f"Exception: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all tests for Tasks 11, 12, and 13"""
+        logger.info("🚀 Starting Tasks 11-13 Testing...")
+        start_time = time.time()
+        
+        # Run all test suites
+        await self.test_task_11_quality_assurance_system()
+        await self.test_task_12_background_job_management()
+        await self.test_task_13_cron_scheduling_system()
+        await self.test_integration_between_systems()
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 60)
+        logger.info("🎯 TASKS 11-13 TEST SUMMARY")
+        logger.info("=" * 60)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 60)
+        
+        # Show failed tests
+        failed_tests = [t for t in self.test_results["test_details"] if not t["success"]]
+        if failed_tests:
+            logger.info("❌ FAILED TESTS:")
+            for test in failed_tests:
+                logger.info(f"  - {test['test_name']}: {test['details']}")
+        
+        return self.test_results
+
 async def main():
     """Main test execution function"""
     logger.info("🎯 STARTING COMPREHENSIVE BACKEND TESTING")
