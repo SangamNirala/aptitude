@@ -178,7 +178,7 @@ class FocusedIntegrationTester:
             start_time = time.time()
             params = {
                 "category": "quantitative",
-                "difficulty": "medium",
+                "difficulty": "placement_ready",
                 "topic": "arithmetic",
                 "company_pattern": "general"
             }
