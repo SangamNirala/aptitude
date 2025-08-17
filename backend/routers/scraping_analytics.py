@@ -21,8 +21,7 @@ from models.analytics_models import (
 )
 from models.scraping_models import (
     ScrapingJobStatus, ScrapingSourceType, QualityGate, 
-    ScrapingQualityMetrics, ScrapingPerformanceLog, AntiDetectionLog,
-    AnalyticsTimeRange
+    ScrapingQualityMetrics, ScrapingPerformanceLog, AntiDetectionLog
 )
 from services.job_manager_service import BackgroundJobManager
 from services.source_management_service import SourceManagementService
