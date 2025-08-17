@@ -252,7 +252,7 @@ class IntegrationValidationTester:
                 
                 if response.status == 201:
                     data = await response.json()
-                    test_job_id = data.get("id")
+                    test_job_id = data.get("job_id")
                     self.created_job_ids.append(test_job_id)
                     
                     success = data.get("status") == "pending"
