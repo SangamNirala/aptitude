@@ -191,13 +191,14 @@ class IntegrationValidationTester:
         try:
             start_time = time.time()
             payload = {
-                "source_type": "geeksforgeeks",
+                "job_name": "Complex Integration Test Job",
+                "description": "Testing complex API parameters with multiple sources",
+                "source_names": ["geeksforgeeks"],
+                "max_questions_per_source": 10,
                 "target_categories": ["cs_fundamentals", "programming"],
-                "max_questions": 10,
-                "difficulty": "placement_ready",
-                "priority": 2,
+                "priority_level": 2,
                 "enable_ai_processing": True,
-                "quality_threshold": 0.8
+                "quality_threshold": 80.0
             }
             
             async with self.session.post(
