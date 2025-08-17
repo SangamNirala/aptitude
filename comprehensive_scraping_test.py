@@ -185,7 +185,8 @@ class ComprehensiveScrapingTester:
         
         try:
             start_time = time.time()
-            async with self.session.put(f"{self.base_url}/scraping/jobs/{job_id}/start") as response:
+            payload = {"priority": "normal", "custom_config": None}
+            async with self.session.put(f"{self.base_url}/scraping/jobs/{job_id}/start", json=payload) as response:
                 response_time = time.time() - start_time
                 
                 if response.status == 200:
