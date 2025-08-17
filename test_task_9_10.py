@@ -41,6 +41,7 @@ async def test_task_9_ai_content_processing():
             id=str(uuid.uuid4()),
             source_id="test_source",
             source_url="https://test.com/question1",
+            job_id="test_job_1",
             raw_question_text="What is 25% of 200?",
             raw_options=["A) 40", "B) 50", "C) 60", "D) 70"],
             raw_correct_answer="B) 50",
