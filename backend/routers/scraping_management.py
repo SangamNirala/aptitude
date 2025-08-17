@@ -62,7 +62,7 @@ async def initialize_scraping_services():
         await job_manager.start()
         
         # Initialize source management service  
-        source_manager = SourceManagementService()
+        source_manager = SourceManagementService(db)
         await source_manager.initialize_default_sources()
         
         # Initialize scraping engine
