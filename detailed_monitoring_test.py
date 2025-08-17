@@ -23,9 +23,9 @@ class DetailedMonitoringTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://integration-testing.preview.emergentagent.com/api"
+                    self.base_url = "https://e2e-test-results.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://integration-testing.preview.emergentagent.com/api"
+            self.base_url = "https://e2e-test-results.preview.emergentagent.com/api"
         
         self.session = None
     
