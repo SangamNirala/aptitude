@@ -31,9 +31,9 @@ class AIAptitudeAPITester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://8ed8af9d-dd5c-48d6-b248-14fe747d0df1.preview.emergentagent.com/api"
+                    self.base_url = "https://testdupe-detect.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://8ed8af9d-dd5c-48d6-b248-14fe747d0df1.preview.emergentagent.com/api"
+            self.base_url = "https://testdupe-detect.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {
