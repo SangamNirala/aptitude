@@ -27,7 +27,7 @@ threadpoolctl
 torch
 transformers
 sentence-transformers
-
+protobuf>=6.31.1
 
 
 
