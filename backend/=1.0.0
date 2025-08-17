@@ -1,0 +1,8 @@
+Looking in indexes: https://pypi.org/simple, https://d33sy5i8bnduwe.cloudfront.net/simple/
+Collecting httpcore
+  Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Requirement already satisfied: certifi in /root/.venv/lib/python3.11/site-packages (from httpcore) (2025.8.3)
+Requirement already satisfied: h11>=0.16 in /root/.venv/lib/python3.11/site-packages (from httpcore) (0.16.0)
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Installing collected packages: httpcore
+Successfully installed httpcore-1.0.9
