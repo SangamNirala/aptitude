@@ -4972,6 +4972,34 @@ async def main():
     logger.info("🎯 STARTING COMPREHENSIVE BACKEND TESTING")
     logger.info("=" * 80)
     
+    # Get backend URL
+    try:
+        with open('/app/frontend/.env', 'r') as f:
+            for line in f:
+                if line.startswith('REACT_APP_BACKEND_URL='):
+                    base_url = line.split('=')[1].strip() + "/api"
+                    break
+            else:
+                base_url = "https://scraping-test-hub.preview.emergentagent.com/api"
+    except:
+        base_url = "https://scraping-test-hub.preview.emergentagent.com/api"
+    
+    logger.info(f"Testing backend at: {base_url}")
+    
+    # Test Scraping Management APIs (Task 14)
+    logger.info("\n🎯 TESTING TASK 14: SCRAPING MANAGEMENT API ENDPOINTS")
+    logger.info("=" * 80)
+    
+    async with ScrapingManagementTester(base_url) as management_tester:
+        management_results = await management_tester.run_all_tests()
+    
+    # Test Scraping Analytics APIs (Task 15)
+    logger.info("\n📊 TESTING TASK 15: ANALYTICS & MONITORING API ENDPOINTS")
+    logger.info("=" * 80)
+    
+    async with ScrapingAnalyticsTester(base_url) as analytics_tester:
+        analytics_results = await analytics_tester.run_all_tests()
+    
     # Test Tasks 11-13 (Quality Assurance, Job Management, Scheduling)
     logger.info("\n🎯 TESTING TASKS 11-13: QUALITY ASSURANCE, JOB MANAGEMENT & SCHEDULING")
     logger.info("=" * 80)
@@ -5012,21 +5040,30 @@ async def main():
     logger.info("🎯 OVERALL TESTING SUMMARY")
     logger.info("=" * 80)
     
-    total_tests = (tasks_11_13_results["total_tests"] +
+    total_tests = (management_results["total_tests"] +
+                  analytics_results["total_tests"] +
+                  tasks_11_13_results["total_tests"] +
                   ai_processor_results["total_tests"] + 
                   duplicate_detector_results["total_tests"] +
                   extractor_results["total_tests"] + 
                   ai_results["total_tests"])
-    total_passed = (tasks_11_13_results["passed_tests"] +
+    total_passed = (management_results["passed_tests"] +
+                   analytics_results["passed_tests"] +
+                   tasks_11_13_results["passed_tests"] +
                    ai_processor_results["passed_tests"] + 
                    duplicate_detector_results["passed_tests"] +
                    extractor_results["passed_tests"] + 
                    ai_results["passed_tests"])
-    total_failed = (tasks_11_13_results["failed_tests"] +
+    total_failed = (management_results["failed_tests"] +
+                   analytics_results["failed_tests"] +
+                   tasks_11_13_results["failed_tests"] +
                    ai_processor_results["failed_tests"] + 
                    duplicate_detector_results["failed_tests"] +
                    extractor_results["failed_tests"] + 
                    ai_results["failed_tests"])
+    
+    logger.info(f"📋 TASK 14 - Scraping Management: {management_results['passed_tests']}/{management_results['total_tests']} passed ({(management_results['passed_tests']/max(management_results['total_tests'],1))*100:.1f}%)")
+    logger.info(f"📊 TASK 15 - Analytics & Monitoring: {analytics_results['passed_tests']}/{analytics_results['total_tests']} passed ({(analytics_results['passed_tests']/max(analytics_results['total_tests'],1))*100:.1f}%)")
     
     logger.info(f"📊 TASKS 11-13 - QUALITY ASSURANCE, JOB MANAGEMENT & SCHEDULING:")
     logger.info(f"   Tests: {tasks_11_13_results['total_tests']}, Passed: {tasks_11_13_results['passed_tests']}, Failed: {tasks_11_13_results['failed_tests']}")
@@ -5059,6 +5096,8 @@ async def main():
     logger.info("=" * 80)
 
     return {
+        "scraping_management_tests": management_results,
+        "scraping_analytics_tests": analytics_results,
         "tasks_11_13_tests": tasks_11_13_results,
         "ai_processor_tests": ai_processor_results,
         "duplicate_detector_tests": duplicate_detector_results,
