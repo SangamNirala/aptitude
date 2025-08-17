@@ -194,7 +194,10 @@
   run_ui: false
 
 ## test_plan:
-  current_focus: []
+  current_focus:
+    - "Content Quality Assurance System"
+    - "Background Job Management System" 
+    - "Cron-Based Scheduling System"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
