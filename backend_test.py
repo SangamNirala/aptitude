@@ -5567,11 +5567,10 @@ class TasksElevenToThirteenTester:
         return self.test_results
 
 async def main():
-    """Main test execution function"""
-    logger.info("🎯 STARTING COMPREHENSIVE BACKEND TESTING")
-    logger.info("=" * 80)
+    """Main test execution function for Tasks 14 & 15"""
+    logger.info("🚀 Starting Comprehensive Backend Testing for Tasks 14 & 15...")
     
-    # Get backend URL
+    # Get base URL
     try:
         with open('/app/frontend/.env', 'r') as f:
             for line in f:
@@ -5585,124 +5584,61 @@ async def main():
     
     logger.info(f"Testing backend at: {base_url}")
     
-    # Test Scraping Management APIs (Task 14)
-    logger.info("\n🎯 TESTING TASK 14: SCRAPING MANAGEMENT API ENDPOINTS")
-    logger.info("=" * 80)
+    # Test TASK 14 - Scraping Management
+    async with ScrapingManagementTester(base_url) as task14_tester:
+        task14_results = await task14_tester.run_all_tests()
     
-    async with ScrapingManagementTester(base_url) as management_tester:
-        management_results = await management_tester.run_all_tests()
-    
-    # Test Scraping Analytics APIs (Task 15)
-    logger.info("\n📊 TESTING TASK 15: ANALYTICS & MONITORING API ENDPOINTS")
-    logger.info("=" * 80)
-    
-    async with ScrapingAnalyticsTester(base_url) as analytics_tester:
-        analytics_results = await analytics_tester.run_all_tests()
-    
-    # Test Tasks 11-13 (Quality Assurance, Job Management, Scheduling)
-    logger.info("\n🎯 TESTING TASKS 11-13: QUALITY ASSURANCE, JOB MANAGEMENT & SCHEDULING")
-    logger.info("=" * 80)
-    
-    tasks_11_13_tester = TasksElevenToThirteenTester()
-    tasks_11_13_results = await tasks_11_13_tester.run_all_tests()
-    
-    # Test AI Content Processing Pipeline (TASK 9)
-    logger.info("\n🤖 TESTING TASK 9: AI CONTENT PROCESSING PIPELINE")
-    logger.info("=" * 80)
-    
-    ai_processor_tester = AIContentProcessingTester()
-    ai_processor_results = await ai_processor_tester.run_all_tests()
-    
-    # Test Advanced Duplicate Detection System (TASK 10)
-    logger.info("\n🔍 TESTING TASK 10: ADVANCED DUPLICATE DETECTION SYSTEM")
-    logger.info("=" * 80)
-    
-    duplicate_detector_tester = AdvancedDuplicateDetectionTester()
-    duplicate_detector_results = await duplicate_detector_tester.run_all_tests()
-    
-    # Test scraping extractors and coordinator (TASK 6-8)
-    logger.info("\n🔧 TESTING TASK 6-8: SCRAPING EXTRACTORS & COORDINATOR")
-    logger.info("=" * 80)
-    
-    async with ScrapingExtractorsTester() as extractor_tester:
-        extractor_results = await extractor_tester.run_all_tests()
-    
-    # Test existing AI services to ensure they still work
-    logger.info("\n🤖 TESTING EXISTING AI SERVICES")
-    logger.info("=" * 80)
-    
-    async with AIAptitudeAPITester() as ai_tester:
-        ai_results = await ai_tester.run_all_tests()
+    # Test TASK 15 - Analytics & Monitoring
+    async with ScrapingAnalyticsTester(base_url) as task15_tester:
+        task15_results = await task15_tester.run_all_tests()
     
     # Generate overall summary
-    logger.info("\n" + "=" * 80)
-    logger.info("🎯 OVERALL TESTING SUMMARY")
-    logger.info("=" * 80)
-    
-    total_tests = (management_results["total_tests"] +
-                  analytics_results["total_tests"] +
-                  tasks_11_13_results["total_tests"] +
-                  ai_processor_results["total_tests"] + 
-                  duplicate_detector_results["total_tests"] +
-                  extractor_results["total_tests"] + 
-                  ai_results["total_tests"])
-    total_passed = (management_results["passed_tests"] +
-                   analytics_results["passed_tests"] +
-                   tasks_11_13_results["passed_tests"] +
-                   ai_processor_results["passed_tests"] + 
-                   duplicate_detector_results["passed_tests"] +
-                   extractor_results["passed_tests"] + 
-                   ai_results["passed_tests"])
-    total_failed = (management_results["failed_tests"] +
-                   analytics_results["failed_tests"] +
-                   tasks_11_13_results["failed_tests"] +
-                   ai_processor_results["failed_tests"] + 
-                   duplicate_detector_results["failed_tests"] +
-                   extractor_results["failed_tests"] + 
-                   ai_results["failed_tests"])
-    
-    logger.info(f"📋 TASK 14 - Scraping Management: {management_results['passed_tests']}/{management_results['total_tests']} passed ({(management_results['passed_tests']/max(management_results['total_tests'],1))*100:.1f}%)")
-    logger.info(f"📊 TASK 15 - Analytics & Monitoring: {analytics_results['passed_tests']}/{analytics_results['total_tests']} passed ({(analytics_results['passed_tests']/max(analytics_results['total_tests'],1))*100:.1f}%)")
-    
-    logger.info(f"📊 TASKS 11-13 - QUALITY ASSURANCE, JOB MANAGEMENT & SCHEDULING:")
-    logger.info(f"   Tests: {tasks_11_13_results['total_tests']}, Passed: {tasks_11_13_results['passed_tests']}, Failed: {tasks_11_13_results['failed_tests']}")
-    logger.info(f"   Success Rate: {(tasks_11_13_results['passed_tests'] / max(tasks_11_13_results['total_tests'], 1)) * 100:.1f}%")
-    
-    logger.info(f"📊 TASK 9 - AI CONTENT PROCESSING PIPELINE:")
-    logger.info(f"   Tests: {ai_processor_results['total_tests']}, Passed: {ai_processor_results['passed_tests']}, Failed: {ai_processor_results['failed_tests']}")
-    logger.info(f"   Success Rate: {(ai_processor_results['passed_tests'] / max(ai_processor_results['total_tests'], 1)) * 100:.1f}%")
-    
-    logger.info(f"📊 TASK 10 - ADVANCED DUPLICATE DETECTION SYSTEM:")
-    logger.info(f"   Tests: {duplicate_detector_results['total_tests']}, Passed: {duplicate_detector_results['passed_tests']}, Failed: {duplicate_detector_results['failed_tests']}")
-    logger.info(f"   Success Rate: {(duplicate_detector_results['passed_tests'] / max(duplicate_detector_results['total_tests'], 1)) * 100:.1f}%")
-    
-    logger.info(f"📊 SCRAPING EXTRACTORS & COORDINATOR:")
-    logger.info(f"   Tests: {extractor_results['total_tests']}, Passed: {extractor_results['passed_tests']}, Failed: {extractor_results['failed_tests']}")
-    logger.info(f"   Success Rate: {(extractor_results['passed_tests'] / max(extractor_results['total_tests'], 1)) * 100:.1f}%")
-    
-    logger.info(f"📊 AI SERVICES:")
-    logger.info(f"   Tests: {ai_results['total_tests']}, Passed: {ai_results['passed_tests']}, Failed: {ai_results['failed_tests']}")
-    logger.info(f"   Success Rate: {(ai_results['passed_tests'] / max(ai_results['total_tests'], 1)) * 100:.1f}%")
-    
-    logger.info(f"📊 OVERALL:")
-    logger.info(f"   Total Tests: {total_tests}")
-    logger.info(f"   ✅ Total Passed: {total_passed}")
-    logger.info(f"   ❌ Total Failed: {total_failed}")
-    logger.info(f"   🎯 Overall Success Rate: {(total_passed / max(total_tests, 1)) * 100:.1f}%")
+    total_tests = task14_results["total_tests"] + task15_results["total_tests"]
+    total_passed = task14_results["passed_tests"] + task15_results["passed_tests"]
+    total_failed = task14_results["failed_tests"] + task15_results["failed_tests"]
     
     logger.info("=" * 80)
-    logger.info("🏁 COMPREHENSIVE BACKEND TESTING COMPLETED")
+    logger.info("🎯 COMPREHENSIVE TASKS 14 & 15 TESTING SUMMARY")
     logger.info("=" * 80)
-
+    logger.info(f"TASK 14 (Scraping Management): {task14_results['passed_tests']}/{task14_results['total_tests']} passed ({(task14_results['passed_tests']/max(task14_results['total_tests'],1))*100:.1f}%)")
+    logger.info(f"TASK 15 (Analytics & Monitoring): {task15_results['passed_tests']}/{task15_results['total_tests']} passed ({(task15_results['passed_tests']/max(task15_results['total_tests'],1))*100:.1f}%)")
+    logger.info("-" * 80)
+    logger.info(f"OVERALL: {total_passed}/{total_tests} tests passed ({(total_passed/max(total_tests,1))*100:.1f}%)")
+    logger.info("=" * 80)
+    
+    # Show individual endpoint results
+    logger.info("\n📊 DETAILED ENDPOINT RESULTS:")
+    logger.info("\nTASK 14 - Scraping Management (7 endpoints):")
+    for test in task14_results["test_details"]:
+        status = "✅" if test["success"] else "❌"
+        logger.info(f"  {status} {test['test_name']}")
+    
+    logger.info("\nTASK 15 - Analytics & Monitoring (8 endpoints):")
+    for test in task15_results["test_details"]:
+        status = "✅" if test["success"] else "❌"
+        logger.info(f"  {status} {test['test_name']}")
+    
+    # Show failed tests details
+    all_failed = []
+    all_failed.extend([t for t in task14_results["test_details"] if not t["success"]])
+    all_failed.extend([t for t in task15_results["test_details"] if not t["success"]])
+    
+    if all_failed:
+        logger.info("\n❌ FAILED TESTS DETAILS:")
+        for test in all_failed:
+            logger.info(f"  - {test['test_name']}: {test['details']}")
+    else:
+        logger.info("\n🎉 ALL TESTS PASSED!")
+    
     return {
-        "scraping_management_tests": management_results,
-        "scraping_analytics_tests": analytics_results,
-        "tasks_11_13_tests": tasks_11_13_results,
-        "ai_processor_tests": ai_processor_results,
-        "duplicate_detector_tests": duplicate_detector_results,
-        "extractor_tests": extractor_results,
-        "ai_services_tests": ai_results,
-        "overall_success_rate": (total_passed / max(total_tests, 1)) * 100.0
+        "task_14_scraping_management": task14_results,
+        "task_15_analytics_monitoring": task15_results,
+        "overall": {
+            "total_tests": total_tests,
+            "passed_tests": total_passed,
+            "failed_tests": total_failed,
+            "success_rate": (total_passed/max(total_tests,1))*100
+        }
     }
 
 
