@@ -6723,8 +6723,8 @@ class TasksElevenToThirteenTester:
         return self.test_results
 
 async def main():
-    """Main test execution function for Tasks 14 & 15"""
-    logger.info("🚀 Starting Comprehensive Backend Testing for Tasks 14 & 15...")
+    """Main test execution function - Focus on Task 16: Real-Time Monitoring Dashboard Backend"""
+    logger.info("🚀 Starting Comprehensive Backend Testing - Focus on Task 16...")
     
     # Get base URL
     try:
@@ -6740,53 +6740,59 @@ async def main():
     
     logger.info(f"Testing backend at: {base_url}")
     
-    # Test TASK 14 - Scraping Management
+    # Test basic health check first
+    async with AIAptitudeAPITester() as basic_tester:
+        basic_results = await basic_tester.run_all_tests()
+    
+    # Test TASK 16 - Real-Time Monitoring Dashboard Backend (PRIMARY FOCUS)
+    async with MonitoringDashboardTester() as monitoring_tester:
+        monitoring_results = await monitoring_tester.run_all_tests()
+    
+    # Test TASK 14 - Scraping Management (for context)
     async with ScrapingManagementTester(base_url) as task14_tester:
         task14_results = await task14_tester.run_all_tests()
     
-    # Test TASK 15 - Analytics & Monitoring
+    # Test TASK 15 - Analytics & Monitoring (for context)
     async with ScrapingAnalyticsTester(base_url) as task15_tester:
         task15_results = await task15_tester.run_all_tests()
     
     # Generate overall summary
-    total_tests = task14_results["total_tests"] + task15_results["total_tests"]
-    total_passed = task14_results["passed_tests"] + task15_results["passed_tests"]
-    total_failed = task14_results["failed_tests"] + task15_results["failed_tests"]
+    total_tests = (basic_results["total_tests"] + monitoring_results["total_tests"] + 
+                  task14_results["total_tests"] + task15_results["total_tests"])
+    total_passed = (basic_results["passed_tests"] + monitoring_results["passed_tests"] + 
+                   task14_results["passed_tests"] + task15_results["passed_tests"])
+    total_failed = (basic_results["failed_tests"] + monitoring_results["failed_tests"] + 
+                   task14_results["failed_tests"] + task15_results["failed_tests"])
     
     logger.info("=" * 80)
-    logger.info("🎯 COMPREHENSIVE TASKS 14 & 15 TESTING SUMMARY")
+    logger.info("🎯 COMPREHENSIVE BACKEND TESTING SUMMARY")
     logger.info("=" * 80)
+    logger.info(f"Basic Health Tests: {basic_results['passed_tests']}/{basic_results['total_tests']} passed ({(basic_results['passed_tests']/max(basic_results['total_tests'],1))*100:.1f}%)")
+    logger.info(f"🎯 TASK 16 (Monitoring Dashboard): {monitoring_results['passed_tests']}/{monitoring_results['total_tests']} passed ({(monitoring_results['passed_tests']/max(monitoring_results['total_tests'],1))*100:.1f}%)")
     logger.info(f"TASK 14 (Scraping Management): {task14_results['passed_tests']}/{task14_results['total_tests']} passed ({(task14_results['passed_tests']/max(task14_results['total_tests'],1))*100:.1f}%)")
     logger.info(f"TASK 15 (Analytics & Monitoring): {task15_results['passed_tests']}/{task15_results['total_tests']} passed ({(task15_results['passed_tests']/max(task15_results['total_tests'],1))*100:.1f}%)")
     logger.info("-" * 80)
     logger.info(f"OVERALL: {total_passed}/{total_tests} tests passed ({(total_passed/max(total_tests,1))*100:.1f}%)")
     logger.info("=" * 80)
     
-    # Show individual endpoint results
-    logger.info("\n📊 DETAILED ENDPOINT RESULTS:")
-    logger.info("\nTASK 14 - Scraping Management (7 endpoints):")
-    for test in task14_results["test_details"]:
+    # Show TASK 16 results in detail (PRIMARY FOCUS)
+    logger.info("\n🎯 TASK 16 - REAL-TIME MONITORING DASHBOARD RESULTS:")
+    for test in monitoring_results["test_details"]:
         status = "✅" if test["success"] else "❌"
         logger.info(f"  {status} {test['test_name']}")
     
-    logger.info("\nTASK 15 - Analytics & Monitoring (8 endpoints):")
-    for test in task15_results["test_details"]:
-        status = "✅" if test["success"] else "❌"
-        logger.info(f"  {status} {test['test_name']}")
-    
-    # Show failed tests details
-    all_failed = []
-    all_failed.extend([t for t in task14_results["test_details"] if not t["success"]])
-    all_failed.extend([t for t in task15_results["test_details"] if not t["success"]])
-    
-    if all_failed:
-        logger.info("\n❌ FAILED TESTS DETAILS:")
-        for test in all_failed:
+    # Show failed tests details for Task 16
+    task16_failed = [t for t in monitoring_results["test_details"] if not t["success"]]
+    if task16_failed:
+        logger.info("\n❌ TASK 16 FAILED TESTS DETAILS:")
+        for test in task16_failed:
             logger.info(f"  - {test['test_name']}: {test['details']}")
     else:
-        logger.info("\n🎉 ALL TESTS PASSED!")
+        logger.info("\n🎉 TASK 16 - ALL MONITORING DASHBOARD TESTS PASSED!")
     
     return {
+        "basic_health": basic_results,
+        "task_16_monitoring_dashboard": monitoring_results,
         "task_14_scraping_management": task14_results,
         "task_15_analytics_monitoring": task15_results,
         "overall": {
