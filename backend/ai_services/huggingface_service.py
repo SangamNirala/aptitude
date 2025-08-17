@@ -9,7 +9,16 @@ except ImportError as e:
     AutoTokenizer = None
     AutoModel = None
     TRANSFORMERS_AVAILABLE = False
-from sentence_transformers import SentenceTransformer
+
+try:
+    from sentence_transformers import SentenceTransformer
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: SentenceTransformers import failed: {e}")
+    class SentenceTransformer:
+        def __init__(self, *args, **kwargs):
+            raise RuntimeError("SentenceTransformers not available due to import error")
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
 import torch
 import numpy as np
 import os
