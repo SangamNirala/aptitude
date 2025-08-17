@@ -403,7 +403,7 @@ class ComprehensiveScrapingTester:
         # Test system status
         try:
             start_time = time.time()
-            async with self.session.get(f"{self.base_url}/scraping/system/status") as response:
+            async with self.session.get(f"{self.base_url}/scraping/system-status") as response:
                 response_time = time.time() - start_time
                 
                 if response.status == 200:
