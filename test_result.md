@@ -364,6 +364,18 @@
         - working: true
         - agent: "testing"
         - comment: "COMPREHENSIVE TESTING COMPLETED: Achieved 75.0% success rate (6/8 tests passed) covering all 8 TASK 15 endpoints. ✅ FULLY VERIFIED: 1) GET /api/scraping/analytics/performance - Performance metrics retrieval working, 2) GET /api/scraping/analytics/quality - Quality analytics operational, 3) GET /api/scraping/analytics/jobs - Job analytics with resource utilization working, 4) GET /api/scraping/analytics/system-health - System health monitoring functional, 5) GET /api/scraping/analytics/monitoring/real-time - Real-time monitoring dashboard data working, 6) GET /api/scraping/analytics/reports - Analytics report generation operational. ❌ MINOR ISSUES: 1) GET /api/scraping/analytics/sources returns empty data (endpoint works but no source data available), 2) GET /api/scraping/analytics/trends returns valid data but test criteria too strict. All core analytics endpoints functional with proper data processing and response formatting."
+
+  - task: "Real-Time Monitoring Dashboard Backend"
+    implemented: true
+    working: "NA"
+    file: "backend/services/monitoring_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "main"
+        - comment: "TASK 16: Implemented comprehensive Real-Time Monitoring Dashboard Backend with: 1) MonitoringService - Real-time WebSocket streaming for job status, performance metrics aggregation, system health monitoring with psutil integration, alert system integration, historical data APIs, and comprehensive event tracking, 2) AlertsManager - Alert lifecycle management (create/acknowledge/resolve), notification system with multiple channels, alert rules engine with conditions, suppression and deduplication, background processing loops, and comprehensive statistics, 3) Monitoring Dashboard Router - WebSocket endpoint for real-time streaming, system status/health endpoints, alert management APIs, event and metrics endpoints, comprehensive dashboard data API. Fixed all critical import issues identified by testing agent: removed non-existent AlertRule/NotificationConfig imports, properly integrated with existing job_manager and source_manager services, added websockets dependency. All services initialize properly with dependency injection and avoid circular imports."
   
   - task: "Selenium-Based Scraping Engine"
     implemented: true
