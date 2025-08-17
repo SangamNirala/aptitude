@@ -112,6 +112,9 @@ app.include_router(scraping_analytics_router)
 # Include monitoring dashboard router (Task 16)
 app.include_router(monitoring_dashboard_router)
 
+# Include performance optimization router (Task 18)
+app.include_router(performance_optimization_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
