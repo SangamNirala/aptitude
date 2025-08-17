@@ -176,16 +176,16 @@ class FocusedIntegrationTester:
         # Test AI question generation
         try:
             start_time = time.time()
-            payload = {
+            params = {
                 "category": "quantitative",
                 "difficulty": "medium",
-                "count": 2,
-                "company_focus": "general"
+                "topic": "arithmetic",
+                "company_pattern": "general"
             }
             
             async with self.session.post(
                 f"{self.base_url}/questions/generate-ai",
-                json=payload
+                params=params
             ) as response:
                 response_time = time.time() - start_time
                 
