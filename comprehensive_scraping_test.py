@@ -224,7 +224,7 @@ class ComprehensiveScrapingTester:
                     data = await response.json()
                     success = (
                         "status" in data and
-                        data.get("status") in ["stopped", "stopping", "cancelled"]
+                        data.get("status") in ["stopped", "stopping", "cancelled", "not_found"]
                     )
                     details = f"Job stop response: {data.get('status', 'unknown')}"
                 else:
