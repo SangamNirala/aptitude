@@ -52,3 +52,5 @@ websocket-client>=1.6.0
 pyee>=11.0.0
 multidict>=6.6.0
 attrs>=25.0.0
+-e yarl>=1.20.0
+propcache>=0.3.0
