@@ -337,7 +337,7 @@ class IntegrationTestRunner:
             }
             
             async with self.session.post(
-                f"{self.base_url}/ai-questions/generate",
+                f"{self.base_url}/questions/generate-ai",
                 json=payload
             ) as response:
                 response_time = time.time() - start_time
@@ -346,11 +346,11 @@ class IntegrationTestRunner:
                 if response.status == 200:
                     data = await response.json()
                     success = (
-                        "questions" in data and
-                        isinstance(data["questions"], list) and
-                        len(data["questions"]) > 0
+                        "question_text" in data and
+                        "options" in data and
+                        len(data.get("options", [])) > 0
                     )
-                    details = f"Generated {len(data.get('questions', []))} AI questions"
+                    details = f"Generated AI question with {len(data.get('options', []))} options"
                     if success:
                         tests_passed += 1
                 else:
@@ -374,7 +374,7 @@ class IntegrationTestRunner:
             }
             
             async with self.session.post(
-                f"{self.base_url}/ai-questions/feedback",
+                f"{self.base_url}/questions/instant-feedback",
                 json=payload
             ) as response:
                 response_time = time.time() - start_time
