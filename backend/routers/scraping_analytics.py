@@ -1015,18 +1015,21 @@ async def generate_analytics_report(
         scraping_system_health = None
         
         if include_scraping_analytics:
-            # Get source analytics
-            scraping_source_analytics = await get_source_analytics(
-                time_range=AnalyticsTimeRange.CUSTOM
+            # Get source analytics - call with proper parameters
+            scraping_source_analytics = await _get_source_analytics_internal(
+                time_range=AnalyticsTimeRange.CUSTOM,
+                start_time=start_time,
+                end_time=end_time
             )
             
-            # Get job analytics
-            scraping_job_analytics = await get_job_analytics(
-                time_range=AnalyticsTimeRange.CUSTOM
+            # Get job analytics - call internal function
+            scraping_job_analytics = await _get_job_analytics_internal(
+                start_time=start_time,
+                end_time=end_time
             )
             
-            # Get system health
-            scraping_system_health = await get_system_health()
+            # Get system health - call internal function
+            scraping_system_health = await _get_system_health_internal()
         
         # Generate insights and recommendations
         key_findings = []
