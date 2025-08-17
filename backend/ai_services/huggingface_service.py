@@ -1,4 +1,14 @@
-from transformers import pipeline, AutoTokenizer, AutoModel
+try:
+    from transformers import pipeline, AutoTokenizer, AutoModel
+    TRANSFORMERS_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Transformers pipeline import failed: {e}")
+    # Create mock pipeline function for compatibility
+    def pipeline(*args, **kwargs):
+        raise RuntimeError("Transformers pipeline not available due to import error")
+    AutoTokenizer = None
+    AutoModel = None
+    TRANSFORMERS_AVAILABLE = False
 from sentence_transformers import SentenceTransformer
 import torch
 import numpy as np
