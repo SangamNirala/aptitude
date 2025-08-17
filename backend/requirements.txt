@@ -16,6 +16,15 @@ scikit-learn
 pyarrow
 multiprocess
 xxhash
+google-api-core
+grpcio
+httplib2
+uritemplate
+joblib
+threadpoolctl
+torch
+transformers
+sentence-transformers
 
 
 
