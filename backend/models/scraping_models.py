@@ -263,6 +263,11 @@ class ProcessedScrapedQuestion(BaseModel):
     final_status: str = "pending"  # pending, approved, rejected, needs_review
     approved_at: Optional[datetime] = None
     
+    # Processing Metadata
+    processing_timestamp: datetime = Field(default_factory=datetime.utcnow)
+    processing_duration_seconds: float = 0.0
+    ai_metadata: Dict[str, Any] = {}
+    
     processed_at: datetime = Field(default_factory=datetime.utcnow)
 
 # =============================================================================
