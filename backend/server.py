@@ -151,12 +151,15 @@ async def startup_event():
     try:
         from routers.scraping_management import initialize_scraping_services
         from routers.scraping_analytics import initialize_analytics_services
+        # Import monitoring dashboard initialization (Task 16)
+        from routers.monitoring_dashboard import initialize_monitoring_services
         
         await initialize_scraping_services()
         await initialize_analytics_services()
-        logger.info("✅ Scraping services initialized successfully")
+        await initialize_monitoring_services()
+        logger.info("✅ Scraping and monitoring services initialized successfully")
     except Exception as e:
-        logger.error(f"❌ Scraping services initialization failed: {str(e)}")
+        logger.error(f"❌ Services initialization failed: {str(e)}")
     
     # Create indexes for performance
     try:
