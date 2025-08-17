@@ -21,17 +21,8 @@ class IntegrationTestRunner:
     """Simplified integration test runner for Task 17"""
     
     def __init__(self):
-        # Get backend URL from environment
-        try:
-            with open('/app/frontend/.env', 'r') as f:
-                for line in f:
-                    if line.startswith('REACT_APP_BACKEND_URL='):
-                        self.base_url = line.split('=')[1].strip() + "/api"
-                        break
-                else:
-                    self.base_url = "https://integration-testing.preview.emergentagent.com/api"
-        except:
-            self.base_url = "https://integration-testing.preview.emergentagent.com/api"
+        # Use localhost for testing since external URL might have issues
+        self.base_url = "http://localhost:8001/api"
         
         self.session = None
         self.test_results = {
