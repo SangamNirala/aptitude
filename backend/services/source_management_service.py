@@ -185,6 +185,22 @@ class SourceManagementService:
         except Exception as e:
             logger.error(f"Failed to get source {name}: {str(e)}")
             return None
+
+    async def get_source(self, source_id: str) -> Optional[DataSourceConfig]:
+        """Get source configuration by ID"""
+        try:
+            source_doc = await self.sources_collection.find_one({
+                "id": source_id,
+                "is_active": True
+            })
+            
+            if source_doc:
+                return DataSourceConfig(**source_doc)
+            return None
+            
+        except Exception as e:
+            logger.error(f"Failed to get source {source_id}: {str(e)}")
+            return None
     
     async def get_source_targets(self, source_id: str, category: Optional[str] = None) -> List[ScrapingTarget]:
         """Get targets for a specific source, optionally filtered by category"""
