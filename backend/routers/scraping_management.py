@@ -47,7 +47,12 @@ scraping_engine: Optional[ScrapingEngine] = None
 
 async def initialize_scraping_services():
     """Initialize scraping management services"""
-    global job_manager, source_manager, scraping_engine
+    global job_manager, source_manager, scraping_engine, client, db
+    
+    # Initialize database connection
+    mongo_url = os.environ['MONGO_URL']
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[os.environ['DB_NAME']]
     
     try:
         logger.info("Initializing scraping management services...")
