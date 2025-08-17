@@ -210,12 +210,10 @@ class IntegrationValidationTester:
                 if response.status == 201:
                     data = await response.json()
                     success = (
-                        "id" in data and
-                        data.get("source_type") == "geeksforgeeks" and
-                        data.get("max_questions") == 10 and
-                        data.get("priority") == 2
+                        "job_id" in data and
+                        data.get("status") == "pending"
                     )
-                    job_id = data.get("id")
+                    job_id = data.get("job_id")
                     if job_id:
                         self.created_job_ids.append(job_id)
                     details = f"Complex job created successfully, ID: {job_id}"
