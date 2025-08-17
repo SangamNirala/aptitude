@@ -425,7 +425,7 @@ class ComprehensiveScrapingTester:
         # Test health endpoint
         try:
             start_time = time.time()
-            async with self.session.get(f"{self.base_url}/health") as response:
+            async with self.session.get(f"{self.base_url}/scraping/health") as response:
                 response_time = time.time() - start_time
                 
                 if response.status == 200:
