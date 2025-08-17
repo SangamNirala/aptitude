@@ -646,7 +646,7 @@ class ComprehensiveScrapingTester:
             }
             
             async with self.session.post(
-                f"{self.base_url}/scraping/analytics/report",
+                f"{self.base_url}/scraping/analytics/reports",
                 json=payload
             ) as response:
                 response_time = time.time() - start_time
