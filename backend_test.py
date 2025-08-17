@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class AIAptitudeAPITester:
     def __init__(self):
         # Get backend URL from environment
-        self.base_url = "https://scrapetest.preview.emergentagent.com/api"
+        self.base_url = "https://scraping-test-debug.preview.emergentagent.com/api"
         self.session = None
         self.test_results = {
             "total_tests": 0,
