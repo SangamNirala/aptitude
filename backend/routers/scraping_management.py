@@ -362,13 +362,29 @@ async def start_job(
                 detail="Job manager not available"
             )
         
-        # Get current job status
-        current_status = await job_manager.get_job_status(job_id)
-        if not current_status:
+        # Get current job status from database first
+        job_doc = await db.scraping_jobs.find_one({"id": job_id})
+        if not job_doc:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Job {job_id} not found"
             )
+        
+        # Try to get live status from job manager
+        current_status = None
+        if job_manager:
+            current_status = await job_manager.get_job_status(job_id)
+        
+        # If no live status, use database status
+        if not current_status:
+            current_job_status = ScrapingJobStatus(job_doc["status"])
+            # Create a minimal status response for database jobs
+            class SimpleJobStatus:
+                def __init__(self, status):
+                    self.status = status
+            current_status = SimpleJobStatus(current_job_status)
+        else:
+            current_job_status = current_status.status
         
         if current_status.status == ScrapingJobStatus.RUNNING:
             return JobControlResponse(
