@@ -171,10 +171,10 @@ class SourceManagementService:
             return []
     
     async def get_source_by_name(self, name: str) -> Optional[DataSourceConfig]:
-        """Get source configuration by name"""
+        """Get source configuration by name (case-insensitive)"""
         try:
             source_doc = await self.sources_collection.find_one({
-                "name": name,
+                "name": {"$regex": f"^{name}$", "$options": "i"},
                 "is_active": True
             })
             
