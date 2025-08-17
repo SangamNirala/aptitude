@@ -46,6 +46,411 @@ class MonitoringDashboardTester:
             "performance_metrics": {}
         }
         self.created_alert_ids = []  # Track created alerts for cleanup
+    
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+        
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.session:
+            await self.session.close()
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_system_status_endpoints(self):
+        """Test system status and health endpoints"""
+        logger.info("🔍 Testing System Status & Health Endpoints...")
+        
+        # Test monitoring system status
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/monitoring/status") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "status" in data and
+                        "services" in data and
+                        "timestamp" in data
+                    )
+                    details = f"Status: {data.get('status')}, Services: {len(data.get('services', {}))}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Monitoring System Status", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Monitoring System Status", False, f"Exception: {str(e)}")
+        
+        # Test system health status
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/monitoring/health") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "overall_status" in data and
+                        "services" in data and
+                        "cpu_usage" in data and
+                        "memory_usage" in data and
+                        "timestamp" in data
+                    )
+                    details = f"Overall: {data.get('overall_status')}, CPU: {data.get('cpu_usage', 0):.1f}%, Memory: {data.get('memory_usage', 0):.1f}%"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("System Health Status", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("System Health Status", False, f"Exception: {str(e)}")
+        
+        # Test performance metrics
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/monitoring/metrics") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "timestamp" in data and
+                        "uptime_hours" in data and
+                        "metrics" in data
+                    )
+                    details = f"Uptime: {data.get('uptime_hours', 0):.2f}h, Metrics: {len(data.get('metrics', {}))}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Performance Metrics", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Performance Metrics", False, f"Exception: {str(e)}")
+    
+    async def test_alert_management_endpoints(self):
+        """Test alert management endpoints"""
+        logger.info("🚨 Testing Alert Management Endpoints...")
+        
+        # Test list alerts
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/monitoring/alerts") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = isinstance(data, list)
+                    details = f"Retrieved {len(data)} alerts"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("List Alerts", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("List Alerts", False, f"Exception: {str(e)}")
+        
+        # Test create alert
+        created_alert_id = None
+        try:
+            start_time = time.time()
+            payload = {
+                "title": "Test Alert for Monitoring Dashboard",
+                "description": "This is a test alert created during monitoring dashboard testing",
+                "severity": "warning",
+                "category": "system",
+                "source": "test_suite",
+                "metadata": {"test": True, "created_by": "monitoring_test"},
+                "tags": ["test", "monitoring", "dashboard"]
+            }
+            
+            async with self.session.post(
+                f"{self.base_url}/monitoring/alerts",
+                json=payload
+            ) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "id" in data and
+                        "title" in data and
+                        data["title"] == payload["title"] and
+                        data["severity"] == payload["severity"]
+                    )
+                    created_alert_id = data.get("id")
+                    if created_alert_id:
+                        self.created_alert_ids.append(created_alert_id)
+                    details = f"Created alert ID: {created_alert_id}, Title: {data.get('title', 'N/A')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Create Alert", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Create Alert", False, f"Exception: {str(e)}")
+        
+        # Test acknowledge alert (if we created one)
+        if created_alert_id:
+            try:
+                start_time = time.time()
+                payload = {"action_by": "test_user"}
+                
+                async with self.session.put(
+                    f"{self.base_url}/monitoring/alerts/{created_alert_id}/acknowledge",
+                    json=payload
+                ) as response:
+                    response_time = time.time() - start_time
+                    
+                    if response.status == 200:
+                        data = await response.json()
+                        success = (
+                            data.get("status") == "acknowledged" and
+                            data.get("acknowledged_by") == "test_user"
+                        )
+                        details = f"Alert acknowledged by: {data.get('acknowledged_by')}, Status: {data.get('status')}"
+                    else:
+                        success = False
+                        error_text = await response.text()
+                        details = f"Status: {response.status}, Error: {error_text[:200]}"
+                    
+                    self.log_test_result("Acknowledge Alert", success, details, response_time)
+                    
+            except Exception as e:
+                self.log_test_result("Acknowledge Alert", False, f"Exception: {str(e)}")
+            
+            # Test resolve alert
+            try:
+                start_time = time.time()
+                payload = {"action_by": "test_user"}
+                
+                async with self.session.put(
+                    f"{self.base_url}/monitoring/alerts/{created_alert_id}/resolve",
+                    json=payload
+                ) as response:
+                    response_time = time.time() - start_time
+                    
+                    if response.status == 200:
+                        data = await response.json()
+                        success = (
+                            "message" in data and
+                            "resolved successfully" in data["message"]
+                        )
+                        details = f"Resolution message: {data.get('message', 'N/A')}"
+                    else:
+                        success = False
+                        error_text = await response.text()
+                        details = f"Status: {response.status}, Error: {error_text[:200]}"
+                    
+                    self.log_test_result("Resolve Alert", success, details, response_time)
+                    
+            except Exception as e:
+                self.log_test_result("Resolve Alert", False, f"Exception: {str(e)}")
+        
+        # Test alert statistics
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/monitoring/alerts/statistics") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "total_active" in data and
+                        "by_severity" in data and
+                        "by_category" in data and
+                        "by_status" in data
+                    )
+                    details = f"Active alerts: {data.get('total_active', 0)}, Rules: {data.get('rules_configured', 0)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Alert Statistics", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Alert Statistics", False, f"Exception: {str(e)}")
+    
+    async def test_events_and_metrics_endpoints(self):
+        """Test event and metrics endpoints"""
+        logger.info("📊 Testing Events & Metrics Endpoints...")
+        
+        # Test recent events
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/monitoring/events?limit=50") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = isinstance(data, list)
+                    details = f"Retrieved {len(data)} events"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Recent Events", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Recent Events", False, f"Exception: {str(e)}")
+        
+        # Test metric history
+        try:
+            start_time = time.time()
+            metric_name = "system.cpu.usage"
+            async with self.session.get(f"{self.base_url}/monitoring/metrics/{metric_name}/history?hours=1") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "metric_name" in data and
+                        "data_points" in data and
+                        "period_hours" in data and
+                        data["metric_name"] == metric_name
+                    )
+                    details = f"Metric: {data.get('metric_name')}, Data points: {len(data.get('data_points', []))}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Metric History", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Metric History", False, f"Exception: {str(e)}")
+        
+        # Test comprehensive dashboard data
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/monitoring/dashboard") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "system_health" in data and
+                        "performance_metrics" in data and
+                        "active_alerts" in data and
+                        "recent_events" in data and
+                        "timestamp" in data
+                    )
+                    details = f"Health: {data.get('system_health', {}).get('overall_status', 'N/A')}, Alerts: {len(data.get('active_alerts', []))}, Events: {len(data.get('recent_events', []))}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Dashboard Data", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Dashboard Data", False, f"Exception: {str(e)}")
+    
+    async def test_websocket_connection(self):
+        """Test WebSocket real-time streaming"""
+        logger.info("🔌 Testing WebSocket Real-Time Streaming...")
+        
+        try:
+            import websockets
+            
+            # Convert HTTP URL to WebSocket URL
+            ws_url = self.base_url.replace("https://", "wss://").replace("http://", "ws://") + "/monitoring/ws"
+            
+            start_time = time.time()
+            
+            # Test WebSocket connection
+            try:
+                async with websockets.connect(ws_url, timeout=10) as websocket:
+                    response_time = time.time() - start_time
+                    
+                    # Wait for initial message
+                    try:
+                        message = await asyncio.wait_for(websocket.recv(), timeout=5.0)
+                        data = json.loads(message)
+                        
+                        success = (
+                            "type" in data and
+                            data["type"] in ["system_health", "monitoring_event", "metric_update"]
+                        )
+                        details = f"Connected successfully, received message type: {data.get('type', 'unknown')}"
+                        
+                    except asyncio.TimeoutError:
+                        success = True  # Connection successful even if no immediate message
+                        details = "WebSocket connected successfully (no immediate message)"
+                    
+                    self.log_test_result("WebSocket Connection", success, details, response_time)
+                    
+            except Exception as e:
+                success = False
+                details = f"WebSocket connection failed: {str(e)}"
+                self.log_test_result("WebSocket Connection", success, details, time.time() - start_time)
+                
+        except ImportError:
+            self.log_test_result("WebSocket Connection", False, "websockets library not available")
+        except Exception as e:
+            self.log_test_result("WebSocket Connection", False, f"Exception: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all monitoring dashboard tests"""
+        logger.info("🚀 Starting Real-Time Monitoring Dashboard Backend Testing...")
+        start_time = time.time()
+        
+        # Run all test suites
+        await self.test_system_status_endpoints()
+        await self.test_alert_management_endpoints()
+        await self.test_events_and_metrics_endpoints()
+        await self.test_websocket_connection()
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 80)
+        logger.info("🎯 REAL-TIME MONITORING DASHBOARD TEST SUMMARY")
+        logger.info("=" * 80)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 80)
+        
+        # Show failed tests
+        failed_tests = [t for t in self.test_results["test_details"] if not t["success"]]
+        if failed_tests:
+            logger.info("❌ FAILED TESTS:")
+            for test in failed_tests:
+                logger.info(f"  - {test['test_name']}: {test['details']}")
+        
+        return self.test_results
 
 class AIAptitudeAPITester:
     def __init__(self):
