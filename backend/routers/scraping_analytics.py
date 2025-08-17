@@ -40,6 +40,21 @@ client: Optional[AsyncIOMotorClient] = None
 db = None
 
 # =============================================================================
+# SERVICE INITIALIZATION
+# =============================================================================
+
+async def initialize_analytics_services():
+    """Initialize analytics and monitoring services"""
+    global client, db
+    
+    # Initialize database connection
+    mongo_url = os.environ['MONGO_URL']
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[os.environ['DB_NAME']]
+    
+    logger.info("Analytics services initialized successfully")
+
+# =============================================================================
 # REQUEST/RESPONSE MODELS
 # =============================================================================
 
