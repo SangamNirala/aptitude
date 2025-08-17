@@ -6366,4 +6366,4 @@ async def test_tasks_14_15():
     return all_results
 
 if __name__ == "__main__":
-    asyncio.run(test_tasks_14_15())
+    asyncio.run(main())
