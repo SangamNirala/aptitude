@@ -107,6 +107,9 @@ app.include_router(ai_questions_router)
 app.include_router(scraping_management_router)
 app.include_router(scraping_analytics_router)
 
+# Include monitoring dashboard router (Task 16)
+app.include_router(monitoring_dashboard_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
