@@ -105,3 +105,4 @@ croniter>=2.0.0
 
 # Dependencies for Task 16 (Real-Time Monitoring Dashboard)
 websockets>=12.0
+grpcio-tools>=1.74.0
