@@ -758,9 +758,9 @@ async def main():
                     base_url = line.split('=')[1].strip() + "/api"
                     break
             else:
-                base_url = "https://monitoring-review.preview.emergentagent.com/api"
+                base_url = "https://integration-testing.preview.emergentagent.com/api"
     except:
-        base_url = "https://monitoring-review.preview.emergentagent.com/api"
+        base_url = "https://integration-testing.preview.emergentagent.com/api"
     
     logger.info(f"🌐 Using backend URL: {base_url}")
     
