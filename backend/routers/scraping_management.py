@@ -429,12 +429,12 @@ async def start_job(
             except Exception as e:
                 logger.warning(f"Failed to resubmit job to manager: {str(e)}")
         
-        # For PAUSED jobs, update status to PENDING to restart
+        # For PAUSED jobs, update status to RUNNING to restart
         if current_job_status == ScrapingJobStatus.PAUSED:
             await db.scraping_jobs.update_one(
                 {"id": job_id},
                 {"$set": {
-                    "status": ScrapingJobStatus.PENDING.value, 
+                    "status": ScrapingJobStatus.RUNNING.value, 
                     "updated_at": datetime.utcnow(),
                     "current_phase": "restarted"
                 }}
