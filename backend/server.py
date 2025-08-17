@@ -142,6 +142,17 @@ async def startup_event():
     except Exception as e:
         logger.error(f"❌ MongoDB connection failed: {str(e)}")
     
+    # Initialize scraping services
+    try:
+        from routers.scraping_management import initialize_scraping_services
+        from routers.scraping_analytics import initialize_analytics_services
+        
+        await initialize_scraping_services()
+        await initialize_analytics_services()
+        logger.info("✅ Scraping services initialized successfully")
+    except Exception as e:
+        logger.error(f"❌ Scraping services initialization failed: {str(e)}")
+    
     # Create indexes for performance
     try:
         # Index for question filtering
