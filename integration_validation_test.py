@@ -153,11 +153,12 @@ class IntegrationValidationTester:
             try:
                 start_time = time.time()
                 payload = {
-                    "source_type": "indiabix",
+                    "job_name": f"Test Job - Difficulty {difficulty}",
+                    "description": f"Integration test for difficulty level {difficulty}",
+                    "source_names": ["indiabix"],
+                    "max_questions_per_source": 5,
                     "target_categories": ["quantitative"],
-                    "max_questions": 5,
-                    "difficulty": difficulty,
-                    "priority": 1
+                    "priority_level": 1
                 }
                 
                 async with self.session.post(
