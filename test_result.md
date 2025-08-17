@@ -195,7 +195,8 @@
 
 ## test_plan:
   current_focus:
-    - "Main Scraping Coordinator"
+    - "AI Content Processing Pipeline"
+    - "Advanced Duplicate Detection System"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
