@@ -509,11 +509,11 @@ class IntegrationValidationTester:
                     
                     if response.status == 201:
                         data = await response.json()
-                        job_id = data.get("id")
+                        job_id = data.get("job_id")
                         large_scale_jobs.append(job_id)
                         self.created_job_ids.append(job_id)
                         success = True
-                        details = f"Large scale job {i+1} created, ID: {job_id}, Target: {config['max_questions']} questions"
+                        details = f"Large scale job {i+1} created, ID: {job_id}, Target: {config['max_questions_per_source']} questions"
                     else:
                         success = False
                         error_text = await response.text()
