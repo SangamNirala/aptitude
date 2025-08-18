@@ -524,7 +524,7 @@ class ScrapingEngine:
             logger.error(f"Error processing scraping job {job.id}: {e}")
             self._fail_job(job, f"Job processing error: {str(e)}")
     
-    def _execute_job_with_retries(self, job: ScrapingJob, driver: Any, extractor: Any) -> bool:
+    def _execute_job_with_retries(self, job: ScrapingJob, driver: Any, extractor: Any, source_name: str = None) -> bool:
         """Execute job with retry logic"""
         for attempt in range(self.config.max_retries_per_job + 1):
             try:
