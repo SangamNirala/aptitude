@@ -326,6 +326,49 @@ class ScrapingEngine:
             logger.error(f"Error getting all jobs information: {e}")
             return {"error": str(e)}
     
+    async def execute_job(self, job: ScrapingJob) -> Dict[str, Any]:
+        """
+        Execute a scraping job directly (for job manager integration)
+        
+        Args:
+            job: ScrapingJob to execute
+            
+        Returns:
+            Dictionary with execution results
+        """
+        try:
+            logger.info(f"Executing scraping job {job.id} for sources: {job.config.source_ids}")
+            
+            # Update job status
+            job.status = ScrapingJobStatus.RUNNING
+            job.started_at = datetime.utcnow()
+            
+            # Process the job
+            self._process_scraping_job(job)
+            
+            # Return execution results
+            return {
+                "success": job.status == ScrapingJobStatus.COMPLETED,
+                "job_id": job.id,
+                "status": job.status.value,
+                "questions_extracted": job.questions_extracted,
+                "questions_approved": job.questions_approved,
+                "questions_rejected": job.questions_rejected,
+                "execution_time": (datetime.utcnow() - job.started_at).total_seconds() if job.started_at else 0,
+                "error_message": job.last_error if hasattr(job, 'last_error') else None
+            }
+            
+        except Exception as e:
+            logger.error(f"Error executing job {job.id}: {e}")
+            job.status = ScrapingJobStatus.FAILED
+            job.last_error = str(e)
+            return {
+                "success": False,
+                "job_id": job.id,
+                "status": ScrapingJobStatus.FAILED.value,
+                "error_message": str(e)
+            }
+    
     # =============================================================================
     # ENGINE CONTROL
     # =============================================================================
