@@ -729,39 +729,198 @@ class WebScrapingSystemTester:
         return self.test_results
 
 
-async def main():
-    """Main test execution function - Focus on Critical Scraping Engine Execution Testing"""
-    logger.info("🚀 CRITICAL SCRAPING ENGINE EXECUTION TESTING")
-    logger.info("🎯 Testing fixes for dataclass serialization error and job execution")
-    logger.info("🔍 Focus: Job Creation, Start, Execution, Progress Tracking, Error Handling")
+async def test_critical_question_collection():
+    """CRITICAL TEST: Final Question Collection Count Assessment"""
+    logger.info("🎯 CRITICAL QUESTION COLLECTION ASSESSMENT")
+    logger.info("=" * 80)
+    logger.info("TESTING REQUIREMENTS FROM REVIEW REQUEST:")
+    logger.info("1. Test both IndiaBix and GeeksforGeeks sources")
+    logger.info("2. Create multiple test jobs with small limits (10-20 questions each)")
+    logger.info("3. Monitor for at least 2-3 minutes per job")
+    logger.info("4. Report exact count of questions collected")
+    logger.info("5. Verify driver/extractor analysis")
+    logger.info("6. Check execution pipeline validation")
+    logger.info("=" * 80)
     
-    # Run Web Scraping System Tests with focus on engine execution
-    async with WebScrapingSystemTester() as scraping_tester:
-        scraping_results = await scraping_tester.run_all_tests()
+    total_questions_collected = 0
+    indiabix_questions = 0
+    geeksforgeeks_questions = 0
+    
+    async with WebScrapingSystemTester() as tester:
+        # Create small test jobs as requested (10-20 questions each)
+        logger.info("📝 Creating small test jobs (10-20 questions each)...")
+        
+        # Create IndiaBix job with 15 questions limit
+        indiabix_job_id = None
+        try:
+            payload = {
+                "job_name": "IndiaBix_Final_Test_15Q",
+                "source_names": ["IndiaBix"],
+                "max_questions_per_source": 15,  # Small limit as requested
+                "target_categories": ["quantitative", "logical"],
+                "priority_level": 1,
+                "enable_ai_processing": False,  # Disable to focus on scraping
+                "enable_duplicate_detection": False
+            }
+            
+            async with tester.session.post(f"{tester.base_url}/scraping/jobs", json=payload) as response:
+                if response.status == 201:
+                    data = await response.json()
+                    indiabix_job_id = data.get("job_id")
+                    logger.info(f"✅ IndiaBix job created: {indiabix_job_id}")
+                else:
+                    logger.error(f"❌ Failed to create IndiaBix job: {response.status}")
+        except Exception as e:
+            logger.error(f"❌ Exception creating IndiaBix job: {e}")
+        
+        # Create GeeksforGeeks job with 20 questions limit
+        geeksforgeeks_job_id = None
+        try:
+            payload = {
+                "job_name": "GeeksforGeeks_Final_Test_20Q",
+                "source_names": ["GeeksforGeeks"],
+                "max_questions_per_source": 20,  # Small limit as requested
+                "target_categories": ["programming", "algorithms"],
+                "priority_level": 1,
+                "enable_ai_processing": False,  # Disable to focus on scraping
+                "enable_duplicate_detection": False
+            }
+            
+            async with tester.session.post(f"{tester.base_url}/scraping/jobs", json=payload) as response:
+                if response.status == 201:
+                    data = await response.json()
+                    geeksforgeeks_job_id = data.get("job_id")
+                    logger.info(f"✅ GeeksforGeeks job created: {geeksforgeeks_job_id}")
+                else:
+                    logger.error(f"❌ Failed to create GeeksforGeeks job: {response.status}")
+        except Exception as e:
+            logger.error(f"❌ Exception creating GeeksforGeeks job: {e}")
+        
+        # Start both jobs
+        job_ids = []
+        if indiabix_job_id:
+            try:
+                async with tester.session.put(f"{tester.base_url}/scraping/jobs/{indiabix_job_id}/start") as response:
+                    if response.status == 200:
+                        logger.info("✅ IndiaBix job started successfully")
+                        job_ids.append(("IndiaBix", indiabix_job_id))
+                    else:
+                        logger.error(f"❌ Failed to start IndiaBix job: {response.status}")
+            except Exception as e:
+                logger.error(f"❌ Exception starting IndiaBix job: {e}")
+        
+        if geeksforgeeks_job_id:
+            try:
+                async with tester.session.put(f"{tester.base_url}/scraping/jobs/{geeksforgeeks_job_id}/start") as response:
+                    if response.status == 200:
+                        logger.info("✅ GeeksforGeeks job started successfully")
+                        job_ids.append(("GeeksforGeeks", geeksforgeeks_job_id))
+                    else:
+                        logger.error(f"❌ Failed to start GeeksforGeeks job: {response.status}")
+            except Exception as e:
+                logger.error(f"❌ Exception starting GeeksforGeeks job: {e}")
+        
+        # Monitor jobs for 3 minutes as requested
+        logger.info("⏳ Monitoring jobs for 3 minutes (180 seconds)...")
+        monitoring_duration = 180  # 3 minutes
+        check_interval = 30  # Check every 30 seconds
+        checks = monitoring_duration // check_interval
+        
+        for check_num in range(checks):
+            logger.info(f"🔍 Check {check_num + 1}/{checks} - {(check_num + 1) * check_interval}s elapsed")
+            
+            for source_name, job_id in job_ids:
+                try:
+                    async with tester.session.get(f"{tester.base_url}/scraping/jobs/{job_id}") as response:
+                        if response.status == 200:
+                            data = await response.json()
+                            status = data.get("status", "unknown")
+                            statistics = data.get("statistics", {})
+                            questions_extracted = statistics.get("questions_extracted", 0) or data.get("questions_extracted", 0)
+                            error_message = data.get("error_message", "") or data.get("last_error", "")
+                            
+                            logger.info(f"📊 {source_name}: Status={status}, Questions={questions_extracted}")
+                            
+                            if error_message:
+                                logger.error(f"🚨 {source_name} Error: {error_message}")
+                            
+                            # Update question counts on final check
+                            if check_num == checks - 1:
+                                if source_name == "IndiaBix":
+                                    indiabix_questions = questions_extracted
+                                elif source_name == "GeeksforGeeks":
+                                    geeksforgeeks_questions = questions_extracted
+                                total_questions_collected += questions_extracted
+                        else:
+                            logger.error(f"❌ Failed to get {source_name} job status: {response.status}")
+                except Exception as e:
+                    logger.error(f"❌ Exception monitoring {source_name} job: {e}")
+            
+            # Wait before next check (except on last iteration)
+            if check_num < checks - 1:
+                await asyncio.sleep(check_interval)
+        
+        # Driver/Extractor Analysis
+        logger.info("🔧 DRIVER/EXTRACTOR ANALYSIS:")
+        try:
+            async with tester.session.get(f"{tester.base_url}/scraping/system-status") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    engine_status = data.get("scraping_engine", {})
+                    logger.info(f"Scraping Engine Status: {engine_status.get('status', 'unknown')}")
+                    logger.info(f"Active Jobs: {data.get('active_jobs', 0)}")
+                    
+                    # Check for specific component failures
+                    if "error" in str(engine_status).lower():
+                        logger.error("🚨 Driver/Extractor component failure detected")
+                    else:
+                        logger.info("✅ Driver/Extractor components appear operational")
+        except Exception as e:
+            logger.error(f"❌ Failed to analyze driver/extractor: {e}")
+    
+    # FINAL ASSESSMENT
+    logger.info("=" * 80)
+    logger.info("🎯 FINAL QUESTION COLLECTION ASSESSMENT")
+    logger.info("=" * 80)
+    logger.info(f"📊 RESULTS:")
+    logger.info(f"   • Total questions collected from IndiaBix: {indiabix_questions}")
+    logger.info(f"   • Total questions collected from GeeksforGeeks: {geeksforgeeks_questions}")
+    logger.info(f"   • TOTAL QUESTIONS COLLECTED: {total_questions_collected}")
+    logger.info("=" * 80)
+    
+    if total_questions_collected > 0:
+        logger.info("✅ SUCCESS: Web scraper successfully collected questions!")
+        logger.info(f"🎉 ANSWER: The web scraper was able to collect {total_questions_collected} questions after running.")
+    else:
+        logger.info("❌ FAILURE: Web scraper collected 0 questions")
+        logger.info("🔍 ANSWER: The web scraper was unable to collect any questions due to execution issues.")
+    
+    logger.info("=" * 80)
+    return total_questions_collected, indiabix_questions, geeksforgeeks_questions
+
+async def main():
+    """Main test execution function - Focus on Critical Question Collection Assessment"""
+    logger.info("🚀 CRITICAL QUESTION COLLECTION ASSESSMENT - FINAL TESTING")
+    logger.info("🎯 Determining final question collection count after all fixes")
+    logger.info("🔍 Focus: IndiaBix and GeeksforGeeks question collection with 3-minute monitoring")
+    
+    # Run the critical question collection test
+    total_questions, indiabix_count, geeksforgeeks_count = await test_critical_question_collection()
     
     # Overall summary
     logger.info("\n" + "=" * 80)
-    logger.info("🎯 CRITICAL SCRAPING ENGINE TEST SUMMARY")
+    logger.info("🎯 FINAL ASSESSMENT SUMMARY")
     logger.info("=" * 80)
-    logger.info(f"Scraping Engine Tests: {scraping_results['passed_tests']}/{scraping_results['total_tests']} passed")
-    logger.info(f"Jobs Created: {scraping_results['scraping_stats']['jobs_created']}")
-    logger.info(f"Jobs Started: {scraping_results['scraping_stats']['jobs_started']}")
-    logger.info(f"Questions Collected: {scraping_results['scraping_stats']['questions_collected']}")
-    logger.info(f"Success Rate: {(scraping_results['passed_tests'] / max(scraping_results['total_tests'], 1)) * 100:.1f}%")
+    logger.info(f"IndiaBix Questions Collected: {indiabix_count}")
+    logger.info(f"GeeksforGeeks Questions Collected: {geeksforgeeks_count}")
+    logger.info(f"TOTAL QUESTIONS COLLECTED: {total_questions}")
+    logger.info("=" * 80)
     
-    # Critical assessment for scraping engine fixes
-    jobs_created = scraping_results['scraping_stats']['jobs_created']
-    jobs_started = scraping_results['scraping_stats']['jobs_started']
-    
-    if jobs_created >= 2 and jobs_started >= 2:
-        logger.info("✅ CRITICAL FIX VERIFIED: Jobs can be created and started successfully")
+    # Answer the review request question
+    if total_questions > 0:
+        logger.info("✅ FINAL ANSWER: Web scraper successfully collected questions after fixes")
     else:
-        logger.info("❌ CRITICAL ISSUE: Job creation/start process still failing")
-    
-    if scraping_results['scraping_stats']['questions_collected'] > 0:
-        logger.info("✅ SCRAPING ENGINE EXECUTION: Question collection working")
-    else:
-        logger.info("⚠️ SCRAPING ENGINE EXECUTION: No questions collected yet (may need more time)")
+        logger.info("❌ FINAL ANSWER: Web scraper unable to collect questions - execution issues remain")
     
     logger.info("=" * 80)
 
