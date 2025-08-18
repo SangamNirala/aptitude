@@ -808,9 +808,17 @@ class ProductionMonitoringTester:
                 "context": {"test": True, "source": "production_test"}
             }
             
+            # Fix: Convert context to string for simple production monitoring
+            payload_params = {
+                "message": payload["message"],
+                "category": payload["category"],
+                "severity": payload["severity"],
+                "context": json.dumps(payload["context"])  # Convert dict to JSON string
+            }
+            
             async with self.session.post(
                 f"{self.base_url}/production/errors/capture",
-                params=payload
+                params=payload_params
             ) as response:
                 response_time = time.time() - start_time
                 
