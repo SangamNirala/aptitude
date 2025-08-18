@@ -88,8 +88,7 @@ class WebScraperRunner:
         job_ids = []
         
         try:
-            from models.scraping_models import ScrapingJobConfig, ScrapingTarget
-            from config.scraping_config import get_source_targets
+            from models.scraping_models import ScrapingJobConfig
             
             # Get available sources from database
             sources = await self.source_manager.get_all_sources()
