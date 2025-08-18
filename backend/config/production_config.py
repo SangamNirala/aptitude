@@ -166,7 +166,7 @@ class ProductionConfigManager:
             "debug_mode": os.getenv('DEBUG_MODE', 'false').lower() == 'true',
             
             "database": {
-                "mongo_url": os.getenv('MONGO_URL'),
+                "mongo_url": os.getenv('MONGO_URL') or "mongodb://localhost:27017",  # Provide fallback
                 "db_name": os.getenv('DB_NAME', 'production_database'),
                 "max_pool_size": int(os.getenv('DB_MAX_POOL_SIZE', '100')),
                 "min_pool_size": int(os.getenv('DB_MIN_POOL_SIZE', '10')),
