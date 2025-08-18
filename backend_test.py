@@ -8731,8 +8731,8 @@ class PerformanceOptimizationTester:
 
 
 async def main():
-    """Main test execution function - Focus on Task 13: Cron-Based Scheduling System"""
-    logger.info("🚀 Starting Comprehensive Backend Testing - Focus on Task 13...")
+    """Main test execution function - Focus on Tasks 11 & 12: Quality Assurance & Job Management"""
+    logger.info("🚀 Starting Comprehensive Backend Testing - Focus on Tasks 11 & 12...")
     
     # Get base URL
     try:
@@ -8752,42 +8752,63 @@ async def main():
     async with AIAptitudeAPITester() as basic_tester:
         basic_results = await basic_tester.run_all_tests()
     
-    # Test TASK 13 - Cron-Based Scheduling System (PRIMARY FOCUS)
-    async with CronSchedulingSystemTester() as scheduling_tester:
-        scheduling_results = await scheduling_tester.run_all_tests()
+    # Test TASK 11 - Content Quality Assurance System (PRIMARY FOCUS)
+    qa_tester = QualityAssuranceServiceTester()
+    qa_results = await qa_tester.run_all_tests()
+    
+    # Test TASK 12 - Background Job Management System (PRIMARY FOCUS) 
+    job_tester = JobManagerServiceTester()
+    job_results = await job_tester.run_all_tests()
     
     # Generate overall summary
-    total_tests = basic_results["total_tests"] + scheduling_results["total_tests"]
-    total_passed = basic_results["passed_tests"] + scheduling_results["passed_tests"]
-    total_failed = basic_results["failed_tests"] + scheduling_results["failed_tests"]
+    total_tests = basic_results["total_tests"] + qa_results["total_tests"] + job_results["total_tests"]
+    total_passed = basic_results["passed_tests"] + qa_results["passed_tests"] + job_results["passed_tests"]
+    total_failed = basic_results["failed_tests"] + qa_results["failed_tests"] + job_results["failed_tests"]
     
     logger.info("=" * 80)
-    logger.info("🎯 COMPREHENSIVE BACKEND TESTING SUMMARY")
+    logger.info("🎯 COMPREHENSIVE BACKEND TESTING SUMMARY - TASKS 11 & 12")
     logger.info("=" * 80)
     logger.info(f"Basic Health Tests: {basic_results['passed_tests']}/{basic_results['total_tests']} passed ({(basic_results['passed_tests']/max(basic_results['total_tests'],1))*100:.1f}%)")
-    logger.info(f"🎯 TASK 13 (Cron Scheduling): {scheduling_results['passed_tests']}/{scheduling_results['total_tests']} passed ({(scheduling_results['passed_tests']/max(scheduling_results['total_tests'],1))*100:.1f}%)")
+    logger.info(f"🎯 TASK 11 (Quality Assurance): {qa_results['passed_tests']}/{qa_results['total_tests']} passed ({(qa_results['passed_tests']/max(qa_results['total_tests'],1))*100:.1f}%)")
+    logger.info(f"🎯 TASK 12 (Job Management): {job_results['passed_tests']}/{job_results['total_tests']} passed ({(job_results['passed_tests']/max(job_results['total_tests'],1))*100:.1f}%)")
     logger.info("-" * 80)
     logger.info(f"OVERALL: {total_passed}/{total_tests} tests passed ({(total_passed/max(total_tests,1))*100:.1f}%)")
     logger.info("=" * 80)
     
-    # Show TASK 13 results in detail (PRIMARY FOCUS)
-    logger.info("\n🎯 TASK 13 - CRON-BASED SCHEDULING SYSTEM RESULTS:")
-    for test in scheduling_results["test_details"]:
+    # Show TASK 11 results in detail
+    logger.info("\n🎯 TASK 11 - QUALITY ASSURANCE SYSTEM RESULTS:")
+    for test in qa_results["test_details"]:
         status = "✅" if test["success"] else "❌"
         logger.info(f"  {status} {test['test_name']}")
     
-    # Show failed tests details for Task 13
-    task13_failed = [t for t in scheduling_results["test_details"] if not t["success"]]
-    if task13_failed:
-        logger.info("\n❌ TASK 13 FAILED TESTS DETAILS:")
-        for test in task13_failed:
+    # Show TASK 12 results in detail
+    logger.info("\n🎯 TASK 12 - BACKGROUND JOB MANAGEMENT RESULTS:")
+    for test in job_results["test_details"]:
+        status = "✅" if test["success"] else "❌"
+        logger.info(f"  {status} {test['test_name']}")
+    
+    # Show failed tests details for Task 11
+    task11_failed = [t for t in qa_results["test_details"] if not t["success"]]
+    if task11_failed:
+        logger.info("\n❌ TASK 11 FAILED TESTS DETAILS:")
+        for test in task11_failed:
             logger.info(f"  - {test['test_name']}: {test['details']}")
     else:
-        logger.info("\n🎉 TASK 13 - ALL CRON SCHEDULING TESTS PASSED!")
+        logger.info("\n🎉 TASK 11 - ALL QUALITY ASSURANCE TESTS PASSED!")
+    
+    # Show failed tests details for Task 12
+    task12_failed = [t for t in job_results["test_details"] if not t["success"]]
+    if task12_failed:
+        logger.info("\n❌ TASK 12 FAILED TESTS DETAILS:")
+        for test in task12_failed:
+            logger.info(f"  - {test['test_name']}: {test['details']}")
+    else:
+        logger.info("\n🎉 TASK 12 - ALL JOB MANAGEMENT TESTS PASSED!")
     
     return {
         "basic_health": basic_results,
-        "task_13_cron_scheduling": scheduling_results,
+        "task_11_quality_assurance": qa_results,
+        "task_12_job_management": job_results,
         "overall": {
             "total_tests": total_tests,
             "passed_tests": total_passed,
