@@ -32,9 +32,9 @@ class Task18PerformanceTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://staging-healthcheck.preview.emergentagent.com/api"
+                    self.base_url = "https://implementation-check-1.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://staging-healthcheck.preview.emergentagent.com/api"
+            self.base_url = "https://implementation-check-1.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {
