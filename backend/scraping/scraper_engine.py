@@ -786,7 +786,14 @@ class ScrapingEngine:
     
     def _get_content_validator(self, source_type: str) -> ContentValidator:
         """Get content validator for source type"""
-        return self.content_validators.get(source_type)
+        # Convert source name to ScrapingSourceType enum for lookup
+        if source_type.lower() == "indiabix":
+            return self.content_validators.get(ScrapingSourceType.INDIABIX)
+        elif source_type.lower() == "geeksforgeeks":
+            return self.content_validators.get(ScrapingSourceType.GEEKSFORGEEKS)
+        else:
+            # Try direct lookup as fallback
+            return self.content_validators.get(source_type)
     
     def _resolve_source_id_to_name(self, source_id: str) -> Optional[str]:
         """
