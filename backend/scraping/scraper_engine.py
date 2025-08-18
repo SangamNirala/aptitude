@@ -389,7 +389,7 @@ class ScrapingEngine:
                 if job.status == ScrapingJobStatus.CANCELLED:
                     continue
                 
-                logger.info(f"Worker {thread_name} processing job {job.job_id}")
+                logger.info(f"Worker {thread_name} processing job {job.id}")
                 
                 # Process the job
                 self._process_scraping_job(job)
