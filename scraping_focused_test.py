@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class ScrapingSystemTester:
     def __init__(self):
-        self.base_url = "https://data-harvest-check.preview.emergentagent.com/api"
+        self.base_url = "https://scraper-testing.preview.emergentagent.com/api"
         self.session = None
         self.test_results = {
             "total_tests": 0,
