@@ -8107,8 +8107,8 @@ class PerformanceOptimizationTester:
 
 
 async def main():
-    """Main test execution function - Focus on Task 19: Production Deployment Preparation"""
-    logger.info("🚀 Starting Comprehensive Backend Testing - Focus on Task 19...")
+    """Main test execution function - Focus on Task 13: Cron-Based Scheduling System"""
+    logger.info("🚀 Starting Comprehensive Backend Testing - Focus on Task 13...")
     
     # Get base URL
     try:
