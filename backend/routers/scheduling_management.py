@@ -185,7 +185,7 @@ async def create_scraping_schedule(
             "schedule_id": schedule_id,
             "message": "Scraping schedule created successfully",
             "name": request.name,
-            "sources": request.sources
+            "sources": ", ".join(request.sources)  # Convert list to string
         }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
