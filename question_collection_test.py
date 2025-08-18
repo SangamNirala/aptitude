@@ -27,9 +27,9 @@ class QuestionCollectionTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://scraper-testing.preview.emergentagent.com/api"
+                    self.base_url = "https://scraper-metrics.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://scraper-testing.preview.emergentagent.com/api"
+            self.base_url = "https://scraper-metrics.preview.emergentagent.com/api"
         
         self.session = None
         self.created_job_ids = []
