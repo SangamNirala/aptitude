@@ -475,7 +475,7 @@ class ScrapingEngine:
                     self._release_driver(driver)
         
         except Exception as e:
-            logger.error(f"Error processing scraping job {job.job_id}: {e}")
+            logger.error(f"Error processing scraping job {job.id}: {e}")
             self._fail_job(job, f"Job processing error: {str(e)}")
     
     def _execute_job_with_retries(self, job: ScrapingJob, driver: Any, extractor: Any) -> bool:
