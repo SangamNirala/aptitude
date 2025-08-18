@@ -24,6 +24,7 @@ from models.scraping_models import (
     ScrapingSourceType, ContentExtractionMethod, ScrapingJobConfig,
     RawExtractedQuestion, ProcessedScrapedQuestion
 )
+from services.source_management_service import SourceManagementService
 from scraping.extractors.base_extractor import BatchExtractionResult, create_extraction_context
 from scraping.extractors.indiabix_extractor import IndiaBixExtractor, create_indiabix_extractor
 from scraping.extractors.geeksforgeeks_extractor import GeeksforGeeksExtractor, create_geeksforgeeks_extractor
