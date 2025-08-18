@@ -362,7 +362,7 @@ async def get_job_status(
 @router.put("/jobs/{job_id}/start", response_model=JobControlResponse)
 async def start_job(
     job_id: str = Path(..., description="Scraping job ID"),
-    request: JobStartRequest = Body(...)
+    request: JobStartRequest = Body(default=None)
 ) -> JobControlResponse:
     """
     Start a paused or queued scraping job
