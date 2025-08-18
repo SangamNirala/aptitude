@@ -547,6 +547,497 @@ class AIAptitudeAPITester:
         
         return self.test_results
 
+class ProductionMonitoringTester:
+    """Comprehensive tester for Production Deployment Preparation (Task 19)"""
+    
+    def __init__(self):
+        # Get backend URL from environment
+        try:
+            with open('/app/frontend/.env', 'r') as f:
+                for line in f:
+                    if line.startswith('REACT_APP_BACKEND_URL='):
+                        self.base_url = line.split('=')[1].strip() + "/api"
+                        break
+                else:
+                    self.base_url = "https://deploy-monitor-3.preview.emergentagent.com/api"
+        except:
+            self.base_url = "https://deploy-monitor-3.preview.emergentagent.com/api"
+        
+        self.session = None
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": [],
+            "performance_metrics": {}
+        }
+    
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+        
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.session:
+            await self.session.close()
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_production_health_system(self):
+        """Test production health monitoring system"""
+        logger.info("🏥 Testing Production Health System...")
+        
+        # Test overall system health
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/health") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "overall_status" in data and
+                        "component_statuses" in data and
+                        "total_components" in data and
+                        "last_check" in data
+                    )
+                    details = f"Status: {data.get('overall_status')}, Components: {data.get('total_components', 0)}, Critical: {data.get('critical_count', 0)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Production Health System", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Production Health System", False, f"Exception: {str(e)}")
+        
+        # Test component-specific health checks
+        components = ["database", "ai_services", "system_resources", "error_tracking"]
+        for component in components:
+            try:
+                start_time = time.time()
+                async with self.session.get(f"{self.base_url}/production/health/{component}") as response:
+                    response_time = time.time() - start_time
+                    
+                    if response.status == 200:
+                        data = await response.json()
+                        success = (
+                            "component" in data and
+                            "status" in data and
+                            "message" in data and
+                            "metrics" in data and
+                            data["component"] == component
+                        )
+                        details = f"Component: {data.get('component')}, Status: {data.get('status')}, Duration: {data.get('duration_ms', 0):.1f}ms"
+                    elif response.status == 404:
+                        success = True  # Component not found is acceptable
+                        details = f"Component '{component}' not configured (acceptable)"
+                    else:
+                        success = False
+                        error_text = await response.text()
+                        details = f"Status: {response.status}, Error: {error_text[:200]}"
+                    
+                    self.log_test_result(f"Component Health - {component}", success, details, response_time)
+                    
+            except Exception as e:
+                self.log_test_result(f"Component Health - {component}", False, f"Exception: {str(e)}")
+    
+    async def test_system_metrics(self):
+        """Test system metrics endpoints"""
+        logger.info("📊 Testing System Metrics...")
+        
+        # Test current system metrics
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/metrics") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "cpu_percent" in data and
+                        "memory_percent" in data and
+                        "disk_percent" in data and
+                        "timestamp" in data and
+                        isinstance(data["cpu_percent"], (int, float)) and
+                        isinstance(data["memory_percent"], (int, float))
+                    )
+                    details = f"CPU: {data.get('cpu_percent', 0):.1f}%, Memory: {data.get('memory_percent', 0):.1f}%, Disk: {data.get('disk_percent', 0):.1f}%"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("System Metrics", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("System Metrics", False, f"Exception: {str(e)}")
+        
+        # Test metrics history
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/metrics/history?hours=1") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "hours" in data and
+                        "data_points" in data and
+                        "metrics" in data and
+                        data["hours"] == 1
+                    )
+                    details = f"History hours: {data.get('hours')}, Data points: {data.get('data_points', 0)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("System Metrics History", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("System Metrics History", False, f"Exception: {str(e)}")
+    
+    async def test_production_status(self):
+        """Test comprehensive production status"""
+        logger.info("🎯 Testing Production Status...")
+        
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/status") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "environment" in data and
+                        "app_name" in data and
+                        "version" in data and
+                        "deployment_ready" in data and
+                        "health_status" in data and
+                        "system_metrics" in data and
+                        "error_stats" in data
+                    )
+                    details = f"Environment: {data.get('environment')}, Ready: {data.get('deployment_ready')}, Health: {data.get('health_status')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Production Status", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Production Status", False, f"Exception: {str(e)}")
+    
+    async def test_error_tracking_system(self):
+        """Test error tracking and dashboard"""
+        logger.info("🚨 Testing Error Tracking System...")
+        
+        # Test error dashboard
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/errors/dashboard") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "statistics" in data and
+                        isinstance(data["statistics"], dict)
+                    )
+                    stats = data.get("statistics", {})
+                    details = f"Total errors: {stats.get('total_unique_errors', 0)}, Recent 1h: {stats.get('recent_errors_1h', 0)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Error Dashboard", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Error Dashboard", False, f"Exception: {str(e)}")
+        
+        # Test error statistics
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/errors/stats") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "total_unique_errors" in data and
+                        "total_occurrences" in data and
+                        "severity_breakdown" in data and
+                        "category_breakdown" in data
+                    )
+                    details = f"Unique: {data.get('total_unique_errors', 0)}, Occurrences: {data.get('total_occurrences', 0)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Error Statistics", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Error Statistics", False, f"Exception: {str(e)}")
+        
+        # Test manual error capture
+        try:
+            start_time = time.time()
+            payload = {
+                "message": "Test error for production monitoring validation",
+                "category": "APPLICATION",
+                "severity": "MEDIUM",
+                "context": {"test": True, "source": "production_test"}
+            }
+            
+            async with self.session.post(
+                f"{self.base_url}/production/errors/capture",
+                params=payload
+            ) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "success" in data and
+                        data["success"] == True and
+                        "fingerprint" in data
+                    )
+                    details = f"Error captured with fingerprint: {data.get('fingerprint', 'N/A')[:20]}..."
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Manual Error Capture", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Manual Error Capture", False, f"Exception: {str(e)}")
+    
+    async def test_performance_validation(self):
+        """Test performance validation system"""
+        logger.info("⚡ Testing Performance Validation...")
+        
+        # Test performance test endpoint
+        try:
+            start_time = time.time()
+            async with self.session.post(f"{self.base_url}/production/performance/test") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "test_completed" in data and
+                        data["test_completed"] == True and
+                        "duration_ms" in data and
+                        "components_tested" in data and
+                        isinstance(data["components_tested"], list)
+                    )
+                    details = f"Test duration: {data.get('duration_ms', 0):.1f}ms, Components: {len(data.get('components_tested', []))}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Performance Test", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Performance Test", False, f"Exception: {str(e)}")
+        
+        # Test performance metrics
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/performance/metrics") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "performance_metrics" in data and
+                        "total_endpoints" in data and
+                        "timestamp" in data
+                    )
+                    details = f"Total endpoints tracked: {data.get('total_endpoints', 0)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Performance Metrics", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Performance Metrics", False, f"Exception: {str(e)}")
+    
+    async def test_configuration_validation(self):
+        """Test configuration validation system"""
+        logger.info("⚙️ Testing Configuration Validation...")
+        
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/config/validation") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "production_ready" in data and
+                        "validation_report" in data and
+                        "configuration" in data and
+                        isinstance(data["validation_report"], dict) and
+                        "checks" in data["validation_report"]
+                    )
+                    validation_report = data.get("validation_report", {})
+                    checks = validation_report.get("checks", {})
+                    passed_checks = sum(1 for v in checks.values() if v)
+                    details = f"Production ready: {data.get('production_ready')}, Checks passed: {passed_checks}/{len(checks)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Configuration Validation", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Configuration Validation", False, f"Exception: {str(e)}")
+    
+    async def test_health_monitoring_loop(self):
+        """Test comprehensive health monitoring loop"""
+        logger.info("🔄 Testing Health Monitoring Loop...")
+        
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/health-checks/all") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        isinstance(data, list) and
+                        len(data) > 0 and
+                        all("component" in check and "status" in check for check in data)
+                    )
+                    healthy_count = sum(1 for check in data if check.get("status") == "healthy")
+                    details = f"Total checks: {len(data)}, Healthy: {healthy_count}, Avg duration: {sum(check.get('duration_ms', 0) for check in data) / len(data):.1f}ms"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Health Monitoring Loop", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Health Monitoring Loop", False, f"Exception: {str(e)}")
+    
+    async def test_additional_monitoring_features(self):
+        """Test additional monitoring features"""
+        logger.info("📋 Testing Additional Monitoring Features...")
+        
+        # Test recent alerts
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/alerts/recent?limit=5") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "alerts" in data and
+                        "total_alerts" in data and
+                        "limit" in data and
+                        isinstance(data["alerts"], list)
+                    )
+                    details = f"Recent alerts: {len(data.get('alerts', []))}, Total: {data.get('total_alerts', 0)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Recent Alerts", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Recent Alerts", False, f"Exception: {str(e)}")
+        
+        # Test logs summary
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/production/logs/summary") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "logging_enabled" in data and
+                        "log_level" in data and
+                        "log_files" in data and
+                        isinstance(data["log_files"], list)
+                    )
+                    details = f"Logging enabled: {data.get('logging_enabled')}, Log files: {len(data.get('log_files', []))}, Total size: {data.get('total_size_mb', 0):.1f}MB"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Logs Summary", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Logs Summary", False, f"Exception: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all production monitoring tests"""
+        logger.info("🚀 Starting Production Deployment Preparation Testing (Task 19)...")
+        start_time = time.time()
+        
+        # Run all test suites
+        await self.test_production_health_system()
+        await self.test_system_metrics()
+        await self.test_production_status()
+        await self.test_error_tracking_system()
+        await self.test_performance_validation()
+        await self.test_configuration_validation()
+        await self.test_health_monitoring_loop()
+        await self.test_additional_monitoring_features()
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 80)
+        logger.info("🎯 PRODUCTION DEPLOYMENT PREPARATION TEST SUMMARY (TASK 19)")
+        logger.info("=" * 80)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 80)
+        
+        # Show failed tests
+        failed_tests = [t for t in self.test_results["test_details"] if not t["success"]]
+        if failed_tests:
+            logger.info("❌ FAILED TESTS:")
+            for test in failed_tests:
+                logger.info(f"  - {test['test_name']}: {test['details']}")
+        
+        return self.test_results
+
+
 class AntiDetectionSystemTester:
     """Tester for Anti-Detection & Rate Limiting System components"""
     
