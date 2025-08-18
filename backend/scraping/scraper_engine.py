@@ -219,15 +219,15 @@ class ScrapingEngine:
                     progress = self.job_progress.get(job_id)
                     
                     return {
-                        "job_id": job.job_id,
+                        "job_id": job.id,
                         "status": job.status.value,
                         "created_at": job.created_at,
                         "updated_at": job.updated_at,
                         "progress": asdict(progress) if progress else None,
-                        "total_questions_extracted": job.total_questions_extracted,
-                        "successful_extractions": job.successful_extractions,
-                        "failed_extractions": job.failed_extractions,
-                        "error_message": job.error_message
+                        "total_questions_extracted": job.questions_extracted,
+                        "successful_extractions": job.questions_approved,
+                        "failed_extractions": job.questions_rejected,
+                        "error_message": job.last_error
                     }
                 
                 # Check completed jobs
