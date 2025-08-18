@@ -219,5 +219,20 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    """Graceful shutdown with production cleanup"""
+    logger.info("🔄 Starting production system shutdown...")
+    
+    try:
+        # Stop health monitoring
+        from utils.health_monitoring import health_monitor
+        await health_monitor.stop_monitoring()
+        
+        # Log shutdown
+        logger.info("✅ Health monitoring stopped")
+        
+    except Exception as e:
+        logger.error(f"❌ Shutdown cleanup error: {str(e)}")
+    
+    # Close database connection
     client.close()
-    logger.info("👋 AI-Enhanced API shutdown completed")
+    logger.info("👋 AI-Enhanced Production System shutdown completed")
