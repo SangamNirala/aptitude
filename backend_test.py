@@ -9850,8 +9850,8 @@ class PerformanceOptimizationTester:
 
 
 async def main():
-    """Main test execution function - Focus on Tasks 11 & 12: Quality Assurance & Job Management"""
-    logger.info("🚀 Starting Comprehensive Backend Testing - Focus on Tasks 11 & 12...")
+    """Main test execution function - Focus on Tasks 6-8: Content Extractors & Scraping Engine"""
+    logger.info("🚀 Starting Comprehensive Backend Testing - Focus on Tasks 6-8...")
     
     # Get base URL
     try:
@@ -9867,29 +9867,34 @@ async def main():
     
     logger.info(f"Testing backend at: {base_url}")
     
-    # Test basic health check first
+    # Test TASKS 6-8 - Content Extractors & Scraping Engine (PRIMARY FOCUS)
+    async with ContentExtractorsTester() as extractors_tester:
+        extractors_results = await extractors_tester.run_all_tests()
+    
+    # Test basic health check
     async with AIAptitudeAPITester() as basic_tester:
         basic_results = await basic_tester.run_all_tests()
     
-    # Test TASK 11 - Content Quality Assurance System (PRIMARY FOCUS)
+    # Test TASK 11 - Content Quality Assurance System
     qa_tester = QualityAssuranceServiceTester()
     qa_results = await qa_tester.run_all_tests()
     
-    # Test TASK 12 - Background Job Management System (PRIMARY FOCUS) 
+    # Test TASK 12 - Background Job Management System
     job_tester = JobManagerServiceTester()
     job_results = await job_tester.run_all_tests()
     
     # Generate overall summary
-    total_tests = basic_results["total_tests"] + qa_results["total_tests"] + job_results["total_tests"]
-    total_passed = basic_results["passed_tests"] + qa_results["passed_tests"] + job_results["passed_tests"]
-    total_failed = basic_results["failed_tests"] + qa_results["failed_tests"] + job_results["failed_tests"]
+    total_tests = extractors_results["total_tests"] + basic_results["total_tests"] + qa_results["total_tests"] + job_results["total_tests"]
+    total_passed = extractors_results["passed_tests"] + basic_results["passed_tests"] + qa_results["passed_tests"] + job_results["passed_tests"]
+    total_failed = extractors_results["failed_tests"] + basic_results["failed_tests"] + qa_results["failed_tests"] + job_results["failed_tests"]
     
     logger.info("=" * 80)
-    logger.info("🎯 COMPREHENSIVE BACKEND TESTING SUMMARY - TASKS 11 & 12")
+    logger.info("🎯 COMPREHENSIVE BACKEND TESTING SUMMARY - TASKS 6-8 PRIMARY FOCUS")
     logger.info("=" * 80)
+    logger.info(f"🎯 TASKS 6-8 (Content Extractors & Scraping): {extractors_results['passed_tests']}/{extractors_results['total_tests']} passed ({(extractors_results['passed_tests']/max(extractors_results['total_tests'],1))*100:.1f}%)")
     logger.info(f"Basic Health Tests: {basic_results['passed_tests']}/{basic_results['total_tests']} passed ({(basic_results['passed_tests']/max(basic_results['total_tests'],1))*100:.1f}%)")
-    logger.info(f"🎯 TASK 11 (Quality Assurance): {qa_results['passed_tests']}/{qa_results['total_tests']} passed ({(qa_results['passed_tests']/max(qa_results['total_tests'],1))*100:.1f}%)")
-    logger.info(f"🎯 TASK 12 (Job Management): {job_results['passed_tests']}/{job_results['total_tests']} passed ({(job_results['passed_tests']/max(job_results['total_tests'],1))*100:.1f}%)")
+    logger.info(f"TASK 11 (Quality Assurance): {qa_results['passed_tests']}/{qa_results['total_tests']} passed ({(qa_results['passed_tests']/max(qa_results['total_tests'],1))*100:.1f}%)")
+    logger.info(f"TASK 12 (Job Management): {job_results['passed_tests']}/{job_results['total_tests']} passed ({(job_results['passed_tests']/max(job_results['total_tests'],1))*100:.1f}%)")
     logger.info("-" * 80)
     logger.info(f"OVERALL: {total_passed}/{total_tests} tests passed ({(total_passed/max(total_tests,1))*100:.1f}%)")
     logger.info("=" * 80)
