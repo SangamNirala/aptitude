@@ -22,13 +22,13 @@ INDIABIX_CONFIG = DataSourceConfig(
     base_url="https://www.indiabix.com",
     extraction_method=ContentExtractionMethod.SELENIUM,
     
-    # CSS Selectors for IndiaBix (Updated for current website structure)
+    # CSS Selectors for IndiaBix (Working selectors verified from actual pages)
     selectors={
-        # Question Elements - Updated for modern IndiaBix structure
-        "question_text": "div.question-content, div.problem-statement, .question-text, p:contains('?'), div:contains('Find'), div:contains('Calculate')",
-        "question_options": "div.options li, ul.options li, div.choice-container, .option-item, div[class*='option']",
-        "correct_answer": "div.answer-explanation, div.solution, .correct-answer, div[class*='answer']",
-        "explanation": "div.explanation, div.solution-text, .answer-explanation p",
+        # Question Elements - Working BIX selectors
+        "question_text": "div.bix-td-qtxt",
+        "question_options": "table.bix-tbl-options td",
+        "correct_answer": "div.bix-div-answer",
+        "explanation": "div.bix-div-answer p",
         
         # Navigation Elements - Updated for Bootstrap-based design
         "next_button": "button:contains('Next'), a:contains('Next'), .btn-next, .next-question",
