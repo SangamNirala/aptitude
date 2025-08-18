@@ -238,6 +238,10 @@ async def shutdown_db_client():
     logger.info("🔄 Starting production system shutdown...")
     
     try:
+        # Stop scheduling services - TASK 13
+        from routers.scheduling_management import shutdown_scheduling_services
+        await shutdown_scheduling_services()
+        
         # Stop health monitoring - TEMPORARILY DISABLED
         # from utils.health_monitoring import health_monitor
         # await health_monitor.stop_monitoring()
