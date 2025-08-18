@@ -875,6 +875,25 @@ class ScrapingEngine:
         except Exception as e:
             logger.warning(f"Error applying rate limiting: {e}")
     
+    def _update_job_progress(self, job: ScrapingJob, current_page: int, max_pages: int, total_extracted: int):
+        """Update job progress tracking"""
+        try:
+            with self.job_lock:
+                if job.id in self.job_progress:
+                    progress = self.job_progress[job.id]
+                    progress.current_page = current_page
+                    progress.total_pages = max_pages
+                    progress.questions_extracted = total_extracted
+                    progress.last_update = datetime.now()
+                    
+                    # Calculate success rate if we have processed questions
+                    if job.questions_extracted > 0:
+                        progress.success_rate = job.questions_approved / job.questions_extracted
+                    
+                    logger.debug(f"Updated progress for job {job.id}: page {current_page}/{max_pages}, extracted {total_extracted}")
+        except Exception as e:
+            logger.warning(f"Error updating job progress for {job.id}: {e}")
+    
     def _is_job_timeout(self, job: ScrapingJob) -> bool:
         """Check if job has exceeded timeout"""
         if not job.started_at:
