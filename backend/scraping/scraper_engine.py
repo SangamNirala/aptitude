@@ -177,11 +177,11 @@ class ScrapingEngine:
             # Add to queue
             with self.job_lock:
                 self.job_queue.put(job)
-                self.active_jobs[job.job_id] = job
+                self.active_jobs[job.id] = job
                 
                 # Initialize progress tracking
-                self.job_progress[job.job_id] = JobProgress(
-                    job_id=job.job_id,
+                self.job_progress[job.id] = JobProgress(
+                    job_id=job.id,
                     current_page=0,
                     total_pages=job_config.max_pages or 50,
                     questions_extracted=0,
@@ -189,13 +189,13 @@ class ScrapingEngine:
                     success_rate=0.0
                 )
             
-            logger.info(f"Scraping job submitted: {job.job_id} for {job_config.target.source_id}")
+            logger.info(f"Scraping job submitted: {job.id} for {job_config.source_ids}")
             
             # Start processing if not already running
             if not self.is_running:
                 self.start_engine()
             
-            return job.job_id
+            return job.id
             
         except Exception as e:
             logger.error(f"Error submitting scraping job: {e}")
