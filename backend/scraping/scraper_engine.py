@@ -449,12 +449,13 @@ class ScrapingEngine:
             job.started_at = datetime.now()
             job.updated_at = datetime.now()
             
-            logger.info(f"Starting scraping job {job.job_id} for {job.source_type}")
+            logger.info(f"Starting scraping job {job.id} for {job.config.source_ids}")
             
-            with self.performance_monitor.monitor_operation(f"scraping_job_{job.job_id}"):
-                # Get appropriate driver and extractor
-                driver = self._get_driver(job.target_config.source_id, job.job_config.extraction_method)
-                extractor = self._get_extractor(job.target_config.source_id)
+            with self.performance_monitor.monitor_operation(f"scraping_job_{job.id}"):
+                # Get appropriate driver and extractor - using first source from config
+                source_id = job.config.source_ids[0] if job.config.source_ids else "unknown"
+                driver = self._get_driver(source_id, ContentExtractionMethod.SELENIUM)  # Default to selenium
+                extractor = self._get_extractor(source_id)
                 
                 if not driver or not extractor:
                     self._fail_job(job, "Failed to initialize driver or extractor")
