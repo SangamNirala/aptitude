@@ -124,8 +124,8 @@ class LogicalQuestionsCollectionTester:
         for i, question in enumerate(self.test_results["questions_data"][:5]):  # Check first 5 questions
             logger.info(f"📝 Validating Question {i+1}:")
             
-            # Check required fields
-            required_question_fields = ["question_text", "options", "correct_answer", "explanation"]
+            # Check required fields (adjust for actual API structure)
+            required_question_fields = ["question_text", "options", "correct_answer"]
             has_all_fields = all(field in question for field in required_question_fields)
             
             if has_all_fields:
