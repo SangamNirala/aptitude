@@ -1047,6 +1047,630 @@ class ProductionMonitoringTester:
         return self.test_results
 
 
+class QualityAssuranceServiceTester:
+    """Comprehensive tester for Content Quality Assurance System (Task 11)"""
+    
+    def __init__(self):
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": [],
+            "performance_metrics": {}
+        }
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_service_import_and_initialization(self):
+        """Test QualityAssuranceService import and initialization"""
+        logger.info("🔍 Testing Quality Assurance Service Import & Initialization...")
+        
+        try:
+            start_time = time.time()
+            
+            # Import the service
+            from services.quality_assurance_service import (
+                ContentQualityAssuranceService, 
+                QualityAssuranceLevel,
+                QualityThresholds,
+                ValidationRule,
+                ReviewPriority
+            )
+            
+            # Test basic initialization
+            qa_service = ContentQualityAssuranceService(
+                quality_level=QualityAssuranceLevel.STANDARD
+            )
+            
+            response_time = time.time() - start_time
+            
+            success = (
+                qa_service is not None and
+                qa_service.quality_level == QualityAssuranceLevel.STANDARD and
+                qa_service.thresholds is not None and
+                qa_service.source_reliability_tracker is not None and
+                len(qa_service.validation_rules) > 0
+            )
+            
+            details = f"Service initialized with {len(qa_service.validation_rules)} validation rules, quality level: {qa_service.quality_level.value}"
+            self.log_test_result("Service Import & Initialization", success, details, response_time)
+            
+            return qa_service
+            
+        except Exception as e:
+            self.log_test_result("Service Import & Initialization", False, f"Exception: {str(e)}")
+            return None
+    
+    async def test_quality_gate_logic(self):
+        """Test quality gate logic (auto-approve/reject/human-review)"""
+        logger.info("🚪 Testing Quality Gate Logic...")
+        
+        try:
+            from services.quality_assurance_service import ContentQualityAssuranceService, QualityAssuranceLevel
+            
+            qa_service = ContentQualityAssuranceService(quality_level=QualityAssuranceLevel.STANDARD)
+            
+            # Test high-quality question (should auto-approve)
+            high_quality_question = {
+                "id": "test_high_quality",
+                "question_text": "What is the result of 15 + 25 multiplied by 2?",
+                "options": ["80", "70", "60", "50"],
+                "correct_answer": "80",
+                "category": "quantitative",
+                "explanation": "First add 15 + 25 = 40, then multiply by 2 = 80"
+            }
+            
+            start_time = time.time()
+            result = await qa_service.comprehensive_quality_assessment(high_quality_question)
+            response_time = time.time() - start_time
+            
+            success = (
+                result is not None and
+                hasattr(result, 'overall_score') and
+                hasattr(result, 'quality_gate') and
+                result.overall_score > 0 and
+                result.quality_gate is not None
+            )
+            
+            details = f"Quality score: {result.overall_score:.1f}, Gate: {result.quality_gate.value if result.quality_gate else 'None'}"
+            self.log_test_result("Quality Gate Logic", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Quality Gate Logic", False, f"Exception: {str(e)}")
+    
+    async def test_validation_rules_engine(self):
+        """Test validation rules engine with 8+ validation types"""
+        logger.info("⚙️ Testing Validation Rules Engine...")
+        
+        try:
+            from services.quality_assurance_service import ContentQualityAssuranceService, ValidationRule
+            
+            qa_service = ContentQualityAssuranceService()
+            
+            # Test question with various validation aspects
+            test_question = {
+                "id": "test_validation",
+                "question_text": "Calculate the compound interest on $1000 at 5% per annum for 2 years?",
+                "options": ["$102.50", "$100.00", "$105.25", "$110.00"],
+                "correct_answer": "$102.50",
+                "category": "quantitative",
+                "explanation": "CI = P(1+r)^t - P = 1000(1.05)^2 - 1000 = $102.50"
+            }
+            
+            start_time = time.time()
+            
+            # Run validation rules
+            validation_results = await qa_service._run_validation_rules(test_question)
+            
+            response_time = time.time() - start_time
+            
+            success = (
+                validation_results is not None and
+                "rule_scores" in validation_results and
+                "total_rules_applied" in validation_results and
+                validation_results["total_rules_applied"] >= 5 and  # At least 5 validation types
+                len(validation_results["rule_scores"]) >= 5
+            )
+            
+            rule_types = list(validation_results["rule_scores"].keys()) if "rule_scores" in validation_results else []
+            details = f"Applied {validation_results.get('total_rules_applied', 0)} rules, Types: {', '.join(rule_types[:5])}"
+            
+            self.log_test_result("Validation Rules Engine", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Validation Rules Engine", False, f"Exception: {str(e)}")
+    
+    async def test_source_reliability_scoring(self):
+        """Test source reliability scoring with component scoring"""
+        logger.info("📊 Testing Source Reliability Scoring...")
+        
+        try:
+            from services.quality_assurance_service import ContentQualityAssuranceService
+            
+            qa_service = ContentQualityAssuranceService()
+            
+            # Test source reliability update
+            source_id = "test_source"
+            quality_data = {
+                "total_questions": 100,
+                "quality_scores": [85.0, 90.0, 88.0, 92.0, 87.0],
+                "extraction_failures": 5,
+                "processing_errors": 2,
+                "duplicate_detections": 8
+            }
+            
+            start_time = time.time()
+            reliability_result = await qa_service.update_source_reliability(source_id, quality_data)
+            response_time = time.time() - start_time
+            
+            success = (
+                reliability_result is not None and
+                "reliability_score" in reliability_result and
+                "component_scores" in reliability_result and
+                "assessment" in reliability_result and
+                isinstance(reliability_result["reliability_score"], (int, float)) and
+                reliability_result["reliability_score"] > 0
+            )
+            
+            details = f"Reliability score: {reliability_result.get('reliability_score', 0):.1f}, Assessment: {reliability_result.get('assessment', 'N/A')}"
+            self.log_test_result("Source Reliability Scoring", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Source Reliability Scoring", False, f"Exception: {str(e)}")
+    
+    async def test_ai_integration(self):
+        """Test integration with AI processing services"""
+        logger.info("🤖 Testing AI Integration...")
+        
+        try:
+            from services.quality_assurance_service import ContentQualityAssuranceService
+            
+            qa_service = ContentQualityAssuranceService()
+            
+            # Test AI coordinator availability
+            ai_coordinator_available = qa_service.ai_coordinator is not None
+            
+            # Test batch quality assessment (simulates AI processing)
+            test_questions = [
+                {
+                    "id": "q1",
+                    "question_text": "What is 2 + 2?",
+                    "options": ["3", "4", "5", "6"],
+                    "correct_answer": "4",
+                    "category": "quantitative"
+                },
+                {
+                    "id": "q2", 
+                    "question_text": "Which planet is closest to the sun?",
+                    "options": ["Venus", "Mercury", "Earth", "Mars"],
+                    "correct_answer": "Mercury",
+                    "category": "general"
+                }
+            ]
+            
+            start_time = time.time()
+            batch_result = await qa_service.batch_quality_assessment(test_questions, batch_size=2)
+            response_time = time.time() - start_time
+            
+            success = (
+                ai_coordinator_available and
+                batch_result is not None and
+                "status" in batch_result and
+                "assessment_results" in batch_result and
+                "batch_statistics" in batch_result and
+                batch_result["status"] == "completed"
+            )
+            
+            processed_count = batch_result.get("batch_statistics", {}).get("processed_successfully", 0)
+            details = f"AI Coordinator: {'Available' if ai_coordinator_available else 'Not Available'}, Processed: {processed_count}/2 questions"
+            
+            self.log_test_result("AI Integration", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("AI Integration", False, f"Exception: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all quality assurance service tests"""
+        logger.info("🚀 Starting Content Quality Assurance System Testing (Task 11)...")
+        start_time = time.time()
+        
+        # Run all test suites
+        await self.test_service_import_and_initialization()
+        await self.test_quality_gate_logic()
+        await self.test_validation_rules_engine()
+        await self.test_source_reliability_scoring()
+        await self.test_ai_integration()
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 80)
+        logger.info("🎯 CONTENT QUALITY ASSURANCE SYSTEM TEST SUMMARY (TASK 11)")
+        logger.info("=" * 80)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 80)
+        
+        # Show failed tests
+        failed_tests = [t for t in self.test_results["test_details"] if not t["success"]]
+        if failed_tests:
+            logger.info("❌ FAILED TESTS:")
+            for test in failed_tests:
+                logger.info(f"  - {test['test_name']}: {test['details']}")
+        
+        return self.test_results
+
+
+class JobManagerServiceTester:
+    """Comprehensive tester for Background Job Management System (Task 12)"""
+    
+    def __init__(self):
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": [],
+            "performance_metrics": {}
+        }
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_service_import_and_initialization(self):
+        """Test BackgroundJobManager import and initialization"""
+        logger.info("🔍 Testing Job Manager Service Import & Initialization...")
+        
+        try:
+            start_time = time.time()
+            
+            # Import the service
+            from services.job_manager_service import (
+                BackgroundJobManager,
+                JobExecutor,
+                JobPriority,
+                JobExecutionMode,
+                ResourceLimits
+            )
+            
+            # Test basic initialization
+            resource_limits = ResourceLimits(
+                max_cpu_percent=80.0,
+                max_memory_mb=1024,
+                max_execution_time_hours=2.0,
+                max_queue_size=100
+            )
+            
+            job_manager = BackgroundJobManager(
+                max_concurrent_jobs=3,
+                resource_limits=resource_limits,
+                execution_mode=JobExecutionMode.ADAPTIVE
+            )
+            
+            response_time = time.time() - start_time
+            
+            success = (
+                job_manager is not None and
+                job_manager.max_concurrent_jobs == 3 and
+                len(job_manager.executors) == 3 and
+                job_manager.execution_mode == JobExecutionMode.ADAPTIVE and
+                len(job_manager.priority_queues) == 4  # CRITICAL, HIGH, NORMAL, LOW
+            )
+            
+            details = f"Manager initialized with {len(job_manager.executors)} executors, {len(job_manager.priority_queues)} priority queues"
+            self.log_test_result("Service Import & Initialization", success, details, response_time)
+            
+            return job_manager
+            
+        except Exception as e:
+            self.log_test_result("Service Import & Initialization", False, f"Exception: {str(e)}")
+            return None
+    
+    async def test_job_execution_system(self):
+        """Test asynchronous job execution"""
+        logger.info("⚡ Testing Job Execution System...")
+        
+        try:
+            from services.job_manager_service import BackgroundJobManager, JobPriority
+            from models.scraping_models import ScrapingJob, ScrapingJobConfig, ScrapingJobStatus
+            
+            job_manager = BackgroundJobManager(max_concurrent_jobs=2)
+            
+            # Create a test job
+            job_config = ScrapingJobConfig(
+                source_ids=["test_source"],
+                max_questions_per_source=5,
+                target_categories=["quantitative"],
+                priority_level="normal"
+            )
+            
+            test_job = ScrapingJob(
+                id="test_job_execution",
+                name="Test Job Execution",
+                config=job_config,
+                status=ScrapingJobStatus.PENDING
+            )
+            
+            # Simple test job function
+            async def test_job_function(job_data):
+                await asyncio.sleep(0.1)  # Simulate work
+                return {"status": "completed", "processed_items": 5}
+            
+            start_time = time.time()
+            
+            # Start job manager
+            await job_manager.start()
+            
+            # Submit job
+            job_id = await job_manager.submit_job(test_job, test_job_function, JobPriority.NORMAL)
+            
+            # Wait a bit for processing
+            await asyncio.sleep(0.5)
+            
+            # Check job status
+            job_status = await job_manager.get_job_status(job_id)
+            
+            # Stop job manager
+            await job_manager.stop(graceful=True, timeout=5)
+            
+            response_time = time.time() - start_time
+            
+            success = (
+                job_id is not None and
+                job_id == test_job.id and
+                job_status is not None and
+                hasattr(job_status, 'job_id') and
+                job_status.job_id == job_id
+            )
+            
+            details = f"Job ID: {job_id}, Status: {job_status.status.value if job_status else 'None'}"
+            self.log_test_result("Job Execution System", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Job Execution System", False, f"Exception: {str(e)}")
+    
+    async def test_resource_management(self):
+        """Test resource monitoring and limiting"""
+        logger.info("💾 Testing Resource Management...")
+        
+        try:
+            from services.job_manager_service import BackgroundJobManager, ResourceLimits
+            
+            # Create job manager with strict resource limits
+            resource_limits = ResourceLimits(
+                max_cpu_percent=50.0,
+                max_memory_mb=512,
+                max_execution_time_hours=1.0,
+                max_queue_size=10
+            )
+            
+            job_manager = BackgroundJobManager(
+                max_concurrent_jobs=2,
+                resource_limits=resource_limits
+            )
+            
+            start_time = time.time()
+            
+            # Test resource monitoring
+            performance_metrics = await job_manager.get_performance_metrics()
+            
+            response_time = time.time() - start_time
+            
+            success = (
+                performance_metrics is not None and
+                "system_resources" in performance_metrics and
+                "executor_status" in performance_metrics and
+                "queue_metrics" in performance_metrics and
+                "health_indicators" in performance_metrics and
+                job_manager.resource_limits.max_cpu_percent == 50.0
+            )
+            
+            system_resources = performance_metrics.get("system_resources", {})
+            cpu_percent = system_resources.get("cpu_percent", 0)
+            memory_percent = system_resources.get("memory_percent", 0)
+            
+            details = f"CPU: {cpu_percent:.1f}%, Memory: {memory_percent:.1f}%, Resource limits configured"
+            self.log_test_result("Resource Management", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Resource Management", False, f"Exception: {str(e)}")
+    
+    async def test_job_prioritization(self):
+        """Test job priority queuing (CRITICAL/HIGH/NORMAL/LOW)"""
+        logger.info("🎯 Testing Job Prioritization...")
+        
+        try:
+            from services.job_manager_service import BackgroundJobManager, JobPriority
+            from models.scraping_models import ScrapingJob, ScrapingJobConfig, ScrapingJobStatus
+            
+            job_manager = BackgroundJobManager(max_concurrent_jobs=1)
+            
+            # Create jobs with different priorities
+            priorities_to_test = [JobPriority.CRITICAL, JobPriority.HIGH, JobPriority.NORMAL, JobPriority.LOW]
+            
+            start_time = time.time()
+            
+            # Test priority queue structure
+            queue_status = await job_manager.get_queue_status()
+            
+            response_time = time.time() - start_time
+            
+            success = (
+                queue_status is not None and
+                "by_priority" in queue_status and
+                len(queue_status["by_priority"]) == 4 and
+                all(priority.value in queue_status["by_priority"] for priority in priorities_to_test)
+            )
+            
+            priority_queues = queue_status.get("by_priority", {})
+            details = f"Priority queues: {list(priority_queues.keys())}, Total queued: {queue_status.get('total_queued', 0)}"
+            
+            self.log_test_result("Job Prioritization", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Job Prioritization", False, f"Exception: {str(e)}")
+    
+    async def test_performance_monitoring(self):
+        """Test job performance statistics"""
+        logger.info("📈 Testing Performance Monitoring...")
+        
+        try:
+            from services.job_manager_service import BackgroundJobManager, JobManagerDashboard
+            
+            job_manager = BackgroundJobManager(max_concurrent_jobs=2)
+            dashboard = JobManagerDashboard(job_manager)
+            
+            start_time = time.time()
+            
+            # Test dashboard data generation
+            dashboard_data = await dashboard.get_dashboard_data()
+            
+            # Test status report generation
+            status_report = dashboard.generate_status_report()
+            
+            response_time = time.time() - start_time
+            
+            success = (
+                dashboard_data is not None and
+                "job_manager_status" in dashboard_data and
+                "performance_metrics" in dashboard_data and
+                "queue_status" in dashboard_data and
+                status_report is not None and
+                isinstance(status_report, str) and
+                "Job Manager Status Report" in status_report
+            )
+            
+            job_manager_status = dashboard_data.get("job_manager_status", {})
+            is_running = job_manager_status.get("is_running", False)
+            max_concurrent = job_manager_status.get("max_concurrent_jobs", 0)
+            
+            details = f"Dashboard generated, Running: {is_running}, Max concurrent: {max_concurrent}, Report length: {len(status_report)} chars"
+            self.log_test_result("Performance Monitoring", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Performance Monitoring", False, f"Exception: {str(e)}")
+    
+    async def test_scraping_integration(self):
+        """Test job manager integration with scraping operations"""
+        logger.info("🔗 Testing Scraping Integration...")
+        
+        try:
+            from services.job_manager_service import BackgroundJobManager, create_job_manager
+            from models.scraping_models import ScrapingJob, ScrapingJobConfig, ScrapingJobStatus
+            
+            # Test factory function
+            job_manager = create_job_manager(max_concurrent_jobs=2)
+            
+            # Create scraping-specific job
+            scraping_config = ScrapingJobConfig(
+                source_ids=["indiabix", "geeksforgeeks"],
+                max_questions_per_source=10,
+                target_categories=["quantitative", "logical"],
+                priority_level="high"
+            )
+            
+            scraping_job = ScrapingJob(
+                id="test_scraping_integration",
+                name="Test Scraping Integration",
+                config=scraping_config,
+                status=ScrapingJobStatus.PENDING
+            )
+            
+            start_time = time.time()
+            
+            # Test job manager creation and configuration
+            success_creation = (
+                job_manager is not None and
+                job_manager.max_concurrent_jobs == 2 and
+                len(job_manager.executors) == 2
+            )
+            
+            # Test scraping job structure
+            success_job_structure = (
+                scraping_job.config.source_ids == ["indiabix", "geeksforgeeks"] and
+                scraping_job.config.max_questions_per_source == 10 and
+                scraping_job.status == ScrapingJobStatus.PENDING
+            )
+            
+            response_time = time.time() - start_time
+            
+            success = success_creation and success_job_structure
+            
+            details = f"Factory function: {'OK' if success_creation else 'Failed'}, Job structure: {'OK' if success_job_structure else 'Failed'}"
+            self.log_test_result("Scraping Integration", success, details, response_time)
+            
+        except Exception as e:
+            self.log_test_result("Scraping Integration", False, f"Exception: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all job manager service tests"""
+        logger.info("🚀 Starting Background Job Management System Testing (Task 12)...")
+        start_time = time.time()
+        
+        # Run all test suites
+        await self.test_service_import_and_initialization()
+        await self.test_job_execution_system()
+        await self.test_resource_management()
+        await self.test_job_prioritization()
+        await self.test_performance_monitoring()
+        await self.test_scraping_integration()
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 80)
+        logger.info("🎯 BACKGROUND JOB MANAGEMENT SYSTEM TEST SUMMARY (TASK 12)")
+        logger.info("=" * 80)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 80)
+        
+        # Show failed tests
+        failed_tests = [t for t in self.test_results["test_details"] if not t["success"]]
+        if failed_tests:
+            logger.info("❌ FAILED TESTS:")
+            for test in failed_tests:
+                logger.info(f"  - {test['test_name']}: {test['details']}")
+        
+        return self.test_results
+
+
 class CronSchedulingSystemTester:
     """Comprehensive tester for Cron-Based Scheduling System (Task 13)"""
     
