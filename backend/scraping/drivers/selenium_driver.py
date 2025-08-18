@@ -784,7 +784,7 @@ class SeleniumDriver:
 # =============================================================================
 
 def create_selenium_driver(source_name: str, browser: str = "chrome", 
-                          headless: bool = True, **kwargs) -> SeleniumDriver:
+                          headless: bool = True, anti_detection_config: Dict[str, Any] = None, **kwargs) -> SeleniumDriver:
     """
     Factory function to create a configured Selenium driver
     
@@ -792,6 +792,7 @@ def create_selenium_driver(source_name: str, browser: str = "chrome",
         source_name: Name of the scraping source
         browser: Browser to use (chrome/firefox)
         headless: Whether to run in headless mode
+        anti_detection_config: Anti-detection configuration
         **kwargs: Additional configuration options
         
     Returns:
@@ -803,7 +804,7 @@ def create_selenium_driver(source_name: str, browser: str = "chrome",
         **kwargs
     )
     
-    return SeleniumDriver(source_name, config)
+    return SeleniumDriver(source_name, config, anti_detection_config)
 
 def create_indiabix_selenium_driver(**kwargs) -> SeleniumDriver:
     """Create Selenium driver optimized for IndiaBix"""
