@@ -391,13 +391,16 @@
     implemented: true
     working: false
     file: "backend/scraping/scraper_engine.py"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: false
     status_history:
         - working: true
         - agent: "main"
         - comment: "✅ EXECUTE_JOB FIX CONFIRMED WORKING: Testing agent verified the execute_job method fix is successful. No more 'NoneType' object has no attribute 'execute_job' errors. Jobs can access job.id and job.config fields properly. 2 jobs created successfully. Need to fix remaining API parameter validation issues to enable actual job execution and question collection."
+        - working: false
+        - agent: "testing"
+        - comment: "❌ CRITICAL ISSUE FOUND: The execute_job method fix is NOT working. Comprehensive testing revealed that jobs are still failing with 'NoneType' object has no attribute 'execute_job' error. Testing results: ✅ API Parameter Validation FIXED - job creation works with all parameter combinations (4/4 jobs created successfully), ✅ Job Start Operations WORKING - jobs can be started and return proper status responses, ❌ execute_job Method STILL BROKEN - all started jobs fail with the exact error: 'Job execution failed: NoneType object has no attribute execute_job', ❌ Question Collection BLOCKED - 0 questions collected from any source due to execution failure. The main agent's previous fix did not resolve the core execute_job initialization issue in the scraping engine."
 
   - task: "Cron-Based Scheduling System (TASK 13)"
     implemented: true
