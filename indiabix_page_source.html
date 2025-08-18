@@ -1,0 +1,769 @@
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f1f1f1">
+    <title>Problems on Numbers - Aptitude Questions and Answers</title>
+    <meta name="description" content="Aptitude questions and answers section on &quot;Problems on Numbers&quot; for placement interviews and competitive exams: Fully solved Aptitude problems with detailed answer descriptions and explanations are given for the &quot;Problems on Numbers&quot; section.">                      
+    <link rel="shortcut icon" href="https://www.indiabix.com/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://www.indiabix.com/_files/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://www.indiabix.com/_files/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="https://www.indiabix.com/_files/css/main.min.css?ver=1.05">
+    <script src="https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508130101/show_ads_impl_fy2021.js?bust=31094100" nonce="pao_y7pIpyQovEpXG_CiRg"></script><script src="https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508130101/slotcar_library_fy2021.js?bust=31094100" nonce="pao_y7pIpyQovEpXG_CiRg"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-E20ELFGHR5"></script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-E20ELFGHR5');</script>
+    <style>.top_ad_unit, .right_ad_unit, .bottom_ad_unit {min-width:250px; width: 100%;} ins.adsbygoogle { background: transparent !important; }</style>
+    <script async="" src="https://fundingchoicesmessages.google.com/i/pub-0191447310372013?ers=1" nonce="pao_y7pIpyQovEpXG_CiRg"></script><script nonce="pao_y7pIpyQovEpXG_CiRg">(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script> 
+  <meta http-equiv="origin-trial" content="AlK2UR5SkAlj8jjdEc9p3F3xuFYlF6LYjAML3EOqw1g26eCwWPjdmecULvBH5MVPoqKYrOfPhYVL71xAXI1IBQoAAAB8eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="Amm8/NmvvQfhwCib6I7ZsmUxiSCfOxWxHayJwyU1r3gRIItzr7bNQid6O8ZYaE1GSQTa69WwhPC9flq/oYkRBwsAAACCeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="A9nrunKdU5m96PSN1XsSGr3qOP0lvPFUB2AiAylCDlN5DTl17uDFkpQuHj1AFtgWLxpLaiBZuhrtb2WOu7ofHwEAAACKeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A93bovR+QVXNx2/38qDbmeYYf1wdte9EO37K9eMq3r+541qo0byhYU899BhPB7Cv9QqD7wIbR1B6OAc9kEfYCA4AAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A1S5fojrAunSDrFbD8OfGmFHdRFZymSM/1ss3G+NEttCLfHkXvlcF6LGLH8Mo5PakLO1sCASXU1/gQf6XGuTBgwAAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="AlK2UR5SkAlj8jjdEc9p3F3xuFYlF6LYjAML3EOqw1g26eCwWPjdmecULvBH5MVPoqKYrOfPhYVL71xAXI1IBQoAAAB8eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="Amm8/NmvvQfhwCib6I7ZsmUxiSCfOxWxHayJwyU1r3gRIItzr7bNQid6O8ZYaE1GSQTa69WwhPC9flq/oYkRBwsAAACCeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="A9nrunKdU5m96PSN1XsSGr3qOP0lvPFUB2AiAylCDlN5DTl17uDFkpQuHj1AFtgWLxpLaiBZuhrtb2WOu7ofHwEAAACKeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A93bovR+QVXNx2/38qDbmeYYf1wdte9EO37K9eMq3r+541qo0byhYU899BhPB7Cv9QqD7wIbR1B6OAc9kEfYCA4AAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A1S5fojrAunSDrFbD8OfGmFHdRFZymSM/1ss3G+NEttCLfHkXvlcF6LGLH8Mo5PakLO1sCASXU1/gQf6XGuTBgwAAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxXNbgGn9uuTRR2ZSmvqTJJLEn9c_ZaxMU3y21EBXuWUSTxX9Iu2VJMgpAw3Ii_aqL5IhceQMdbRo_ImwwKOObnhfWvcXirYKE_ijQOqrg99xOy9BM3-qWONnehD5tmcJTQBKwuL1w==?fccs=W1siQUtzUm9sX3BaZ3Yya1FaLUZnVEtnTXRXVW5kaWdZZXM3U3dYMGRrOVR3SVZDUVBSZkF0TzgxRE5NcHVLVkRIeHNyN0tSc2NieWItNERoc0dfNmV0ZzNyMUlBYUpkTm02WlJsNmx1SVRoWXV5RGoycnpNUjNOZmpMQjFaRkdfWDBHZnUyQnlSMzNpY3FqY01VZGs4Ql91MXFnb3BGMU95UVd3PT0iXSxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsWzE3NTU1MDkxODMsODI1MDAwMDAwXSxudWxsLG51bGwsbnVsbCxbbnVsbCxbN11dLCJodHRwczovL3d3dy5pbmRpYWJpeC5jb20vYXB0aXR1ZGUvcHJvYmxlbXMtb24tbnVtYmVycyIsbnVsbCxbWzI2LCIxMCJdLFs4LCJSMFFGeU43NS03USJdLFs5LCJlbi1VUyJdLFsyMywiMTc1NTUwOTE2NCJdLFsxOSwiMiJdLFsxNywiWzBdIl0sWzI0LCIiXSxbMjUsIltbOTUzNTkyNjFdXSJdLFsyOSwiZmFsc2UiXV1d" nonce="pao_y7pIpyQovEpXG_CiRg"></script><meta http-equiv="origin-trial" content="AlK2UR5SkAlj8jjdEc9p3F3xuFYlF6LYjAML3EOqw1g26eCwWPjdmecULvBH5MVPoqKYrOfPhYVL71xAXI1IBQoAAAB8eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="Amm8/NmvvQfhwCib6I7ZsmUxiSCfOxWxHayJwyU1r3gRIItzr7bNQid6O8ZYaE1GSQTa69WwhPC9flq/oYkRBwsAAACCeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="A9nrunKdU5m96PSN1XsSGr3qOP0lvPFUB2AiAylCDlN5DTl17uDFkpQuHj1AFtgWLxpLaiBZuhrtb2WOu7ofHwEAAACKeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A93bovR+QVXNx2/38qDbmeYYf1wdte9EO37K9eMq3r+541qo0byhYU899BhPB7Cv9QqD7wIbR1B6OAc9kEfYCA4AAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A1S5fojrAunSDrFbD8OfGmFHdRFZymSM/1ss3G+NEttCLfHkXvlcF6LGLH8Mo5PakLO1sCASXU1/gQf6XGuTBgwAAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><script async="" src="https://fundingchoicesmessages.google.com/i/ca-pub-0191447310372013?href=https%3A%2F%2Fwww.indiabix.com%2Faptitude%2Fproblems-on-numbers&amp;ers=2" nonce="pao_y7pIpyQovEpXG_CiRg"></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxUyf9U4tvPf-NCGM0jWCMioMZSHsUAOZ89akFNKoUgr_KUt1KMUlC3ukfR5-iie7Ta_mxKEOni-8hRx3Nt-NKOCqttyEv2ZBecjTO98fh3Az4lROsTTT6_v1I1ngn_jgBB78-vc5Q==?fccs=W1siQUtzUm9sX3BaZ3Yya1FaLUZnVEtnTXRXVW5kaWdZZXM3U3dYMGRrOVR3SVZDUVBSZkF0TzgxRE5NcHVLVkRIeHNyN0tSc2NieWItNERoc0dfNmV0ZzNyMUlBYUpkTm02WlJsNmx1SVRoWXV5RGoycnpNUjNOZmpMQjFaRkdfWDBHZnUyQnlSMzNpY3FqY01VZGs4Ql91MXFnb3BGMU95UVd3PT0iXSxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsWzE3NTU1MDkxODUsOTkwMDAwMDBdLG51bGwsbnVsbCxudWxsLFtudWxsLFs3LDZdLG51bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLDFdLCJodHRwczovL3d3dy5pbmRpYWJpeC5jb20vYXB0aXR1ZGUvcHJvYmxlbXMtb24tbnVtYmVycyIsbnVsbCxbWzI2LCIxMCJdLFs4LCJSMFFGeU43NS03USJdLFs5LCJlbi1VUyJdLFsyMywiMTc1NTUwOTE2NCJdLFsxOSwiMiJdLFsxNywiWzBdIl0sWzI0LCIiXSxbMjUsIltbOTUzNTkyNjFdXSJdLFsyOSwiZmFsc2UiXV1d" nonce="pao_y7pIpyQovEpXG_CiRg"></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxXwCshUxzA1xow1pTvXOlleptuPXGoCKge2hi-Gmy-siQ7N1S3NRdz44FY5-mw5kJylduAk9ksOdvqFEMur_F7jzGIgSUNqa3C55uqhaFhu583bA2xVJ1nzm2pM7f54Q_u1QMaq7Q==?fccs=W1siQUtzUm9sX3BaZ3Yya1FaLUZnVEtnTXRXVW5kaWdZZXM3U3dYMGRrOVR3SVZDUVBSZkF0TzgxRE5NcHVLVkRIeHNyN0tSc2NieWItNERoc0dfNmV0ZzNyMUlBYUpkTm02WlJsNmx1SVRoWXV5RGoycnpNUjNOZmpMQjFaRkdfWDBHZnUyQnlSMzNpY3FqY01VZGs4Ql91MXFnb3BGMU95UVd3PT0iXSxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsWzE3NTU1MDkxODUsMTM4MDAwMDAwXSxudWxsLG51bGwsbnVsbCxbbnVsbCxbNyw2LDldLG51bGwsMixudWxsLCJlbiIsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLDFdLCJodHRwczovL3d3dy5pbmRpYWJpeC5jb20vYXB0aXR1ZGUvcHJvYmxlbXMtb24tbnVtYmVycyIsbnVsbCxbWzI2LCIxMCJdLFs4LCJSMFFGeU43NS03USJdLFs5LCJlbi1VUyJdLFsyMywiMTc1NTUwOTE2NCJdLFsxOSwiMiJdLFsxNywiWzBdIl0sWzI0LCIiXSxbMjUsIltbOTUzNTkyNjFdXSJdLFsyOSwiZmFsc2UiXV1d" nonce="pao_y7pIpyQovEpXG_CiRg"></script></head>
+  <body class="">  
+  <aside class="sidebar-nav-wrapper">
+    <div class="navbar-logo"><a href="https://www.indiabix.com/" aria-label="IndiaBix Logo"></a></div>
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="nav-item"><a href="https://www.indiabix.com/"><span class="icon"><i class="mdi mdi-home"></i></span><span class="text">Home</span></a></li>
+            <li class="divider"></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/aptitude/questions-and-answers/"><span class="icon"><i class="mdi mdi-math-integral-box"></i></span><span class="text">Arithmetic Aptitude</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/data-interpretation/questions-and-answers/"><span class="icon"><i class="mdi mdi-chart-box"></i></span><span class="text">Data Interpretation</span></a></li>
+            <!--<li class="divider"></li>-->
+            <li class="nav-item"><a href="https://www.indiabix.com/verbal-ability/questions-and-answers/"><span class="icon"><i class="mdi mdi-text-box-check"></i></span><span class="text">Verbal Ability</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/logical-reasoning/questions-and-answers/"><span class="icon"><i class="mdi mdi-chart-arc"></i></span><span class="text">Logical Reasoning</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/verbal-reasoning/questions-and-answers/"><span class="icon"><i class="mdi mdi-alphabetical-variant"></i></span><span class="text">Verbal Reasoning</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/non-verbal-reasoning/questions-and-answers/"><span class="icon"><i class="mdi mdi-collage"></i></span><span class="text">Nonverbal Reasoning</span></a></li>
+            <li class="divider"></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/online-test/categories/"><span class="icon"><i class="mdi mdi-clock-outline"></i></span><span class="text">Online Tests</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/current-affairs/questions-and-answers/"><span class="icon"><i class="mdi mdi-earth"></i></span><span class="text">Current Affairs</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/general-knowledge/questions-and-answers/"><span class="icon"><i class="mdi mdi-head-lightbulb mdi-flip-h"></i></span><span class="text">General Knowledge</span></a></li>
+            <li class="divider"></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/hr-interview/questions-and-answers/"><span class="icon"><i class="mdi mdi-tooltip-account"></i></span><span class="text">HR Interview</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/group-discussion/topics-with-answers/"><span class="icon"><i class="mdi mdi-account-supervisor"></i></span><span class="text">Group Discussion</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/placement-papers/companies/"><span class="icon"><i class="mdi mdi-checkbox-multiple-blank"></i></span><span class="text">Placement Papers</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/technical/interview-questions-and-answers/"><span class="icon"><i class="mdi mdi-comment-account"></i></span><span class="text">Technical Interview</span></a></li>
+            <li class="divider"></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/mechanical-engineering/questions-and-answers/"><span class="icon"><i class="mdi mdi-wrench"></i></span><span class="text">Mechanical Engineering</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/civil-engineering/questions-and-answers/"><span class="icon"><i class="mdi mdi-city"></i></span><span class="text">Civil Engineering</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/electronics-and-communication-engineering/questions-and-answers/"><span class="icon"><i class="mdi mdi-memory"></i></span><span class="text">ECE</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/electrical-engineering/questions-and-answers/"><span class="icon"><i class="mdi mdi-power-plug"></i></span><span class="text">EEE</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/computer-science/questions-and-answers/"><span class="icon"><i class="mdi mdi-laptop"></i></span><span class="text">CSE</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/engineering/"><span class="icon"><i class="mdi mdi-more lni-rotate-180"></i></span><span class="text">Read more…</span></a></li>
+            <li class="divider"></li>
+            <!--li class="nav-item"><a href="https://www.indiabix.com/python-programming/questions-and-answers/"><span class="icon"><i class="mdi mdi-language-python"></i></span><span class="text">Python Programming</span></a></li-->
+            <li class="nav-item"><a href="https://www.indiabix.com/c-programming/questions-and-answers/"><span class="icon"><i class="mdi mdi-language-c"></i></span><span class="text">C Programming</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/cpp-programming/questions-and-answers/"><span class="icon"><i class="mdi mdi-language-cpp"></i></span><span class="text">C++</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/c-sharp-programming/questions-and-answers/"><span class="icon"><i class="mdi mdi-language-csharp"></i></span><span class="text">C#</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/java-programming/questions-and-answers/"><span class="icon"><i class="mdi mdi-language-java"></i></span><span class="text">Java</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/database/questions-and-answers/"><span class="icon"><i class="mdi mdi-database"></i></span><span class="text">Database</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/networking/questions-and-answers/"><span class="icon"><i class="mdi mdi-lan"></i></span><span class="text">Networking</span></a></li>
+            <li class="divider"></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/microbiology/questions-and-answers/"><span class="icon"><i class="mdi mdi-dna"></i></span><span class="text">Microbiology</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/biochemistry/questions-and-answers/"><span class="icon"><i class="mdi mdi-checkbox-multiple-blank-circle"></i></span><span class="text">Biochemistry</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/biotechnology/questions-and-answers/"><span class="icon"><i class="mdi mdi-circle-multiple-outline"></i></span><span class="text">Biotechnology</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/biochemical-engineering/questions-and-answers/"><span class="icon"><i class="mdi mdi-chart-bubble"></i></span><span class="text">Biochemical </span></a></li>
+            <li class="divider"></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/puzzles/number-puzzles/"><span class="icon"><i class="mdi mdi-checkerboard"></i></span><span class="text">Puzzles Quiz</span></a></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/puzzles/sudoku/"><span class="icon"><i class="mdi mdi-grid"></i></span><span class="text">Sudoku</span></a></li>
+            <li class="divider"></li>
+            <li class="nav-item"><a href="https://www.indiabix.com/contact-us"><span class="icon"><i class="mdi mdi-card-account-mail-outline"></i></span><span class="text">Contact Us</span></a></li>
+        </ul>
+    </nav>
+  </aside>
+  <div class="overlay"></div>
+  <main class="main-wrapper" style="height: auto !important; min-height: 0px !important;">
+    <header class="header">
+        <div class="container-fluid">
+            <div class="row no-gutters">
+                <div class="col-lg-5 col-md-5 col-6">
+                    <div class="header-left d-flex align-items-center">
+                        <div class="menu-toggle-btn">
+                            <button aria-label="Menu Toggle" id="menu-toggle" class="main-btn">
+                                <i class="mdi mdi-menu"></i>
+                            </button>
+                        </div>
+                        <div class="head-name">
+                            <a href="https://www.indiabix.com/">IndiaBIX</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7 col-md-7 col-6">
+                    <div class="header-right d-flex align-items-center">
+                        <div class="header-search d-none d-sm-block" id="search-form-box">
+                            <form method="get" id="search-form" name="search form" action="https://www.google.co.in/search" target="_blank">
+                                <input type="hidden" name="sitesearch" value="www.indiabix.com">
+                                <button aria-label="Search Submit"><i class="mdi mdi-magnify mdi-24px"></i></button>
+                                <input name="as_q" id="txtSearchKey" class="search-box" type="text" placeholder="Search">
+                            </form>
+                        </div>
+                        <button aria-label="Search" id="btnSearch" class="header-button d-block d-sm-none">
+                        <i class="mdi mdi-magnify "></i>
+                        </button>       
+                        <button aria-label="Page Share" id="btnShare" class="header-button"><i class="mdi mdi-share"></i></button>
+                        <button aria-label="Theme Toggle" id="btnTheme" class="header-button"><i class="mdi mdi-theme-light-dark mdi-rotate-315"></i></button>
+                        <a href="https://www.indiabix.com/user/login/" id="btnLogin" class="header-button" aria-label="Login to stay connected with IndiaBIX!"><i class="mdi mdi-login"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+      <section class="section" style="height: auto !important;">
+        <div class="container-fluid" style="height: auto !important;">
+        
+            <div class="row no-gutters">
+                <div class="title-wrapper">
+                    <div class="title d-flex flex-row">
+                        <span class="mdi mdi-calculator-variant ib-text-title"></span>
+                        <div><h1 class="flex-wrap w-100 add-color">Aptitude :: <span>Problems on Numbers</span></h1></div>
+                    </div>
+                    <div class="d-none mb-4 px-3 bix-seo-box">
+                            <h4>Why should I learn to solve Aptitude questions and answers section on "Problems on Numbers"?</h4>
+                            <p>Learn and practise solving Aptitude questions and answers section on "Problems on Numbers" to enhance your skills so that you can clear interviews, competitive examinations, and various entrance tests (CAT, GATE, GRE, MAT, bank exams, railway exams, etc.) with full confidence.</p>
+                            
+                            <h4>Where can I get the Aptitude questions and answers section on "Problems on Numbers"?</h4>
+                            <p>IndiaBIX provides you with numerous Aptitude questions and answers based on "Problems on Numbers" along with fully solved examples and detailed explanations that will be easy to understand.</p>
+                            
+                            <h4>Where can I get the Aptitude section on "Problems on Numbers" MCQ-type interview questions and answers (objective type, multiple choice)?</h4>
+                            <p>Here you can find multiple-choice Aptitude questions and answers based on "Problems on Numbers" for your placement interviews and competitive exams. Objective-type and true-or-false-type questions are given too.</p>
+                            
+                            <h4>How do I download the Aptitude questions and answers section on "Problems on Numbers" in PDF format?</h4>
+                            <p>You can download the Aptitude quiz questions and answers section on "Problems on Numbers" as PDF files or eBooks.</p>
+                            
+                            <h4>How do I solve Aptitude quiz problems based on "Problems on Numbers"?</h4>
+                            <p>You can easily solve Aptitude quiz problems based on "Problems on Numbers" by practising the given exercises, including shortcuts and tricks.</p>
+                            </div>
+                    <div class="card-style py-1">
+                        <div class="breadcrumb-wrapper ">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb my-1">
+                                        <li class="breadcrumb-item"><a href="https://www.indiabix.com/">Home</a></li><li class="breadcrumb-item">
+                                        <a href="https://www.indiabix.com/aptitude/questions-and-answers/">Aptitude</a>
+                                    </li><li class="breadcrumb-item">
+                                        <a href="https://www.indiabix.com/aptitude/problems-on-numbers/">Problems on Numbers</a>
+                                    </li><li class="breadcrumb-item">
+                                        <a href="https://www.indiabix.com/aptitude/problems-on-numbers/">General Questions</a>
+                                    </li><li class="breadcrumb-item active" aria-current="page">
+                                        Page 1 of 3
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>                
+                            
+            <div class="row no-gutters" style="height: auto !important;">
+                <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12" style="height: auto !important;">
+                    <div class="ques-wrapper" style="height: auto !important;">
+                        <div class="d-flex flex-row justify-content-center align-items-center mb-3 w-100"><!-- ResTop -->
+<script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0191447310372013" crossorigin="anonymous" data-checked-head="true"></script>
+<ins class="adsbygoogle top_ad_unit" style="display: block; height: 280px;" data-ad-client="ca-pub-0191447310372013" data-ad-slot="9462193524" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done" data-ad-status="unfilled"><div id="aswift_1_host" style="border: none; height: 280px; width: 1059px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block; overflow: visible;"><iframe id="aswift_1" name="aswift_1" browsingtopics="true" style="left:0;position:absolute;top:0;border:0;width:1059px;height:280px;min-height:auto;max-height:none;min-width:auto;max-width:none;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" width="1059" height="280" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allow="attribution-reporting; run-ad-auction" src="https://googleads.g.doubleclick.net/pagead/ads?gdpr=0&amp;client=ca-pub-0191447310372013&amp;output=html&amp;h=280&amp;slotname=9462193524&amp;adk=43480005&amp;adf=2321189260&amp;pi=t.ma~as.9462193524&amp;w=1059&amp;abgtt=6&amp;fwrn=4&amp;fwrnh=100&amp;lmt=1755509184&amp;rafmt=1&amp;format=1059x280&amp;url=https%3A%2F%2Fwww.indiabix.com%2Faptitude%2Fproblems-on-numbers&amp;fwr=0&amp;fwrattr=true&amp;rh=90&amp;rpe=1&amp;resp_fmts=3&amp;wgl=1&amp;uach=WyJMaW51eCIsIiIsIiIsIiIsIiIsbnVsbCwwLG51bGwsIiIsbnVsbCwwXQ..&amp;dt=1755509183419&amp;bpp=75&amp;bdt=107&amp;idt=586&amp;shv=r20250814&amp;mjsv=m202508130101&amp;ptt=9&amp;saldr=aa&amp;abxe=1&amp;cookie=ID%3Dddff4796d124254f%3AT%3D1755509164%3ART%3D1755509164%3AS%3DALNI_MZowYTu6iZiY_V5pV6VU1JkH9VvBA&amp;gpic=UID%3D0000125e919816b8%3AT%3D1755509164%3ART%3D1755509164%3AS%3DALNI_MaC6o-k8hluo7Vl0OUBDtjbZMhD5w&amp;eo_id_str=ID%3D37a4f09ead08195e%3AT%3D1755509164%3ART%3D1755509164%3AS%3DAA-Afjau-VUhzljfNRaCRxBuni-3&amp;prev_fmts=0x0%2C512x280&amp;nras=1&amp;correlator=3389531893222&amp;frm=20&amp;pv=1&amp;u_tz=0&amp;u_his=5&amp;u_h=600&amp;u_w=800&amp;u_ah=600&amp;u_aw=800&amp;u_cd=24&amp;u_sd=1&amp;dmc=8&amp;adx=300&amp;ady=220&amp;biw=1905&amp;bih=993&amp;scr_x=0&amp;scr_y=0&amp;eid=31093925%2C31093927%2C31094107%2C95362655%2C95367635%2C95368365%2C95369083%2C31094100%2C42533294%2C95344789%2C95359265&amp;oid=2&amp;pvsid=4822900471651779&amp;tmod=1559191573&amp;uas=0&amp;nvt=1&amp;fc=1920&amp;brdim=10%2C10%2C10%2C10%2C800%2C0%2C1920%2C1080%2C1920%2C993&amp;vis=1&amp;rsz=%7C%7CEe%7C&amp;abl=CS&amp;pfx=0&amp;fu=128&amp;bc=31&amp;bz=1&amp;td=1&amp;tdf=2&amp;psd=W251bGwsbnVsbCxudWxsLDNd&amp;nt=1&amp;ifi=2&amp;uci=a!2&amp;fsb=1&amp;dtd=594" data-google-container-id="a!2" tabindex="0" title="Advertisement" aria-label="Advertisement" data-load-complete="true" data-google-query-id="CLHfwaqFlI8DFcvqGAId9t8z3Q"></iframe></div></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+                        <div class="card-style" style="height: auto !important;">
+                            <div class="exercise mb-3">
+                                    <div class="h5 w-100 mb-3 p-0"><span>Exercise :</span> Problems on Numbers - General Questions</div>                   
+                                    <div class="scrolly-250 scrolly-bg1">
+                                        <ul>
+                                            <li class="d-flex flex-row"><a href="https://www.indiabix.com/aptitude/problems-on-numbers/formulas">Problems on Numbers - Formulas</a></li><li class="current d-flex flex-row">Problems on Numbers - General Questions</li><li class="d-flex flex-row"><a href="https://www.indiabix.com/aptitude/problems-on-numbers/010001">Problems on Numbers - Data Sufficiency 1</a></li><li class="d-flex flex-row"><a href="https://www.indiabix.com/aptitude/problems-on-numbers/011001">Problems on Numbers - Data Sufficiency 2</a></li>
+                                        </ul>
+                                    </div>   
+                                </div>
+                            <div class="bix-div-container">
+                                    <div class="d-flex flex-row align-items-top justify-content-start">
+                                           <div class="bix-td-qno" id="qno1" rowspan="2">1.</div><div class="bix-td-qtxt table-responsive w-100">If one-third of one-fourth of a number is 15, then three-tenth of that number is:</div> 
+                                    </div> 
+                                    <div class="bix-tbl-options" id="tblOption_251">
+                                               <div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_A_251"><span id="lnkOptionLink_A_251" class="option-svg-letter-a"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_A_251">
+                                                        <div class="flex-wrap">35</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_B_251"><span id="lnkOptionLink_B_251" class="option-svg-letter-b"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_B_251">
+                                                        <div class="flex-wrap">36</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_C_251"><span id="lnkOptionLink_C_251" class="option-svg-letter-c"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_C_251">
+                                                        <div class="flex-wrap">45</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_D_251"><span id="lnkOptionLink_D_251" class="option-svg-letter-d"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_D_251">
+                                                        <div class="flex-wrap">54</div>
+                                                    </div>
+                                            </div>
+                                    </div>
+                                     <div class="bix-td-miscell">
+                                     
+                                            <input type="hidden" class="jq-hdnakq" id="hdnAnswer_251" value="D">
+                                            
+                                            <div class="bix-div-answer collapse " id="divAnswer_251">
+                                                                                                <div class="bix-ans-option d-flex flex-row align-items-center">
+                                                    <div class="pt-1"><span class="mx-green mx-bold">Answer:</span> Option</div>
+                                                    <div class="ps-1 pt-1"><span class="option-svg-letter-d"> </span></div>
+                                                </div>
+                                                <div class="mx-green mx-bold explain-lablel">Explanation:</div>
+                                                <div class="bix-ans-description table-responsive">
+                                                    <p>Let the number be <i class="ga-var">x</i>.</p>
+<p></p><table class="ga-tbl-answer" cellpadding="0" cellspacing="0">
+ <tbody><tr class="ga-tr-divident" align="center">
+     <td class="ga-td-line-rpad" rowspan="2">Then,</td>
+    <td class="ga-td-divident">1</td>
+    <td class="ga-td-line-lrpad" rowspan="2">of</td>
+    <td class="ga-td-divident">1</td>
+    <td class="ga-td-line-lrpad" rowspan="2">of <i class="ga-var">x</i> = 15 &nbsp;&nbsp; <img src="/_files/images/aptitude/1-sym-bim.gif">&nbsp;&nbsp;<i class="ga-var">x</i> = 15 x 3 x 4 = 180.</td>
+ </tr>
+ <tr class="ga-tr-divisort" align="center">
+     <td class="ga-td-divisor">3</td>
+     <td class="ga-td-divisor">4</td>
+ </tr> 
+ </tbody></table>
+<p></p>
+<p></p><table class="ga-tbl-answer" cellpadding="0" cellspacing="0">
+ <tbody><tr class="ga-tr-divident" align="center">
+     <td class="ga-td-line-rpad" rowspan="2">So, required number = </td>
+    <td class="ga-td-line" rowspan="2"><img src="/_files/images/aptitude/1-sym-oparen-h1.gif"></td>
+    <td class="ga-td-divident">3</td>
+    <td class="ga-td-line-lpad" rowspan="2">x 180</td>
+    <td class="ga-td-line" rowspan="2"><img src="/_files/images/aptitude/1-sym-cparen-h1.gif"></td>
+    <td class="ga-td-line-lrpad" rowspan="2">= 54.</td>
+ </tr>
+ <tr class="ga-tr-divisort" align="center">
+     <td class="ga-td-divisor">10</td>
+ </tr> 
+ </tbody></table>
+<p></p>
+
+<p class="mx-bold mx-green">Video Explanation: <a href="https://youtu.be/z49OUnzTnwY" target="_blank">https://youtu.be/z49OUnzTnwY</a></p>
+                                                </div>
+                                                
+                                            </div>
+
+                                            <div class="bix-div-workspace collapse" id="divWorkspace_251">
+                                                <textarea rows="10" placeholder="Workspace"></textarea>
+                                            </div>
+
+                                            <div class="bix-div-report collapse text-end" id="divReport_251">
+                                                <textarea class="bix-report-txt" data-qid="251" name="txtBixReport_251" id="txtBixReport_251" rows="8" maxlength="1000" placeholder="The report text length is at least 10 characters.
+
+
+
+
+Name :
+Email  : "></textarea>
+                                                <div class="d-flex flex-row flex-wrap align-items-center justify-content-center">
+                                                    <div id="ques_resp_251" class="ms-auto resp-div d-flex align-items-center"> </div>
+                                                    <input class="ms-3 bix-btn bix-btn-light bix-report-btn" id="btnBixReport_251" data-sid="1" data-qid="251" data-qno="1" type="button" value="Send Report" disabled="">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bix-div-toolbar d-flex align-items-center" id="divToolBar_251">
+                                                <a class="answer collapsed mdi mdi-book-open-variant " data-bs-toggle="collapse" href="#divAnswer_251" aria-expanded="false" aria-controls="divAnswer_251" aria-label="View Answer"></a>
+                                                <a class="discuss collapsed mdi mdi-comment-text-outline  ms-3" href="https://www.indiabix.com/aptitude/problems-on-numbers/discussion-251#comments" aria-label="Discuss about this question and answer"></a>
+                                                <a class="workspace collapsed mdi mdi-card-outline  ms-3" data-bs-toggle="collapse" href="#divWorkspace_251" aria-expanded="false" aria-controls="divWorkspace_251" aria-label="Workspace"></a>
+                                                <a class="report collapsed mdi mdi-alert-outline  ms-3" data-bs-toggle="collapse" href="#divReport_251" aria-expanded="false" aria-controls="divReport_251" aria-label="Send Report"></a>
+                                                
+                                                
+                                            </div>
+                                     </div>
+                            </div><hr><div class="bix-div-container">
+                                    <div class="d-flex flex-row align-items-top justify-content-start">
+                                           <div class="bix-td-qno" id="qno2" rowspan="2">2.</div><div class="bix-td-qtxt table-responsive w-100">Three times the first of three consecutive odd integers is 3 more than twice the third. The third integer is:</div> 
+                                    </div> 
+                                    <div class="bix-tbl-options" id="tblOption_256">
+                                               <div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_A_256"><span id="lnkOptionLink_A_256" class="option-svg-letter-a"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_A_256">
+                                                        <div class="flex-wrap">9</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_B_256"><span id="lnkOptionLink_B_256" class="option-svg-letter-b"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_B_256">
+                                                        <div class="flex-wrap">11</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_C_256"><span id="lnkOptionLink_C_256" class="option-svg-letter-c"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_C_256">
+                                                        <div class="flex-wrap">13</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_D_256"><span id="lnkOptionLink_D_256" class="option-svg-letter-d"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_D_256">
+                                                        <div class="flex-wrap">15</div>
+                                                    </div>
+                                            </div>
+                                    </div>
+                                     <div class="bix-td-miscell">
+                                     
+                                            <input type="hidden" class="jq-hdnakq" id="hdnAnswer_256" value="D">
+                                            
+                                            <div class="bix-div-answer collapse " id="divAnswer_256">
+                                                                                                <div class="bix-ans-option d-flex flex-row align-items-center">
+                                                    <div class="pt-1"><span class="mx-green mx-bold">Answer:</span> Option</div>
+                                                    <div class="ps-1 pt-1"><span class="option-svg-letter-d"> </span></div>
+                                                </div>
+                                                <div class="mx-green mx-bold explain-lablel">Explanation:</div>
+                                                <div class="bix-ans-description table-responsive">
+                                                    <p>Let the three integers be <i class="ga-var">x</i>, <i class="ga-var">x</i> + 2 and <i class="ga-var">x</i> + 4.</p>
+<p>Then, 3<i class="ga-var">x</i> = 2(<i class="ga-var">x</i> + 4) + 3 &nbsp;&nbsp;<img src="/_files/images/aptitude/1-sym-bim.gif">&nbsp;&nbsp; <i class="ga-var">x</i> = 11.</p>
+<p><img src="/_files/images/aptitude/1-sym-tfr.gif"> Third integer = <i class="ga-var">x</i> + 4 = 15.</p>
+
+<p class="mx-bold mx-green">Video Explanation: <a href="https://youtu.be/_77C9YE321Y" target="_blank">https://youtu.be/_77C9YE321Y</a></p>
+                                                </div>
+                                                
+                                            </div>
+
+                                            <div class="bix-div-workspace collapse" id="divWorkspace_256">
+                                                <textarea rows="10" placeholder="Workspace"></textarea>
+                                            </div>
+
+                                            <div class="bix-div-report collapse text-end" id="divReport_256">
+                                                <textarea class="bix-report-txt" data-qid="256" name="txtBixReport_256" id="txtBixReport_256" rows="8" maxlength="1000" placeholder="The report text length is at least 10 characters.
+
+
+
+
+Name :
+Email  : "></textarea>
+                                                <div class="d-flex flex-row flex-wrap align-items-center justify-content-center">
+                                                    <div id="ques_resp_256" class="ms-auto resp-div d-flex align-items-center"> </div>
+                                                    <input class="ms-3 bix-btn bix-btn-light bix-report-btn" id="btnBixReport_256" data-sid="1" data-qid="256" data-qno="2" type="button" value="Send Report" disabled="">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bix-div-toolbar d-flex align-items-center" id="divToolBar_256">
+                                                <a class="answer collapsed mdi mdi-book-open-variant " data-bs-toggle="collapse" href="#divAnswer_256" aria-expanded="false" aria-controls="divAnswer_256" aria-label="View Answer"></a>
+                                                <a class="discuss collapsed mdi mdi-comment-text-outline  ms-3" href="https://www.indiabix.com/aptitude/problems-on-numbers/discussion-256#comments" aria-label="Discuss about this question and answer"></a>
+                                                <a class="workspace collapsed mdi mdi-card-outline  ms-3" data-bs-toggle="collapse" href="#divWorkspace_256" aria-expanded="false" aria-controls="divWorkspace_256" aria-label="Workspace"></a>
+                                                <a class="report collapsed mdi mdi-alert-outline  ms-3" data-bs-toggle="collapse" href="#divReport_256" aria-expanded="false" aria-controls="divReport_256" aria-label="Send Report"></a>
+                                                
+                                                
+                                            </div>
+                                     </div>
+                            </div><hr><div class="bix-div-container">
+                                    <div class="d-flex flex-row align-items-top justify-content-start">
+                                           <div class="bix-td-qno" id="qno3" rowspan="2">3.</div><div class="bix-td-qtxt table-responsive w-100">The difference between a two-digit number and the number obtained by interchanging the positions of its digits is 36. What is the difference between the two digits of that number?</div> 
+                                    </div> 
+                                    <div class="bix-tbl-options" id="tblOption_261">
+                                               <div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_A_261"><span id="lnkOptionLink_A_261" class="option-svg-letter-a"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_A_261">
+                                                        <div class="flex-wrap">3</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_B_261"><span id="lnkOptionLink_B_261" class="option-svg-letter-b"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_B_261">
+                                                        <div class="flex-wrap">4</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_C_261"><span id="lnkOptionLink_C_261" class="option-svg-letter-c"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_C_261">
+                                                        <div class="flex-wrap">9</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_D_261"><span id="lnkOptionLink_D_261" class="option-svg-letter-d"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_D_261">
+                                                        <div class="flex-wrap">Cannot be determined</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_E_261"><span id="lnkOptionLink_E_261" class="option-svg-letter-e"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_E_261">
+                                                        <div class="flex-wrap">None of these</div>
+                                                    </div>
+                                            </div>
+                                    </div>
+                                     <div class="bix-td-miscell">
+                                     
+                                            <input type="hidden" class="jq-hdnakq" id="hdnAnswer_261" value="B">
+                                            
+                                            <div class="bix-div-answer collapse " id="divAnswer_261">
+                                                                                                <div class="bix-ans-option d-flex flex-row align-items-center">
+                                                    <div class="pt-1"><span class="mx-green mx-bold">Answer:</span> Option</div>
+                                                    <div class="ps-1 pt-1"><span class="option-svg-letter-b"> </span></div>
+                                                </div>
+                                                <div class="mx-green mx-bold explain-lablel">Explanation:</div>
+                                                <div class="bix-ans-description table-responsive">
+                                                    <p>Let the ten's digit be <i class="ga-var">x</i> and unit's digit be <i class="ga-var">y</i>.</p>
+<p>Then, (10<i class="ga-var">x</i> + <i class="ga-var">y</i>) - (10<i class="ga-var">y</i> + <i class="ga-var">x</i>) = 36</p>
+<p><img src="/_files/images/aptitude/1-sym-imp.gif"> 9(<i class="ga-var">x</i> - <i class="ga-var">y</i>) = 36</p>
+<p><img src="/_files/images/aptitude/1-sym-imp.gif"> <i class="ga-var">x</i> - <i class="ga-var">y</i> = 4.</p>
+
+<p class="mx-bold mx-green">Video Explanation: <a href="https://youtu.be/7QOJjAmGVx0" target="_blank">https://youtu.be/7QOJjAmGVx0</a></p>
+                                                </div>
+                                                
+                                            </div>
+
+                                            <div class="bix-div-workspace collapse" id="divWorkspace_261">
+                                                <textarea rows="10" placeholder="Workspace"></textarea>
+                                            </div>
+
+                                            <div class="bix-div-report collapse text-end" id="divReport_261">
+                                                <textarea class="bix-report-txt" data-qid="261" name="txtBixReport_261" id="txtBixReport_261" rows="8" maxlength="1000" placeholder="The report text length is at least 10 characters.
+
+
+
+
+Name :
+Email  : "></textarea>
+                                                <div class="d-flex flex-row flex-wrap align-items-center justify-content-center">
+                                                    <div id="ques_resp_261" class="ms-auto resp-div d-flex align-items-center"> </div>
+                                                    <input class="ms-3 bix-btn bix-btn-light bix-report-btn" id="btnBixReport_261" data-sid="1" data-qid="261" data-qno="3" type="button" value="Send Report" disabled="">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bix-div-toolbar d-flex align-items-center" id="divToolBar_261">
+                                                <a class="answer collapsed mdi mdi-book-open-variant " data-bs-toggle="collapse" href="#divAnswer_261" aria-expanded="false" aria-controls="divAnswer_261" aria-label="View Answer"></a>
+                                                <a class="discuss collapsed mdi mdi-comment-text-outline  ms-3" href="https://www.indiabix.com/aptitude/problems-on-numbers/discussion-261#comments" aria-label="Discuss about this question and answer"></a>
+                                                <a class="workspace collapsed mdi mdi-card-outline  ms-3" data-bs-toggle="collapse" href="#divWorkspace_261" aria-expanded="false" aria-controls="divWorkspace_261" aria-label="Workspace"></a>
+                                                <a class="report collapsed mdi mdi-alert-outline  ms-3" data-bs-toggle="collapse" href="#divReport_261" aria-expanded="false" aria-controls="divReport_261" aria-label="Send Report"></a>
+                                                
+                                                
+                                            </div>
+                                     </div>
+                            </div><hr><div class="bix-div-container">
+                                    <div class="d-flex flex-row align-items-top justify-content-start">
+                                           <div class="bix-td-qno" id="qno4" rowspan="2">4.</div><div class="bix-td-qtxt table-responsive w-100">
+The difference between a two-digit number and the number obtained by interchanging the digits is 36. What is the difference between the sum and the difference of the digits of the number if the ratio between the digits of the number is 1 : 2 ?
+</div> 
+                                    </div> 
+                                    <div class="bix-tbl-options" id="tblOption_262">
+                                               <div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_A_262"><span id="lnkOptionLink_A_262" class="option-svg-letter-a"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_A_262">
+                                                        <div class="flex-wrap">4</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_B_262"><span id="lnkOptionLink_B_262" class="option-svg-letter-b"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_B_262">
+                                                        <div class="flex-wrap">8</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_C_262"><span id="lnkOptionLink_C_262" class="option-svg-letter-c"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_C_262">
+                                                        <div class="flex-wrap">16</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_D_262"><span id="lnkOptionLink_D_262" class="option-svg-letter-d"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_D_262">
+                                                        <div class="flex-wrap">None of these</div>
+                                                    </div>
+                                            </div>
+                                    </div>
+                                     <div class="bix-td-miscell">
+                                     
+                                            <input type="hidden" class="jq-hdnakq" id="hdnAnswer_262" value="B">
+                                            
+                                            <div class="bix-div-answer collapse " id="divAnswer_262">
+                                                                                                <div class="bix-ans-option d-flex flex-row align-items-center">
+                                                    <div class="pt-1"><span class="mx-green mx-bold">Answer:</span> Option</div>
+                                                    <div class="ps-1 pt-1"><span class="option-svg-letter-b"> </span></div>
+                                                </div>
+                                                <div class="mx-green mx-bold explain-lablel">Explanation:</div>
+                                                <div class="bix-ans-description table-responsive">
+                                                    
+<p>Since the number is greater than the number obtained on reversing the digits, so the ten's digit is greater than the unit's digit.</p>
+<p>Let ten's and unit's digits be 2<i class="ga-var">x</i> and <i class="ga-var">x</i> respectively.</p>
+<p>Then, (10 x 2<i class="ga-var">x</i> + <i class="ga-var">x</i>) - (10<i class="ga-var">x</i> + 2<i class="ga-var">x</i>) = 36</p>
+<p><img src="/_files/images/aptitude/1-sym-imp.gif"> 9<i class="ga-var">x</i> = 36</p>
+<p><img src="/_files/images/aptitude/1-sym-imp.gif"> <i class="ga-var">x</i> = 4.</p>
+<p><img src="/_files/images/aptitude/1-sym-tfr.gif"> Required difference = (2<i class="ga-var">x</i> + <i class="ga-var">x</i>) - (2<i class="ga-var">x</i> - <i class="ga-var">x</i>) = 2<i class="ga-var">x</i> = 8.</p>
+
+                                                </div>
+                                                
+                                            </div>
+
+                                            <div class="bix-div-workspace collapse" id="divWorkspace_262">
+                                                <textarea rows="10" placeholder="Workspace"></textarea>
+                                            </div>
+
+                                            <div class="bix-div-report collapse text-end" id="divReport_262">
+                                                <textarea class="bix-report-txt" data-qid="262" name="txtBixReport_262" id="txtBixReport_262" rows="8" maxlength="1000" placeholder="The report text length is at least 10 characters.
+
+
+
+
+Name :
+Email  : "></textarea>
+                                                <div class="d-flex flex-row flex-wrap align-items-center justify-content-center">
+                                                    <div id="ques_resp_262" class="ms-auto resp-div d-flex align-items-center"> </div>
+                                                    <input class="ms-3 bix-btn bix-btn-light bix-report-btn" id="btnBixReport_262" data-sid="1" data-qid="262" data-qno="4" type="button" value="Send Report" disabled="">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bix-div-toolbar d-flex align-items-center" id="divToolBar_262">
+                                                <a class="answer collapsed mdi mdi-book-open-variant " data-bs-toggle="collapse" href="#divAnswer_262" aria-expanded="false" aria-controls="divAnswer_262" aria-label="View Answer"></a>
+                                                <a class="discuss collapsed mdi mdi-comment-text-outline  ms-3" href="https://www.indiabix.com/aptitude/problems-on-numbers/discussion-262#comments" aria-label="Discuss about this question and answer"></a>
+                                                <a class="workspace collapsed mdi mdi-card-outline  ms-3" data-bs-toggle="collapse" href="#divWorkspace_262" aria-expanded="false" aria-controls="divWorkspace_262" aria-label="Workspace"></a>
+                                                <a class="report collapsed mdi mdi-alert-outline  ms-3" data-bs-toggle="collapse" href="#divReport_262" aria-expanded="false" aria-controls="divReport_262" aria-label="Send Report"></a>
+                                                
+                                                
+                                            </div>
+                                     </div>
+                            </div><hr><div class="bix-div-container">
+                                    <div class="d-flex flex-row align-items-top justify-content-start">
+                                           <div class="bix-td-qno" id="qno5" rowspan="2">5.</div><div class="bix-td-qtxt table-responsive w-100">
+A two-digit number is such that the product of the digits is 8. When 18 is added to the number, then the digits are reversed. The number is:
+</div> 
+                                    </div> 
+                                    <div class="bix-tbl-options" id="tblOption_264">
+                                               <div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_A_264"><span id="lnkOptionLink_A_264" class="option-svg-letter-a"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_A_264">
+                                                        <div class="flex-wrap">18</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_B_264"><span id="lnkOptionLink_B_264" class="option-svg-letter-b"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_B_264">
+                                                        <div class="flex-wrap">24</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_C_264"><span id="lnkOptionLink_C_264" class="option-svg-letter-c"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_C_264">
+                                                        <div class="flex-wrap">42</div>
+                                                    </div>
+                                            </div><div class="d-flex flex-row align-items-top bix-opt-row"> 
+                                                    <div class="bix-td-option" id="tdOptionNo_D_264"><span id="lnkOptionLink_D_264" class="option-svg-letter-d"></span></div>
+                                                    <div class="bix-td-option-val d-flex flex-row align-items-center" id="tdOptionDt_D_264">
+                                                        <div class="flex-wrap">81</div>
+                                                    </div>
+                                            </div>
+                                    </div>
+                                     <div class="bix-td-miscell">
+                                     
+                                            <input type="hidden" class="jq-hdnakq" id="hdnAnswer_264" value="B">
+                                            
+                                            <div class="bix-div-answer collapse " id="divAnswer_264">
+                                                                                                <div class="bix-ans-option d-flex flex-row align-items-center">
+                                                    <div class="pt-1"><span class="mx-green mx-bold">Answer:</span> Option</div>
+                                                    <div class="ps-1 pt-1"><span class="option-svg-letter-b"> </span></div>
+                                                </div>
+                                                <div class="mx-green mx-bold explain-lablel">Explanation:</div>
+                                                <div class="bix-ans-description table-responsive">
+                                                    
+<p></p><table class="ga-tbl-answer" cellpadding="0" cellspacing="0">
+ <tbody><tr class="ga-tr-divident" align="center">
+    <td class="ga-td-line-rpad" rowspan="2">Let the ten's and unit digit be <i class="ga-var">x</i> and</td>
+    <td class="ga-td-divident">8</td>
+    <td class="ga-td-line-lrpad" rowspan="2">respectively.</td>
+ </tr>
+ <tr class="ga-tr-divisor" align="center">
+    <td class="ga-td-divisor"><i class="ga-var">x</i></td>
+ </tr> 
+</tbody></table>
+<p></p>
+<p></p><table class="ga-tbl-answer" cellpadding="0" cellspacing="0">
+ <tbody><tr class="ga-tr-divident" align="center">
+    <td class="ga-td-line-rpad" rowspan="2">Then,</td>
+    <td class="ga-td-line" rowspan="2"><img src="/_files/images/aptitude/1-sym-oparen-h1.gif"></td>
+    <td class="ga-td-line-rpad" rowspan="2">10<i class="ga-var">x</i> +</td>
+    <td class="ga-td-divident">8</td>
+    <td class="ga-td-line" rowspan="2"><img src="/_files/images/aptitude/1-sym-cparen-h1.gif"></td>
+    <td class="ga-td-line-lrpad" rowspan="2">+ 18 = 10 x</td>
+    <td class="ga-td-divident">8</td>
+    <td class="ga-td-line-lrpad" rowspan="2">+ <i class="ga-var">x</i></td>
+ </tr>
+ <tr class="ga-tr-divisor" align="center">
+    <td class="ga-td-divisor"><i class="ga-var">x</i></td>
+    <td class="ga-td-divisor"><i class="ga-var">x</i></td>
+ </tr> 
+</tbody></table>
+<p></p>
+<p><img src="/_files/images/aptitude/1-sym-imp.gif"> 10<i class="ga-var">x</i><sup>2</sup> + 8 + 18<i class="ga-var">x</i> = 80 + <i class="ga-var">x</i><sup>2</sup></p>
+<p><img src="/_files/images/aptitude/1-sym-imp.gif"> 9<i class="ga-var">x</i><sup>2</sup> + 18<i class="ga-var">x</i> - 72 = 0</p>
+<p><img src="/_files/images/aptitude/1-sym-imp.gif"> <i class="ga-var">x</i><sup>2</sup> + 2<i class="ga-var">x</i> - 8 = 0</p>
+<p><img src="/_files/images/aptitude/1-sym-imp.gif"> (<i class="ga-var">x</i> + 4)(<i class="ga-var">x</i> - 2) = 0</p>
+<p><img src="/_files/images/aptitude/1-sym-imp.gif"> <i class="ga-var">x</i> = 2.</p>
+
+                                                </div>
+                                                
+                                            </div>
+
+                                            <div class="bix-div-workspace collapse" id="divWorkspace_264">
+                                                <textarea rows="10" placeholder="Workspace"></textarea>
+                                            </div>
+
+                                            <div class="bix-div-report collapse text-end" id="divReport_264">
+                                                <textarea class="bix-report-txt" data-qid="264" name="txtBixReport_264" id="txtBixReport_264" rows="8" maxlength="1000" placeholder="The report text length is at least 10 characters.
+
+
+
+
+Name :
+Email  : "></textarea>
+                                                <div class="d-flex flex-row flex-wrap align-items-center justify-content-center">
+                                                    <div id="ques_resp_264" class="ms-auto resp-div d-flex align-items-center"> </div>
+                                                    <input class="ms-3 bix-btn bix-btn-light bix-report-btn" id="btnBixReport_264" data-sid="1" data-qid="264" data-qno="5" type="button" value="Send Report" disabled="">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bix-div-toolbar d-flex align-items-center" id="divToolBar_264">
+                                                <a class="answer collapsed mdi mdi-book-open-variant " data-bs-toggle="collapse" href="#divAnswer_264" aria-expanded="false" aria-controls="divAnswer_264" aria-label="View Answer"></a>
+                                                <a class="discuss collapsed mdi mdi-comment-text-outline  ms-3" href="https://www.indiabix.com/aptitude/problems-on-numbers/discussion-264#comments" aria-label="Discuss about this question and answer"></a>
+                                                <a class="workspace collapsed mdi mdi-card-outline  ms-3" data-bs-toggle="collapse" href="#divWorkspace_264" aria-expanded="false" aria-controls="divWorkspace_264" aria-label="Workspace"></a>
+                                                <a class="report collapsed mdi mdi-alert-outline  ms-3" data-bs-toggle="collapse" href="#divReport_264" aria-expanded="false" aria-controls="divReport_264" aria-label="Send Report"></a>
+                                                
+                                                
+                                            </div>
+                                     </div>
+                            </div>
+                            <hr><div class="d-flex flex-row justify-content-center align-items-center"><!-- ResBottom -->
+<script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0191447310372013" crossorigin="anonymous" data-checked-head="true"></script>
+<ins class="adsbygoogle bottom_ad_unit" style="display: block; height: 0px;" data-ad-client="ca-pub-0191447310372013" data-ad-slot="4948233444" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done" data-ad-status="unfilled"><div id="aswift_2_host" style="border: none; height: 0px; width: 1017px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block; overflow: hidden; opacity: 0;"><iframe id="aswift_2" name="aswift_2" browsingtopics="true" style="left: 0px; position: absolute; top: 0px; border: 0px; width: 1017px; height: 0px; min-height: auto; max-height: none; min-width: auto; max-width: none;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" width="1017" height="0" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allow="attribution-reporting; run-ad-auction" src="https://googleads.g.doubleclick.net/pagead/ads?gdpr=0&amp;client=ca-pub-0191447310372013&amp;output=html&amp;h=280&amp;slotname=4948233444&amp;adk=3777605731&amp;adf=844190542&amp;pi=t.ma~as.4948233444&amp;w=1017&amp;abgtt=6&amp;fwrn=4&amp;fwrnh=100&amp;lmt=1755509184&amp;rafmt=1&amp;format=1017x280&amp;url=https%3A%2F%2Fwww.indiabix.com%2Faptitude%2Fproblems-on-numbers&amp;fwr=0&amp;fwrattr=true&amp;rpe=1&amp;resp_fmts=3&amp;wgl=1&amp;uach=WyJMaW51eCIsIiIsIiIsIiIsIiIsbnVsbCwwLG51bGwsIiIsbnVsbCwwXQ..&amp;dt=1755509183506&amp;bpp=9&amp;bdt=195&amp;idt=688&amp;shv=r20250814&amp;mjsv=m202508130101&amp;ptt=9&amp;saldr=aa&amp;abxe=1&amp;cookie=ID%3Dddff4796d124254f%3AT%3D1755509164%3ART%3D1755509164%3AS%3DALNI_MZowYTu6iZiY_V5pV6VU1JkH9VvBA&amp;gpic=UID%3D0000125e919816b8%3AT%3D1755509164%3ART%3D1755509164%3AS%3DALNI_MaC6o-k8hluo7Vl0OUBDtjbZMhD5w&amp;eo_id_str=ID%3D37a4f09ead08195e%3AT%3D1755509164%3ART%3D1755509164%3AS%3DAA-Afjau-VUhzljfNRaCRxBuni-3&amp;prev_fmts=0x0%2C512x280%2C1059x280&amp;nras=1&amp;correlator=3389531893222&amp;frm=20&amp;pv=1&amp;u_tz=0&amp;u_his=5&amp;u_h=600&amp;u_w=800&amp;u_ah=600&amp;u_aw=800&amp;u_cd=24&amp;u_sd=1&amp;dmc=8&amp;adx=316&amp;ady=2326&amp;biw=1905&amp;bih=941&amp;scr_x=0&amp;scr_y=0&amp;eid=31093925%2C31093927%2C31094107%2C95362655%2C95367635%2C95368365%2C95369083%2C31094100%2C42533294%2C95344789%2C95359265&amp;oid=2&amp;pvsid=4822900471651779&amp;tmod=1559191573&amp;uas=0&amp;nvt=1&amp;fc=1920&amp;brdim=10%2C10%2C10%2C10%2C800%2C0%2C1920%2C1080%2C1920%2C941&amp;vis=1&amp;rsz=%7C%7CEebr%7C&amp;abl=CS&amp;pfx=0&amp;fu=128&amp;bc=31&amp;bz=1&amp;td=1&amp;tdf=2&amp;psd=W251bGwsbnVsbCxudWxsLDNd&amp;nt=1&amp;ifi=3&amp;uci=a!3&amp;btvi=1&amp;fsb=1&amp;dtd=696" data-google-container-id="a!3" tabindex="0" title="Advertisement" aria-label="Advertisement" data-load-complete="true" data-google-query-id="CNuUzaqFlI8DFYHrGAIdGBwMPQ"></iframe></div></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+                            <hr><nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center flex-wrap">
+                      <li class="page-item disabled">
+                  <a aria-label="Page Link" class="page-link" href="#" tabindex="-1" aria-disabled="true"><span class="d-none d-sm-block">Prev</span><i class="mdi mdi-chevron-double-left d-sm-none"></i></a>
+                </li>    <li class="page-item active" aria-current="page">
+                  <span class="page-link">1</span>
+                </li><li class="page-item"><a aria-label="Page link" class="page-link" href="https://www.indiabix.com/aptitude/problems-on-numbers/009002">2</a></li><li class="page-item"><a aria-label="Page link" class="page-link" href="https://www.indiabix.com/aptitude/problems-on-numbers/009003">3</a></li><li class="page-item"><a aria-label="Page link" class="page-link" href="https://www.indiabix.com/aptitude/problems-on-numbers/009002"><span class="d-none d-sm-block">Next</span><i class="mdi mdi-chevron-double-right d-sm-none"></i></a></li>
+           </ul>
+        </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12" style="height: auto !important;">
+                        
+
+                    <div class="card-style top-margin-xs">
+                        <div class="quick-link text-center">
+                            
+<div id="carouselRightTop" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item text-start active carousel-item-start">
+    <a class="carousel-link" href="https://www.indiabix.com/current-affairs/questions-and-answers/">
+       <div class="d-flex flex-row align-items-stretch">
+            <div class="carousel-icon">
+                <i class="mdi mdi-alarm-check mdi-48px me-2"></i>
+            </div>
+            <div class="d-flex flex-column align-items-start justify-content-center">
+            <h5>Current Affairs</h5>
+            <div class="text-small">Check out the latest current affairs questions and answers.</div>
+            </div>
+        </div>
+      </a>
+    </div>
+    <div class="carousel-item text-start carousel-item-next carousel-item-start">
+      <a class="carousel-link" href="https://www.indiabix.com/interview/">
+      <div class="d-flex flex-row align-items-stretch">
+            <div class="carousel-icon">
+                <i class="mdi mdi-comment-text-multiple-outline mdi-48px mdi-flip-h me-2"></i>
+            </div>
+            <div class="d-flex flex-column align-items-start justify-content-center">
+            <h5>Interview Questions</h5>
+            <div class="text-small">Check out the latest interview questions and answers.</div>
+            </div>
+        </div>
+      </a>
+    </div>
+    <div class="carousel-item text-start">
+      <a class="carousel-link" href="https://www.indiabix.com/group-discussion/">
+       <div class="d-flex flex-row align-items-stretch">
+            <div class="carousel-icon">
+                <i class="mdi mdi-account-box-multiple-outline mdi-48px me-2"></i>
+            </div>
+            <div class="d-flex flex-column align-items-start justify-content-center">
+                <h5>Group Discussions</h5>
+                <div class="text-small">Check out the latest group discussions.</div>
+            </div>
+        </div>
+      
+      </a>
+    </div>
+  </div>
+</div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row justify-content-center align-items-center d-none d-md-flex mb-3 w-100"><!-- ResRightSquare -->
+<script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0191447310372013" crossorigin="anonymous" data-checked-head="true"></script>
+<ins class="adsbygoogle right_ad_unit" style="display: block; height: 280px;" data-ad-client="ca-pub-0191447310372013" data-ad-slot="1826944762" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done" data-ad-status="unfilled"><div id="aswift_3_host" style="border: none; height: 280px; width: 512px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block; overflow: visible;"><iframe id="aswift_3" name="aswift_3" browsingtopics="true" style="left:0;position:absolute;top:0;border:0;width:512px;height:280px;min-height:auto;max-height:none;min-width:auto;max-width:none;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" width="512" height="280" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allow="attribution-reporting; run-ad-auction" src="https://googleads.g.doubleclick.net/pagead/ads?gdpr=0&amp;client=ca-pub-0191447310372013&amp;output=html&amp;h=280&amp;slotname=1826944762&amp;adk=4019124966&amp;adf=424250002&amp;pi=t.ma~as.1826944762&amp;w=512&amp;abgtt=6&amp;fwrn=4&amp;fwrnh=100&amp;lmt=1755509183&amp;rafmt=1&amp;format=512x280&amp;url=https%3A%2F%2Fwww.indiabix.com%2Faptitude%2Fproblems-on-numbers&amp;fwr=0&amp;fwrattr=true&amp;rpe=1&amp;resp_fmts=3&amp;wgl=1&amp;uach=WyJMaW51eCIsIiIsIiIsIiIsIiIsbnVsbCwwLG51bGwsIiIsbnVsbCwwXQ..&amp;dt=1755509183688&amp;bpp=10&amp;bdt=376&amp;idt=10&amp;shv=r20250814&amp;mjsv=m202508130101&amp;ptt=9&amp;saldr=aa&amp;abxe=1&amp;cookie=ID%3Dddff4796d124254f%3AT%3D1755509164%3ART%3D1755509164%3AS%3DALNI_MZowYTu6iZiY_V5pV6VU1JkH9VvBA&amp;gpic=UID%3D0000125e919816b8%3AT%3D1755509164%3ART%3D1755509164%3AS%3DALNI_MaC6o-k8hluo7Vl0OUBDtjbZMhD5w&amp;eo_id_str=ID%3D37a4f09ead08195e%3AT%3D1755509164%3ART%3D1755509164%3AS%3DAA-Afjau-VUhzljfNRaCRxBuni-3&amp;prev_fmts=0x0&amp;nras=1&amp;correlator=3389531893222&amp;frm=20&amp;pv=1&amp;u_tz=0&amp;u_his=5&amp;u_h=600&amp;u_w=800&amp;u_ah=600&amp;u_aw=800&amp;u_cd=24&amp;u_sd=1&amp;dmc=8&amp;adx=1373&amp;ady=352&amp;biw=1905&amp;bih=993&amp;scr_x=0&amp;scr_y=0&amp;eid=31093925%2C31093927%2C31094107%2C95362655%2C95367635%2C95368365%2C95369083%2C31094100%2C42533294%2C95344789%2C95359265&amp;oid=2&amp;pvsid=4822900471651779&amp;tmod=1559191573&amp;uas=0&amp;nvt=1&amp;fc=1920&amp;brdim=10%2C10%2C10%2C10%2C800%2C0%2C1920%2C1080%2C1920%2C993&amp;vis=1&amp;rsz=%7C%7CEe%7C&amp;abl=CS&amp;pfx=0&amp;fu=128&amp;bc=31&amp;bz=1&amp;td=1&amp;tdf=2&amp;psd=W251bGwsbnVsbCxudWxsLDNd&amp;nt=1&amp;ifi=4&amp;uci=a!4&amp;fsb=1&amp;dtd=298" data-google-container-id="a!4" tabindex="0" title="Advertisement" aria-label="Advertisement" data-load-complete="true" data-google-query-id="COaowKqFlI8DFUTgGAIdINos9A"></iframe></div></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+                    <div class="card-style top-margin-extra-xs">
+                        <div class="quick-link">
+                            <div class="card-title">Quick links</div>
+                            <div class="row">
+                                <div class="col-xxl-6 col-12">
+                                    <div class="h5">Quantitative Aptitude</div>
+                                    <ul>
+                                        <li><a href="https://www.indiabix.com/aptitude/questions-and-answers/" title="Arithmetic Aptitude">Arithmetic</a>
+                                        </li>
+                                        <li><a href="https://www.indiabix.com/data-interpretation/questions-and-answers/">Data
+                                            Interpretation</a></li>
+                                    </ul>
+
+                                    <div class="h5">Verbal (English)</div>
+                                    <ul>
+                                        <li><a href="https://www.indiabix.com/verbal-ability/questions-and-answers/">Verbal Ability</a></li>
+                                        <li><a href="https://www.indiabix.com/online-test/verbal-ability-test/">Verbal Test</a></li>
+                                    </ul>
+
+                                    <div class="h5">Reasoning</div>
+                                    <ul>
+                                        <li><a href="https://www.indiabix.com/logical-reasoning/questions-and-answers/" title="Logical Reasoning">Logical</a></li>
+                                        <li><a href="https://www.indiabix.com/verbal-reasoning/questions-and-answers/" title="Verbal Reasoning">Verbal</a>
+                                        </li>
+                                        <li><a href="https://www.indiabix.com/non-verbal-reasoning/questions-and-answers/" title="Nonverbal Reasoning">Nonverbal</a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-xxl-6 col-12">
+                                    <div class="h5">Programming</div>
+                                    <ul>
+                                        <li><a href="https://www.indiabix.com/python-programming/questions-and-answers/">Python Programming</a></li>
+                                        <li><a href="https://www.indiabix.com/c-programming/questions-and-answers/">C Programming</a></li>
+                                        <li><a href="https://www.indiabix.com/cpp-programming/questions-and-answers/" title="C++ Programming">C++</a>, &nbsp; <a href="https://www.indiabix.com/c-sharp-programming/questions-and-answers/" title="C# Programming">C#</a></li>
+                                        <li><a href="https://www.indiabix.com/java-programming/questions-and-answers/" title="Java Programming">Java</a></li>
+                                    </ul>
+
+                                    <div class="h5">Interview</div>
+                                    <ul>
+                                        <li><a href="https://www.indiabix.com/group-discussion/topics-with-answers/" title="Group Discussion Topics">GD</a>
+                                        </li>
+                                        <li><a href="https://www.indiabix.com/hr-interview/questions-and-answers/" title="HR Interview Questions">HR</a>
+                                        </li>
+                                        <li><a href="https://www.indiabix.com/technical/interview-questions-and-answers/" title="Technical Interview Questions">Technical Interview</a></li>
+                                    </ul>
+
+                                    <div class="h5"> Placement Papers</div>
+                                    <ul>
+                                        <li><a href="https://www.indiabix.com/placement-papers/companies/">Placement Papers</a></li>
+                                        <li><a href="https://www.indiabix.com/placement-papers/submit/" title="Submit Placement Papers">Submit
+                                            Paper</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    
+                </div>
+            </div>
+        </div>
+      </section>
+        <footer class="footer">
+        <div class="container-fluid">
+            <div class="row no-gutters">
+                <div class="col-md-6 order-last order-md-first">
+                    <div class="copyright text-center text-md-start">
+                        <p class="text-sm">© IndiaBIX™ Technologies</p>
+                    </div>
+                </div>
+                <!-- end col-->
+                <div class="col-md-6">
+                    <div class="terms d-flex justify-content-center justify-content-md-end">
+                        <a class="text-link text-sm" href="https://www.indiabix.com/contact-us/">Contact Us</a>
+                        <a class="text-link text-sm ml-15" href="https://www.indiabix.com/copyright/">Copyright</a>
+                        <a class="text-link text-sm ml-15" href="https://www.indiabix.com/privacy-policy/">Privacy Policy</a>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </footer>
+    </main><iframe name="googlefcPresent" style="width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px; display: none;"></iframe><ins class="adsbygoogle adsbygoogle-noablate" data-adsbygoogle-status="done" style="display: none !important;" data-ad-status="unfilled"><div id="aswift_0_host" style="border: none; height: 0px; width: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block;"><iframe id="aswift_0" name="aswift_0" browsingtopics="true" style="left:0;position:absolute;top:0;border:0;width:undefinedpx;height:undefinedpx;min-height:auto;max-height:none;min-width:auto;max-width:none;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allow="attribution-reporting; run-ad-auction" src="https://googleads.g.doubleclick.net/pagead/ads?gdpr=0&amp;client=ca-pub-0191447310372013&amp;output=html&amp;adk=1812271804&amp;adf=3025194257&amp;abgtt=6&amp;lmt=1755509183&amp;plaf=7%3A2&amp;plat=1%3A16777216%2C2%3A16777216%2C3%3A128%2C4%3A128%2C9%3A32776%2C16%3A8388608%2C17%3A32%2C24%3A32%2C25%3A32%2C30%3A1081344%2C32%3A32%2C41%3A32%2C42%3A32&amp;format=0x0&amp;url=https%3A%2F%2Fwww.indiabix.com%2Faptitude%2Fproblems-on-numbers&amp;pra=5&amp;wgl=1&amp;aihb=0&amp;asro=0&amp;aifxl=29_18~30_19&amp;aiapm=0.1542&amp;aiapmd=0.25178&amp;aiapmi=0.16&amp;aiapmid=1&amp;aiact=0.5423&amp;aiactd=0.7&amp;aicct=0.7&amp;aicctd=0.5799&amp;ailct=0.5849&amp;ailctd=0.65&amp;aimart=4&amp;aimartd=4&amp;uach=WyJMaW51eCIsIiIsIiIsIiIsIiIsbnVsbCwwLG51bGwsIiIsbnVsbCwwXQ..&amp;dt=1755509183688&amp;bpp=16&amp;bdt=377&amp;idt=-M&amp;shv=r20250814&amp;mjsv=m202508130101&amp;ptt=9&amp;saldr=aa&amp;abxe=1&amp;cookie=ID%3Dddff4796d124254f%3AT%3D1755509164%3ART%3D1755509164%3AS%3DALNI_MZowYTu6iZiY_V5pV6VU1JkH9VvBA&amp;gpic=UID%3D0000125e919816b8%3AT%3D1755509164%3ART%3D1755509164%3AS%3DALNI_MaC6o-k8hluo7Vl0OUBDtjbZMhD5w&amp;eo_id_str=ID%3D37a4f09ead08195e%3AT%3D1755509164%3ART%3D1755509164%3AS%3DAA-Afjau-VUhzljfNRaCRxBuni-3&amp;nras=1&amp;correlator=3389531893222&amp;frm=20&amp;pv=2&amp;u_tz=0&amp;u_his=5&amp;u_h=600&amp;u_w=800&amp;u_ah=600&amp;u_aw=800&amp;u_cd=24&amp;u_sd=1&amp;dmc=8&amp;adx=-12245933&amp;ady=-12245933&amp;biw=1905&amp;bih=993&amp;scr_x=0&amp;scr_y=0&amp;eid=31093925%2C31093927%2C31094107%2C95362655%2C95367635%2C95368365%2C95369083%2C31094100%2C42533294%2C95344789%2C95359265&amp;oid=2&amp;pvsid=4822900471651779&amp;tmod=1559191573&amp;uas=0&amp;nvt=1&amp;fsapi=1&amp;fc=1920&amp;brdim=10%2C10%2C10%2C10%2C800%2C0%2C1920%2C1080%2C1920%2C993&amp;vis=1&amp;rsz=%7C%7Cs%7C&amp;abl=NS&amp;fu=32768&amp;bc=31&amp;bz=1&amp;td=1&amp;tdf=2&amp;psd=W251bGwsbnVsbCxudWxsLDNd&amp;nt=1&amp;ifi=1&amp;uci=a!1&amp;fsb=1&amp;dtd=223" data-google-container-id="a!1" tabindex="0" title="Advertisement" aria-label="Advertisement" data-load-complete="true"></iframe></div></ins><iframe name="__tcfapiLocator" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcInactive" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcLoaded" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe>
+    
+    <script src="https://www.indiabix.com/_files/js/util/bootstrap.bundle.min.js"></script>
+    <script src="https://www.indiabix.com/_files/js/main.min.js?ver=1.0"></script>
+    
+  
+<div style="color-scheme: initial !important; forced-color-adjust: initial !important; mask: initial !important; math-depth: initial !important; position: initial !important; position-anchor: initial !important; text-size-adjust: initial !important; appearance: initial !important; color: initial !important; font: initial !important; font-palette: initial !important; font-synthesis: initial !important; position-area: initial !important; text-orientation: initial !important; text-rendering: initial !important; text-spacing-trim: initial !important; -webkit-font-smoothing: initial !important; -webkit-locale: initial !important; -webkit-text-orientation: initial !important; -webkit-writing-mode: initial !important; writing-mode: initial !important; zoom: initial !important; accent-color: initial !important; place-content: initial !important; place-items: initial !important; place-self: initial !important; alignment-baseline: initial !important; anchor-name: initial !important; anchor-scope: initial !important; animation-composition: initial !important; animation: initial !important; app-region: initial !important; aspect-ratio: initial !important; backdrop-filter: initial !important; backface-visibility: initial !important; background: initial !important; background-blend-mode: initial !important; baseline-shift: initial !important; baseline-source: initial !important; block-size: initial !important; border-block: initial !important; border: initial !important; border-radius: initial !important; border-collapse: initial !important; border-end-end-radius: initial !important; border-end-start-radius: initial !important; border-inline: initial !important; border-start-end-radius: initial !important; border-start-start-radius: initial !important; inset: initial !important; box-decoration-break: initial !important; box-shadow: initial !important; box-sizing: initial !important; break-after: initial !important; break-before: initial !important; break-inside: initial !important; buffered-rendering: initial !important; caption-side: initial !important; caret-color: initial !important; clear: initial !important; clip: initial !important; clip-path: initial !important; clip-rule: initial !important; color-interpolation: initial !important; color-interpolation-filters: initial !important; color-rendering: initial !important; columns: initial !important; column-fill: initial !important; gap: initial !important; column-rule: initial !important; column-span: initial !important; contain: initial !important; contain-intrinsic-block-size: initial !important; contain-intrinsic-size: initial !important; contain-intrinsic-inline-size: initial !important; container: initial !important; content: initial !important; content-visibility: initial !important; counter-increment: initial !important; counter-reset: initial !important; counter-set: initial !important; cursor: initial !important; cx: initial !important; cy: initial !important; d: initial !important; display: initial !important; dominant-baseline: initial !important; dynamic-range-limit: initial !important; empty-cells: initial !important; field-sizing: initial !important; fill: initial !important; fill-opacity: initial !important; fill-rule: initial !important; filter: initial !important; flex: initial !important; flex-flow: initial !important; float: initial !important; flood-color: initial !important; flood-opacity: initial !important; grid: initial !important; grid-area: initial !important; height: initial !important; hyphenate-character: initial !important; hyphenate-limit-chars: initial !important; hyphens: initial !important; image-orientation: initial !important; image-rendering: initial !important; initial-letter: initial !important; inline-size: initial !important; inset-block: initial !important; inset-inline: initial !important; interpolate-size: initial !important; isolation: initial !important; letter-spacing: initial !important; lighting-color: initial !important; line-break: initial !important; list-style: initial !important; margin-block: initial !important; margin: initial !important; margin-inline: initial !important; marker: initial !important; mask-type: initial !important; math-shift: initial !important; math-style: initial !important; max-block-size: initial !important; max-height: initial !important; max-inline-size: initial !important; max-width: initial !important; min-block-size: initial !important; min-height: initial !important; min-inline-size: initial !important; min-width: initial !important; mix-blend-mode: initial !important; object-fit: initial !important; object-position: initial !important; object-view-box: initial !important; offset: initial !important; opacity: initial !important; order: initial !important; orphans: initial !important; outline: initial !important; outline-offset: initial !important; overflow-anchor: initial !important; overflow-block: initial !important; overflow-clip-margin: initial !important; overflow-inline: initial !important; overflow-wrap: initial !important; overflow: initial !important; overlay: initial !important; overscroll-behavior-block: initial !important; overscroll-behavior-inline: initial !important; overscroll-behavior: initial !important; padding-block: initial !important; padding: initial !important; padding-inline: initial !important; page: initial !important; page-orientation: initial !important; paint-order: initial !important; perspective: initial !important; perspective-origin: initial !important; pointer-events: initial !important; position-try: initial !important; position-visibility: initial !important; print-color-adjust: initial !important; quotes: initial !important; r: initial !important; reading-flow: initial !important; reading-order: initial !important; resize: initial !important; rotate: initial !important; ruby-align: initial !important; ruby-position: initial !important; rx: initial !important; ry: initial !important; scale: initial !important; scroll-behavior: initial !important; scroll-initial-target: initial !important; scroll-margin-block: initial !important; scroll-margin: initial !important; scroll-margin-inline: initial !important; scroll-marker-group: initial !important; scroll-padding-block: initial !important; scroll-padding: initial !important; scroll-padding-inline: initial !important; scroll-snap-align: initial !important; scroll-snap-stop: initial !important; scroll-snap-type: initial !important; scroll-timeline: initial !important; scrollbar-color: initial !important; scrollbar-gutter: initial !important; scrollbar-width: initial !important; shape-image-threshold: initial !important; shape-margin: initial !important; shape-outside: initial !important; shape-rendering: initial !important; size: initial !important; speak: initial !important; stop-color: initial !important; stop-opacity: initial !important; stroke: initial !important; stroke-dasharray: initial !important; stroke-dashoffset: initial !important; stroke-linecap: initial !important; stroke-linejoin: initial !important; stroke-miterlimit: initial !important; stroke-opacity: initial !important; stroke-width: initial !important; tab-size: initial !important; table-layout: initial !important; text-align: initial !important; text-align-last: initial !important; text-anchor: initial !important; text-box: initial !important; text-combine-upright: initial !important; text-decoration: initial !important; text-decoration-skip-ink: initial !important; text-emphasis: initial !important; text-emphasis-position: initial !important; text-indent: initial !important; text-overflow: initial !important; text-shadow: initial !important; text-transform: initial !important; text-underline-offset: initial !important; text-underline-position: initial !important; text-wrap: initial !important; timeline-scope: initial !important; touch-action: initial !important; transform: initial !important; transform-box: initial !important; transform-origin: initial !important; transform-style: initial !important; transition: initial !important; translate: initial !important; user-select: initial !important; vector-effect: initial !important; vertical-align: initial !important; view-timeline: initial !important; view-transition-class: initial !important; view-transition-name: initial !important; visibility: initial !important; border-spacing: initial !important; -webkit-box-align: initial !important; -webkit-box-decoration-break: initial !important; -webkit-box-direction: initial !important; -webkit-box-flex: initial !important; -webkit-box-ordinal-group: initial !important; -webkit-box-orient: initial !important; -webkit-box-pack: initial !important; -webkit-box-reflect: initial !important; -webkit-line-break: initial !important; -webkit-line-clamp: initial !important; -webkit-mask-box-image: initial !important; -webkit-rtl-ordering: initial !important; -webkit-ruby-position: initial !important; -webkit-tap-highlight-color: initial !important; -webkit-text-combine: initial !important; -webkit-text-decorations-in-effect: initial !important; -webkit-text-fill-color: unset !important; -webkit-text-security: initial !important; -webkit-text-stroke: initial !important; -webkit-user-drag: initial !important; white-space-collapse: initial !important; widows: initial !important; width: initial !important; will-change: initial !important; word-break: initial !important; word-spacing: initial !important; x: initial !important; y: initial !important; z-index: initial !important;"></div><iframe src="https://www.google.com/recaptcha/api2/aframe" width="0" height="0" style="display: none;"></iframe></body><iframe id="google_esf" name="google_esf" src="https://googleads.g.doubleclick.net/pagead/html/r20250814/r20190131/zrt_lookup_fy2021.html" style="display: none;"></iframe></html>
