@@ -38,8 +38,8 @@ db = client[os.environ['DB_NAME']]
 
 # Create the main app without a prefix
 app = FastAPI(
-    title="AI-Enhanced Aptitude Questions API",
-    description="World-class AI-powered aptitude questions platform with Gemini, Groq, and HuggingFace integration",
+    title="AI-Enhanced Web Scraping & Data Collection System",
+    description="Production-ready AI-powered scraping system with comprehensive monitoring, error tracking, and analytics",
     version="2.0.0"
 )
 
