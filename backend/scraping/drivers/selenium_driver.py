@@ -242,7 +242,12 @@ class SeleniumDriver:
             
             if self.config.browser.lower() == "chrome":
                 options = self._create_chrome_options()
-                self.driver = webdriver.Chrome(options=options)
+                # Use ChromeDriver service with correct path
+                if os.path.exists("/usr/bin/chromedriver"):
+                    service = ChromeService("/usr/bin/chromedriver")
+                    self.driver = webdriver.Chrome(service=service, options=options)
+                else:
+                    self.driver = webdriver.Chrome(options=options)
             elif self.config.browser.lower() == "firefox":
                 options = self._create_firefox_options()
                 self.driver = webdriver.Firefox(options=options)
