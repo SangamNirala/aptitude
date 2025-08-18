@@ -500,8 +500,17 @@ const ComprehensiveAptitudeQuestions = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 p-6">
-      <div className="max-w-4xl mx-auto">
+    <>
+      {isPracticeSessionActive ? (
+        <QuestionPracticeSession
+          category={selectedAptitudeCategory}
+          difficulty={selectedDifficulty}
+          onBack={handleBackFromPractice}
+          maxQuestions={10}
+        />
+      ) : (
+        <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 p-6">
+          <div className="max-w-4xl mx-auto">
         {/* Enhanced Header with Stats */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
