@@ -650,7 +650,7 @@ class ScrapingEngine:
             
         except Exception as e:
             logger.error(f"Error executing job attempt {job.id}: {e}")
-            job.error_message = str(e)
+            job.last_error = str(e)
             return False
     
     def _process_batch_result(self, job: ScrapingJob, batch_result: BatchExtractionResult):
