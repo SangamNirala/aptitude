@@ -575,7 +575,7 @@ class ScrapingEngine:
                 source_name = self._resolve_source_id_to_name(source_id)
                 if not source_name:
                     logger.error(f"Could not resolve source ID {source_id} to source name")
-                    job.error_message = f"Could not resolve source ID {source_id}"
+                    job.last_error = f"Could not resolve source ID {source_id}"
                     return False
             
             logger.info(f"Using source name: {source_name} for job {job.id}")
