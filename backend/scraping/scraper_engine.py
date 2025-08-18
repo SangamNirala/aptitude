@@ -613,7 +613,7 @@ class ScrapingEngine:
                 # Extract questions from current page
                 context = create_extraction_context(
                     target=target,
-                    page_url=self._get_current_url(driver),
+                    page_url=target.target_url,  # Use target URL for now
                     page_number=current_page
                 )
                 
