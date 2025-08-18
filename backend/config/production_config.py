@@ -280,8 +280,11 @@ class ProductionConfigManager:
         return validation_report
     
     def get_config(self) -> ProductionConfig:
-        """Get current configuration"""
+        """Get current configuration (lazy-loaded)"""
         if not self.config:
+            # Ensure .env is loaded before configuration
+            from dotenv import load_dotenv
+            load_dotenv()
             return self.load_config()
         return self.config
 
