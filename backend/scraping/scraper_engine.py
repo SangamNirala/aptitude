@@ -508,16 +508,38 @@ class ScrapingEngine:
     def _execute_single_job_attempt(self, job: ScrapingJob, driver: Any, extractor: Any) -> bool:
         """Execute a single job attempt"""
         try:
-            target = job.target_config
-            job_config = job.job_config
+            job_config = job.config
+            
+            # Get first source for this job
+            if not job_config.source_ids:
+                logger.error(f"Job {job.id} has no source_ids configured")
+                job.error_message = "No source IDs configured"
+                return False
+                
+            source_name = job_config.source_ids[0]  # Use first source for now
+            
+            # For now, we'll use a simplified approach and get targets from config
+            # In a full implementation, you'd use source_management.get_source_targets()
+            from config.scraping_config import get_source_targets
+            targets = get_source_targets(source_name)
+            
+            if not targets:
+                logger.error(f"No targets found for source {source_name}")
+                job.error_message = f"No targets found for source {source_name}"
+                return False
+            
+            # Use first target for this execution
+            target = targets[0]
             
             # Navigate to target URL
             self._navigate_to_url(driver, target.target_url)
             
             current_page = 1
             total_extracted = 0
+            max_pages = 50  # Default max pages
+            max_questions = job_config.max_questions_per_source or 1000
             
-            while current_page <= (job_config.max_pages or 50):
+            while current_page <= max_pages:
                 # Check if job was cancelled
                 if job.status == ScrapingJobStatus.CANCELLED:
                     return False
@@ -529,8 +551,8 @@ class ScrapingEngine:
                 
                 # Update progress
                 with self.job_lock:
-                    if job.job_id in self.job_progress:
-                        self.job_progress[job.job_id].current_page = current_page
+                    if job.id in self.job_progress:
+                        self.job_progress[job.id].current_page = current_page
                 
                 # Create extraction context
                 context = create_extraction_context(
@@ -548,15 +570,15 @@ class ScrapingEngine:
                 total_extracted += batch_result.successful_extractions
                 
                 # Check if we've reached max questions
-                if job_config.max_questions and total_extracted >= job_config.max_questions:
-                    logger.info(f"Job {job.job_id} reached max questions limit: {job_config.max_questions}")
+                if total_extracted >= max_questions:
+                    logger.info(f"Job {job.id} reached max questions limit: {max_questions}")
                     break
                 
                 # Handle pagination
                 has_next, next_url = extractor.handle_pagination(driver, current_page, context)
                 
                 if not has_next:
-                    logger.info(f"Job {job.job_id} completed all pages")
+                    logger.info(f"Job {job.id} completed all pages")
                     break
                 
                 # Navigate to next page
@@ -566,13 +588,13 @@ class ScrapingEngine:
                 current_page += 1
                 
                 # Apply rate limiting
-                self._apply_rate_limiting(job.target_config.source_id)
+                self._apply_rate_limiting(source_name)
             
             # Job completed successfully if we extracted something
             return total_extracted > 0
             
         except Exception as e:
-            logger.error(f"Error executing job attempt {job.job_id}: {e}")
+            logger.error(f"Error executing job attempt {job.id}: {e}")
             job.error_message = str(e)
             return False
     
