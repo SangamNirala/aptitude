@@ -559,12 +559,56 @@ class ScrapingEngine:
                 job.error_message = "No source IDs configured"
                 return False
                 
-            source_name = job_config.source_ids[0]  # Use first source for now
+            source_id = job_config.source_ids[0]  # Use first source for now
+            
+            # Resolve source ID to source name 
+            # Import here to avoid circular imports
+            from services.source_management_service import SourceManagementService
+            from motor.motor_asyncio import AsyncIOMotorClient
+            import os
+            import asyncio
+            
+            # Get source configuration to resolve ID to name
+            mongo_url = os.environ.get('MONGO_URL')
+            if not mongo_url:
+                logger.error("MONGO_URL not found in environment")
+                job.error_message = "Database configuration error"
+                return False
+            
+            client = AsyncIOMotorClient(mongo_url)
+            db = client[os.environ.get('DB_NAME', 'aptitude_questions')]
+            
+            # Run async source lookup in sync context
+            async def get_source_name():
+                try:
+                    source_manager = SourceManagementService(db)
+                    source_config = await source_manager.get_source(source_id)
+                    await client.close()
+                    return source_config.name if source_config else None
+                except Exception as e:
+                    logger.error(f"Error getting source config: {e}")
+                    await client.close()
+                    return None
+            
+            # Get the source name
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                source_name = loop.run_until_complete(get_source_name())
+            finally:
+                loop.close()
+            
+            if not source_name:
+                logger.error(f"Could not resolve source ID {source_id} to source name")
+                job.error_message = f"Could not resolve source ID {source_id}"
+                return False
+            
+            logger.info(f"Resolved source ID {source_id} to source name: {source_name}")
             
             # For now, we'll use a simplified approach and get targets from config
             # In a full implementation, you'd use source_management.get_source_targets()
             from config.scraping_config import get_source_targets
-            targets = get_source_targets(source_name)
+            targets = get_source_targets(source_name.lower())
             
             if not targets:
                 logger.error(f"No targets found for source {source_name}")
