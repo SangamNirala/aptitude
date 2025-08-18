@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { BookOpen, Home } from 'lucide-react';
+import { BookOpen, Home, BarChart3 } from 'lucide-react';
 
 const Navigation = () => {
   const location = useLocation();
@@ -24,6 +24,17 @@ const Navigation = () => {
           >
             <BookOpen className="w-5 h-5" />
             <span className="font-medium">Interview Questions</span>
+          </Link>
+          <Link 
+            to="/scraping-dashboard" 
+            className={`flex items-center gap-2 transition-colors ${
+              location.pathname === '/scraping-dashboard' 
+                ? 'text-yellow-400' 
+                : 'text-white hover:text-yellow-400'
+            }`}
+          >
+            <BarChart3 className="w-5 h-5" />
+            <span className="font-medium">Scraping Dashboard</span>
           </Link>
         </div>
       </div>
