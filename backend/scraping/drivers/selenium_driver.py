@@ -313,7 +313,7 @@ class SeleniumDriver:
         
         # Apply anti-detection measures
         if self.anti_detection:
-            self.anti_detection.before_request(url)
+            self.anti_detection.track_request(url)
         
         start_time = time.time()
         
@@ -325,18 +325,12 @@ class SeleniumDriver:
             self.rate_limiter._last_request_time = time.time()
             self.rate_limiter._consecutive_successes += 1
             self.rate_limiter._consecutive_failures = 0
-            
-            if self.anti_detection:
-                self.anti_detection.after_request(url, success=True, response_time=request_time)
                 
         except Exception as e:
             # Record failed request
             request_time = time.time() - start_time
             self.rate_limiter._consecutive_failures += 1
             self.rate_limiter._consecutive_successes = 0
-            
-            if self.anti_detection:
-                self.anti_detection.after_request(url, success=False, response_time=request_time, error=str(e))
             
             raise
     
