@@ -1,30 +1,29 @@
 #!/usr/bin/env python3
 """
-Test API directly with proper async calls
+Test API directly with proper sync calls
 """
 
 import os
 import sys
-import asyncio
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
 load_dotenv()
 sys.path.append('/app/backend')
 
-async def test_api_directly():
-    """Test API functionality directly"""
-    from motor.motor_asyncio import AsyncIOMotorClient
+def test_database_directly():
+    """Test database contents directly"""
     
     # Get database connection
-    mongo_url = os.environ['MONGO_URL']
-    client = AsyncIOMotorClient(mongo_url)
-    db = client[os.environ['DB_NAME']]
+    mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+    db_name = os.environ.get('DB_NAME', 'test_database')
+    
+    client = MongoClient(mongo_url)
+    db = client[db_name]
     
     # Check what's actually in the database
     print("🔍 Direct database query:")
-    cursor = db.enhanced_questions.find({})
-    questions = await cursor.to_list(length=10)
+    questions = list(db.enhanced_questions.find({}).limit(10))
     
     print(f"   Found {len(questions)} questions in database")
     
@@ -33,30 +32,29 @@ async def test_api_directly():
         print(f"   Sample question structure:")
         for key in sample.keys():
             if key != '_id':
-                print(f"     {key}: {type(sample[key])}")
+                value = sample[key]
+                print(f"     {key}: {type(value).__name__} = {str(value)[:50]}")
     
     # Try the filter that the API uses
-    filter_query = {"is_active": True}
-    cursor = db.enhanced_questions.find(filter_query)
-    active_questions = await cursor.to_list(length=10)
-    
+    active_questions = list(db.enhanced_questions.find({"is_active": True}).limit(10))
     print(f"   Questions with is_active=True: {len(active_questions)}")
     
     # Try filtering by category
-    filter_query = {"category": "logical"}
-    cursor = db.enhanced_questions.find(filter_query)
-    logical_questions = await cursor.to_list(length=10)
-    
+    logical_questions = list(db.enhanced_questions.find({"category": "logical"}).limit(10))
     print(f"   Questions with category='logical': {len(logical_questions)}")
     
     # Check what categories exist
-    categories = await db.enhanced_questions.distinct('category')
+    categories = db.enhanced_questions.distinct('category')
     print(f"   Available categories: {categories}")
     
-    await client.close()
+    # Check is_active field
+    is_active_values = db.enhanced_questions.distinct('is_active')
+    print(f"   Available is_active values: {is_active_values}")
+    
+    client.close()
 
 def main():
-    asyncio.run(test_api_directly())
+    test_database_directly()
 
 if __name__ == "__main__":
     main()
