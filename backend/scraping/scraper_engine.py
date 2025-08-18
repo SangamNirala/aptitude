@@ -811,6 +811,57 @@ class ScrapingEngine:
         """Get content validator for source type"""
         return self.content_validators.get(source_type)
     
+    def _resolve_source_id_to_name(self, source_id: str) -> Optional[str]:
+        """
+        Resolve source ID to source name using source management service
+        
+        Args:
+            source_id: Source ID to resolve
+            
+        Returns:
+            Source name or None if not found
+        """
+        try:
+            # Import here to avoid circular imports
+            from services.source_management_service import SourceManagementService
+            from motor.motor_asyncio import AsyncIOMotorClient
+            import os
+            import asyncio
+            
+            # Get source configuration to resolve ID to name
+            mongo_url = os.environ.get('MONGO_URL')
+            if not mongo_url:
+                logger.error("MONGO_URL not found in environment")
+                return None
+            
+            client = AsyncIOMotorClient(mongo_url)
+            db = client[os.environ.get('DB_NAME', 'aptitude_questions')]
+            
+            # Run async source lookup in sync context
+            async def get_source_name():
+                try:
+                    source_manager = SourceManagementService(db)
+                    source_config = await source_manager.get_source(source_id)
+                    await client.close()
+                    return source_config.name if source_config else None
+                except Exception as e:
+                    logger.error(f"Error getting source config: {e}")
+                    await client.close()
+                    return None
+            
+            # Get the source name
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                source_name = loop.run_until_complete(get_source_name())
+                return source_name
+            finally:
+                loop.close()
+                
+        except Exception as e:
+            logger.error(f"Error resolving source ID {source_id} to name: {e}")
+            return None
+    
     def _navigate_to_url(self, driver: Any, url: str):
         """Navigate driver to URL"""
         try:
