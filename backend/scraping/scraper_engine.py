@@ -786,13 +786,13 @@ class ScrapingEngine:
             
             # Move to completed jobs
             with self.job_lock:
-                if job.job_id in self.active_jobs:
-                    del self.active_jobs[job.job_id]
-                self.completed_jobs[job.job_id] = job
+                if job.id in self.active_jobs:
+                    del self.active_jobs[job.id]
+                self.completed_jobs[job.id] = job
                 
                 # Clean up progress tracking
-                if job.job_id in self.job_progress:
-                    del self.job_progress[job.job_id]
+                if job.id in self.job_progress:
+                    del self.job_progress[job.id]
             
             # Update global statistics
             self.stats.total_jobs_completed += 1
