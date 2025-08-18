@@ -42,6 +42,22 @@ source_manager: Optional[SourceManagementService] = None
 scraping_engine: Optional[ScrapingEngine] = None
 
 # =============================================================================
+# SERVICE GETTERS
+# =============================================================================
+
+def get_job_manager() -> Optional[BackgroundJobManager]:
+    """Get the global job manager instance"""
+    return job_manager
+
+def get_source_manager() -> Optional[SourceManagementService]:
+    """Get the global source manager instance"""
+    return source_manager
+
+def get_scraping_engine() -> Optional[ScrapingEngine]:
+    """Get the global scraping engine instance"""
+    return scraping_engine
+
+# =============================================================================
 # SERVICE INITIALIZATION
 # =============================================================================
 
