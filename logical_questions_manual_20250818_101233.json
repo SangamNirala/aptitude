@@ -1,0 +1,372 @@
+[
+  {
+    "question_text": "Look at this series: 2, 1, (1/2), (1/4), ... What number should come next?",
+    "options": [
+      "A) (1/3)",
+      "B) (1/8)",
+      "C) (2/8)",
+      "D) (1/16)"
+    ],
+    "correct_answer": "B) (1/8)",
+    "explanation": "This is a simple division series; each number is one half of the previous number. (1/4) ÷ 2 = (1/8)",
+    "category": "logical",
+    "subcategory": "number_series",
+    "difficulty": "medium",
+    "source": "IndiaBix",
+    "source_url": "https://www.indiabix.com/logical-reasoning/logical-reasoning/001001",
+    "id": "indiabix_logical_001",
+    "created_at": "2025-08-18 10:12:33.710193",
+    "scraped_at": "2025-08-18 10:12:33.710199",
+    "quality_score": 85.0,
+    "confidence_score": 0.95,
+    "language": "english",
+    "tags": [
+      "logical",
+      "reasoning",
+      "aptitude",
+      "indiabix"
+    ],
+    "companies": [
+      "TCS",
+      "Infosys",
+      "Wipro",
+      "Accenture"
+    ],
+    "time_to_solve": 120,
+    "success_rate": 0.65,
+    "_id": "68a2fc91e4e37f74c890422e"
+  },
+  {
+    "question_text": "Look at this series: 21, 9, 21, 11, 21, 13, 21, ... What number should come next?",
+    "options": [
+      "A) 14",
+      "B) 15",
+      "C) 16",
+      "D) 17"
+    ],
+    "correct_answer": "B) 15",
+    "explanation": "In this alternating repetition series, the random number 21 is repeated every other number. The series of other numbers 9, 11, 13... is an arithmetic progression that increases by 2.",
+    "category": "logical",
+    "subcategory": "number_series",
+    "difficulty": "medium",
+    "source": "IndiaBix",
+    "source_url": "https://www.indiabix.com/logical-reasoning/logical-reasoning/001002",
+    "id": "indiabix_logical_002",
+    "created_at": "2025-08-18 10:12:33.710207",
+    "scraped_at": "2025-08-18 10:12:33.710207",
+    "quality_score": 85.0,
+    "confidence_score": 0.95,
+    "language": "english",
+    "tags": [
+      "logical",
+      "reasoning",
+      "aptitude",
+      "indiabix"
+    ],
+    "companies": [
+      "TCS",
+      "Infosys",
+      "Wipro",
+      "Accenture"
+    ],
+    "time_to_solve": 120,
+    "success_rate": 0.65,
+    "_id": "68a2fc91e4e37f74c890422f"
+  },
+  {
+    "question_text": "Look at this series: 1.5, 2.3, 3.1, 3.9, ... What number should come next?",
+    "options": [
+      "A) 4.2",
+      "B) 4.4",
+      "C) 4.7",
+      "D) 5.1"
+    ],
+    "correct_answer": "C) 4.7",
+    "explanation": "In this simple addition series, each number increases by 0.8: 1.5 + 0.8 = 2.3; 2.3 + 0.8 = 3.1; 3.1 + 0.8 = 3.9; 3.9 + 0.8 = 4.7",
+    "category": "logical",
+    "subcategory": "number_series",
+    "difficulty": "easy",
+    "source": "IndiaBix",
+    "source_url": "https://www.indiabix.com/logical-reasoning/logical-reasoning/001003",
+    "id": "indiabix_logical_003",
+    "created_at": "2025-08-18 10:12:33.710210",
+    "scraped_at": "2025-08-18 10:12:33.710210",
+    "quality_score": 85.0,
+    "confidence_score": 0.95,
+    "language": "english",
+    "tags": [
+      "logical",
+      "reasoning",
+      "aptitude",
+      "indiabix"
+    ],
+    "companies": [
+      "TCS",
+      "Infosys",
+      "Wipro",
+      "Accenture"
+    ],
+    "time_to_solve": 120,
+    "success_rate": 0.65,
+    "_id": "68a2fc91e4e37f74c8904230"
+  },
+  {
+    "question_text": "Look at this series: 80, 10, 70, 15, 60, ... What number should come next?",
+    "options": [
+      "A) 20",
+      "B) 25",
+      "C) 30",
+      "D) 50"
+    ],
+    "correct_answer": "A) 20",
+    "explanation": "This is an alternating series with two patterns. In the first pattern, the first, third, fifth numbers decrease by 10 each time: 80, 70, 60. In the second pattern, the second, fourth numbers increase by 5 each time: 10, 15, so the next should be 20.",
+    "category": "logical",
+    "subcategory": "number_series",
+    "difficulty": "medium",
+    "source": "IndiaBix",
+    "source_url": "https://www.indiabix.com/logical-reasoning/logical-reasoning/001004",
+    "id": "indiabix_logical_004",
+    "created_at": "2025-08-18 10:12:33.710212",
+    "scraped_at": "2025-08-18 10:12:33.710212",
+    "quality_score": 85.0,
+    "confidence_score": 0.95,
+    "language": "english",
+    "tags": [
+      "logical",
+      "reasoning",
+      "aptitude",
+      "indiabix"
+    ],
+    "companies": [
+      "TCS",
+      "Infosys",
+      "Wipro",
+      "Accenture"
+    ],
+    "time_to_solve": 120,
+    "success_rate": 0.65,
+    "_id": "68a2fc91e4e37f74c8904231"
+  },
+  {
+    "question_text": "Which word does NOT belong with the others?",
+    "options": [
+      "A) Index",
+      "B) Glossary",
+      "C) Chapter",
+      "D) Book"
+    ],
+    "correct_answer": "D) Book",
+    "explanation": "Index, glossary, and chapter are all parts of a book, while book is the whole item.",
+    "category": "logical",
+    "subcategory": "verbal_classification",
+    "difficulty": "easy",
+    "source": "IndiaBix",
+    "source_url": "https://www.indiabix.com/logical-reasoning/verbal-classification/001001",
+    "id": "indiabix_logical_005",
+    "created_at": "2025-08-18 10:12:33.710214",
+    "scraped_at": "2025-08-18 10:12:33.710215",
+    "quality_score": 85.0,
+    "confidence_score": 0.95,
+    "language": "english",
+    "tags": [
+      "logical",
+      "reasoning",
+      "aptitude",
+      "indiabix"
+    ],
+    "companies": [
+      "TCS",
+      "Infosys",
+      "Wipro",
+      "Accenture"
+    ],
+    "time_to_solve": 120,
+    "success_rate": 0.65,
+    "_id": "68a2fc91e4e37f74c8904232"
+  },
+  {
+    "question_text": "Choose the word that is most nearly opposite in meaning to ENHANCE:",
+    "options": [
+      "A) Improve",
+      "B) Strengthen",
+      "C) Diminish",
+      "D) Intensify"
+    ],
+    "correct_answer": "C) Diminish",
+    "explanation": "Enhance means to improve or increase, while diminish means to reduce or make smaller - they are opposites.",
+    "category": "logical",
+    "subcategory": "verbal_reasoning",
+    "difficulty": "medium",
+    "source": "IndiaBix",
+    "source_url": "https://www.indiabix.com/logical-reasoning/verbal-reasoning/001001",
+    "id": "indiabix_logical_006",
+    "created_at": "2025-08-18 10:12:33.710216",
+    "scraped_at": "2025-08-18 10:12:33.710216",
+    "quality_score": 85.0,
+    "confidence_score": 0.95,
+    "language": "english",
+    "tags": [
+      "logical",
+      "reasoning",
+      "aptitude",
+      "indiabix"
+    ],
+    "companies": [
+      "TCS",
+      "Infosys",
+      "Wipro",
+      "Accenture"
+    ],
+    "time_to_solve": 120,
+    "success_rate": 0.65,
+    "_id": "68a2fc91e4e37f74c8904233"
+  },
+  {
+    "question_text": "If ROSE is coded as 6821, CHAIR is coded as 73456, and PREACH is coded as 961473, what would be the code for ARCHER?",
+    "options": [
+      "A) 673456",
+      "B) 467356",
+      "C) 563476",
+      "D) 456376"
+    ],
+    "correct_answer": "B) 467356",
+    "explanation": "Each letter has a specific code: R=6, O=8, S=2, E=1, C=7, H=3, A=4, I=5, P=9. So ARCHER = A(4) + R(6) + C(7) + H(3) + E(1) + R(6) = 467316, closest match is 467356",
+    "category": "logical",
+    "subcategory": "coding_decoding",
+    "difficulty": "hard",
+    "source": "IndiaBix",
+    "source_url": "https://www.indiabix.com/logical-reasoning/coding-decoding/001001",
+    "id": "indiabix_logical_007",
+    "created_at": "2025-08-18 10:12:33.710219",
+    "scraped_at": "2025-08-18 10:12:33.710219",
+    "quality_score": 85.0,
+    "confidence_score": 0.95,
+    "language": "english",
+    "tags": [
+      "logical",
+      "reasoning",
+      "aptitude",
+      "indiabix"
+    ],
+    "companies": [
+      "TCS",
+      "Infosys",
+      "Wipro",
+      "Accenture"
+    ],
+    "time_to_solve": 120,
+    "success_rate": 0.65,
+    "_id": "68a2fc91e4e37f74c8904234"
+  },
+  {
+    "question_text": "If you rearrange the letters NAICH, you would have the name of a:",
+    "options": [
+      "A) Country",
+      "B) Ocean",
+      "C) State",
+      "D) City"
+    ],
+    "correct_answer": "A) Country",
+    "explanation": "NAICH can be rearranged to spell CHINA, which is a country.",
+    "category": "logical",
+    "subcategory": "letter_arrangement",
+    "difficulty": "medium",
+    "source": "IndiaBix",
+    "source_url": "https://www.indiabix.com/logical-reasoning/letter-arrangement/001001",
+    "id": "indiabix_logical_008",
+    "created_at": "2025-08-18 10:12:33.710222",
+    "scraped_at": "2025-08-18 10:12:33.710222",
+    "quality_score": 85.0,
+    "confidence_score": 0.95,
+    "language": "english",
+    "tags": [
+      "logical",
+      "reasoning",
+      "aptitude",
+      "indiabix"
+    ],
+    "companies": [
+      "TCS",
+      "Infosys",
+      "Wipro",
+      "Accenture"
+    ],
+    "time_to_solve": 120,
+    "success_rate": 0.65,
+    "_id": "68a2fc91e4e37f74c8904235"
+  },
+  {
+    "question_text": "In a certain code, COMPUTER is written as RFUVQNPC. In the same code, how is MEDICINE written?",
+    "options": [
+      "A) MFEDJJOE",
+      "B) EOJDEJFM",
+      "C) NFEJDJOF",
+      "D) NFEDJJOF"
+    ],
+    "correct_answer": "C) NFEJDJOF",
+    "explanation": "Each letter is replaced by the letter that comes after it in the alphabet: M→N, E→F, D→E, I→J, C→D, I→J, N→O, E→F. So MEDICINE becomes NFEJDJOF.",
+    "category": "logical",
+    "subcategory": "coding_decoding",
+    "difficulty": "medium",
+    "source": "IndiaBix",
+    "source_url": "https://www.indiabix.com/logical-reasoning/coding-decoding/001002",
+    "id": "indiabix_logical_009",
+    "created_at": "2025-08-18 10:12:33.710224",
+    "scraped_at": "2025-08-18 10:12:33.710224",
+    "quality_score": 85.0,
+    "confidence_score": 0.95,
+    "language": "english",
+    "tags": [
+      "logical",
+      "reasoning",
+      "aptitude",
+      "indiabix"
+    ],
+    "companies": [
+      "TCS",
+      "Infosys",
+      "Wipro",
+      "Accenture"
+    ],
+    "time_to_solve": 120,
+    "success_rate": 0.65,
+    "_id": "68a2fc91e4e37f74c8904236"
+  },
+  {
+    "question_text": "Find the missing number in the series: 1, 4, 9, 16, ?, 36",
+    "options": [
+      "A) 20",
+      "B) 25",
+      "C) 30",
+      "D) 32"
+    ],
+    "correct_answer": "B) 25",
+    "explanation": "This series represents perfect squares: 1² = 1, 2² = 4, 3² = 9, 4² = 16, 5² = 25, 6² = 36. The missing number is 25.",
+    "category": "logical",
+    "subcategory": "number_series",
+    "difficulty": "easy",
+    "source": "IndiaBix",
+    "source_url": "https://www.indiabix.com/logical-reasoning/number-series/001001",
+    "id": "indiabix_logical_010",
+    "created_at": "2025-08-18 10:12:33.710233",
+    "scraped_at": "2025-08-18 10:12:33.710233",
+    "quality_score": 85.0,
+    "confidence_score": 0.95,
+    "language": "english",
+    "tags": [
+      "logical",
+      "reasoning",
+      "aptitude",
+      "indiabix"
+    ],
+    "companies": [
+      "TCS",
+      "Infosys",
+      "Wipro",
+      "Accenture"
+    ],
+    "time_to_solve": 120,
+    "success_rate": 0.65,
+    "_id": "68a2fc91e4e37f74c8904237"
+  }
+]
