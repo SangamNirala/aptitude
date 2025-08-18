@@ -14,6 +14,7 @@ import {
   PieChart, LineChart, Calendar, Bell, Sparkles, Download, Share2
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import QuestionPracticeSession from './QuestionPracticeSession';
 
 const ComprehensiveAptitudeQuestions = () => {
   const [jobTitle, setJobTitle] = useState('');
