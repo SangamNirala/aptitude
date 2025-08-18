@@ -22,7 +22,8 @@ from models.scraping_models import (
 )
 from services.job_manager_service import BackgroundJobManager, JobPriority, create_job_manager
 from services.source_management_service import SourceManagementService
-from scraping.scraper_engine import ScrapingEngine, get_scraping_engine
+from scraping.scraper_engine import ScrapingEngine
+from scraping.scraper_engine import get_scraping_engine as get_scraping_engine_instance
 from motor.motor_asyncio import AsyncIOMotorDatabase
 import os
 from motor.motor_asyncio import AsyncIOMotorClient
