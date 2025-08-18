@@ -171,7 +171,7 @@ class ScrapingSystemTester:
         try:
             start_time = time.time()
             payload = {
-                "priority": "NORMAL",  # JobPriority enum value
+                "priority": "normal",  # JobPriority enum value
                 "custom_config": None
             }
             
