@@ -22,31 +22,31 @@ INDIABIX_CONFIG = DataSourceConfig(
     base_url="https://www.indiabix.com",
     extraction_method=ContentExtractionMethod.SELENIUM,
     
-    # CSS Selectors for IndiaBix
+    # CSS Selectors for IndiaBix (Updated for current website structure)
     selectors={
-        # Question Elements
-        "question_text": "div.bix-div-container div.bix-td-qtxt",
-        "question_options": "div.bix-div-container table.bix-tbl-options td",
-        "correct_answer": "div.bix-div-container div.bix-ans-description",
-        "explanation": "div.bix-div-container div.bix-ans-description p",
+        # Question Elements - Updated for modern IndiaBix structure
+        "question_text": "div.question-content, div.problem-statement, .question-text, p:contains('?'), div:contains('Find'), div:contains('Calculate')",
+        "question_options": "div.options li, ul.options li, div.choice-container, .option-item, div[class*='option']",
+        "correct_answer": "div.answer-explanation, div.solution, .correct-answer, div[class*='answer']",
+        "explanation": "div.explanation, div.solution-text, .answer-explanation p",
         
-        # Navigation Elements
-        "next_button": "a.bix-btn-next",
-        "page_numbers": "div.bix-pagination a",
-        "current_page": "div.bix-pagination span.current",
+        # Navigation Elements - Updated for Bootstrap-based design
+        "next_button": "button:contains('Next'), a:contains('Next'), .btn-next, .next-question",
+        "page_numbers": "nav.pagination a, .pagination a, .page-numbers a",
+        "current_page": "nav.pagination .active, .pagination .current, .page-numbers .current",
         
-        # Category Elements
-        "category_links": "div.bix-menu-section a",
-        "subcategory_links": "div.bix-submenu a",
+        # Category Elements - Updated for modern structure
+        "category_links": "nav a, .nav-links a, .category-menu a",
+        "subcategory_links": ".submenu a, .subcategory-links a",
         
-        # Quality Indicators
-        "question_number": "div.bix-question-number",
-        "difficulty_indicator": "div.bix-difficulty",
+        # Quality Indicators - Generic selectors
+        "question_number": ".question-number, .q-number, [class*='question-num']",
+        "difficulty_indicator": ".difficulty, .level, [class*='difficulty']",
         
         # Anti-Detection Elements
-        "loading_indicator": "div.loader, .spinner",
-        "captcha": "div.captcha, #captcha",
-        "blocked_indicator": "div.blocked, .access-denied"
+        "loading_indicator": "div.loader, .spinner, .loading, [class*='loading']",
+        "captcha": "div.captcha, #captcha, .recaptcha",
+        "blocked_indicator": "div.blocked, .access-denied, .error-message"
     },
     
     # Pagination Configuration
