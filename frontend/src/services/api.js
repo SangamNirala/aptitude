@@ -135,6 +135,49 @@ export const runAllHealthChecks = async () => {
 };
 
 // =============================================================================
+// QUESTIONS MANAGEMENT APIS
+// =============================================================================
+
+export const fetchQuestions = async (filters = {}) => {
+  const params = new URLSearchParams();
+  
+  if (filters.category) params.append('category', filters.category);
+  if (filters.difficulty) params.append('difficulty', filters.difficulty);
+  if (filters.limit) params.append('limit', filters.limit);
+  if (filters.skip) params.append('skip', filters.skip);
+  if (filters.min_quality_score) params.append('min_quality_score', filters.min_quality_score);
+  
+  const queryString = params.toString();
+  return await apiClient.get(`/questions/filtered${queryString ? `?${queryString}` : ''}`);
+};
+
+export const fetchQuestionById = async (questionId) => {
+  return await apiClient.get(`/questions/${questionId}`);
+};
+
+export const fetchQuestionsByCategory = async (category, limit = 10) => {
+  return await fetchQuestions({ category, limit });
+};
+
+export const fetchLogicalQuestions = async (limit = 10, difficulty = null) => {
+  const filters = { category: 'logical', limit };
+  if (difficulty) filters.difficulty = difficulty;
+  return await fetchQuestions(filters);
+};
+
+export const fetchQuantitativeQuestions = async (limit = 10, difficulty = null) => {
+  const filters = { category: 'quantitative', limit };
+  if (difficulty) filters.difficulty = difficulty;
+  return await fetchQuestions(filters);
+};
+
+export const fetchVerbalQuestions = async (limit = 10, difficulty = null) => {
+  const filters = { category: 'verbal', limit };
+  if (difficulty) filters.difficulty = difficulty;
+  return await fetchQuestions(filters);
+};
+
+// =============================================================================
 // AI SERVICES APIS
 // =============================================================================
 
