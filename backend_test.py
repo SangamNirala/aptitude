@@ -232,7 +232,7 @@ class WebScrapingSystemTester:
             start_time = time.time()
             payload = {
                 "job_name": "IndiaBix_Mass_Collection_Test",
-                "source_names": ["indiabix"],
+                "source_names": ["IndiaBix"],  # Fixed: Use correct source name
                 "max_questions_per_source": 500,  # Aim for 500 questions from IndiaBix
                 "target_categories": ["quantitative", "logical", "verbal"],
                 "priority_level": 1,  # Fixed: Use integer instead of string
