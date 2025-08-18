@@ -712,7 +712,8 @@ class ScrapingEngine:
     def _get_selenium_driver(self, source_type: str) -> Optional[SeleniumDriver]:
         """Get Selenium driver for source"""
         try:
-            if source_type == "indiabix":
+            # Case-insensitive comparison
+            if source_type.lower() == "indiabix":
                 return create_indiabix_selenium_driver(
                     anti_detection_manager=self.anti_detection
                 )
