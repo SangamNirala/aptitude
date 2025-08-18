@@ -612,14 +612,12 @@ class ScrapingEngine:
                 
                 # Extract questions from current page
                 context = create_extraction_context(
-                    source_name=source_name,
-                    target_url=target.target_url,
-                    current_page=current_page,
-                    max_questions_per_page=target.max_questions_per_page,
-                    extraction_timeout=target.extraction_timeout_seconds
+                    target=target,
+                    page_url=self._get_current_url(driver),
+                    page_number=current_page
                 )
                 
-                batch_result = extractor.extract_batch(driver, context)
+                batch_result = extractor.extract_questions_from_page(driver, context)
                 
                 if batch_result and batch_result.successful_extractions > 0:
                     self._process_batch_result(job, batch_result)
