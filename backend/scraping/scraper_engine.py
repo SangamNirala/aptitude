@@ -846,16 +846,21 @@ class ScrapingEngine:
     def _get_current_url(self, driver: Any) -> str:
         """Get current URL from driver"""
         try:
-            if hasattr(driver, 'current_url'):  # Selenium
+            if hasattr(driver, 'driver') and hasattr(driver.driver, 'current_url'):
+                # Selenium driver wrapper
+                return driver.driver.current_url
+            elif hasattr(driver, 'current_url'):
+                # Direct WebDriver
                 return driver.current_url
-            elif hasattr(driver, 'url'):  # Playwright
-                return driver.url
-            elif hasattr(driver, 'get_current_url'):  # Custom driver
-                return driver.get_current_url()
-        except Exception:
-            return ""
-        
-        return ""
+            elif hasattr(driver, 'page') and hasattr(driver.page, 'url'):
+                # Playwright driver
+                return driver.page.url
+            else:
+                logger.warning(f"Cannot get current URL from driver {type(driver)}")
+                return "unknown"
+        except Exception as e:
+            logger.warning(f"Error getting current URL: {e}")
+            return "unknown"
     
     def _apply_rate_limiting(self, source_type: str):
         """Apply rate limiting between requests"""
