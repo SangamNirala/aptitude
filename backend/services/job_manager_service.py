@@ -101,7 +101,7 @@ class JobExecutor:
                 executor_id=self.executor_id,
                 start_time=start_time,
                 resource_snapshot=self._get_resource_snapshot(),
-                execution_metadata={"job_config": asdict(job.config)}
+                execution_metadata={"job_config": job.config.dict()}
             )
             
             # Pre-execution resource check
