@@ -483,7 +483,7 @@ class ScrapingEngine:
         for attempt in range(self.config.max_retries_per_job + 1):
             try:
                 if attempt > 0:
-                    logger.info(f"Retry attempt {attempt} for job {job.job_id}")
+                    logger.info(f"Retry attempt {attempt} for job {job.id}")
                     time.sleep(self.config.retry_delay_base * attempt)
                 
                 # Execute the actual scraping
