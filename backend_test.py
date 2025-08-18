@@ -13,6 +13,11 @@ from typing import Dict, List, Any
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from backend
+load_dotenv('/app/backend/.env')
 
 # Add backend directory to path for imports
 sys.path.append('/app/backend')
