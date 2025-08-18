@@ -775,7 +775,14 @@ class ScrapingEngine:
     
     def _get_extractor(self, source_type: str) -> Any:
         """Get extractor for source type"""
-        return self.extractors.get(source_type)
+        # Convert source name to ScrapingSourceType enum for lookup
+        if source_type.lower() == "indiabix":
+            return self.extractors.get(ScrapingSourceType.INDIABIX)
+        elif source_type.lower() == "geeksforgeeks":
+            return self.extractors.get(ScrapingSourceType.GEEKSFORGEEKS)
+        else:
+            # Try direct lookup as fallback
+            return self.extractors.get(source_type)
     
     def _get_content_validator(self, source_type: str) -> ContentValidator:
         """Get content validator for source type"""
