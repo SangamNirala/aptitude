@@ -1103,30 +1103,376 @@ async def test_indiabix_driver_creation_fix():
     logger.info("=" * 80)
     return test_results
 
-async def main():
-    """Main test execution function - Focus on IndiaBix Driver Creation Fix"""
-    logger.info("🚀 INDIABIX DRIVER CREATION FIX TESTING")
-    logger.info("🎯 Testing the anti_detection_config parameter handling fix")
-    logger.info("🔍 Focus: IndiaBix driver creation without parameter mismatch errors")
+async def test_logical_questions_functionality():
+    """
+    FOCUSED TEST: Logical Questions Functionality
+    Test the specific requirements from the review request
+    """
+    logger.info("🎯 LOGICAL QUESTIONS FUNCTIONALITY TESTING")
+    logger.info("=" * 80)
+    logger.info("TESTING REQUIREMENTS FROM REVIEW REQUEST:")
+    logger.info("1. Verify API endpoint /api/questions/filtered?category=logical returns 10 logical questions")
+    logger.info("2. Test question data quality - proper structure, options, correct_answer")
+    logger.info("3. Verify questions include expected patterns: syllogisms, number sequences, coding-decoding, clock problems")
+    logger.info("4. Test different difficulty levels: foundation, placement_ready, campus_expert")
+    logger.info("5. Verify questions have proper AI metrics (quality_score, clarity_score, relevance_score, difficulty_score)")
+    logger.info("6. Test pagination with limit and skip parameters")
+    logger.info("7. Confirm database has exactly 10 logical questions stored")
+    logger.info("8. Test that questions are properly categorized and have proper metadata")
+    logger.info("=" * 80)
     
-    # Run the focused IndiaBix driver creation test
-    test_results = await test_indiabix_driver_creation_fix()
+    test_results = {
+        "api_endpoint_test": False,
+        "question_count_test": False,
+        "question_structure_test": False,
+        "question_patterns_test": False,
+        "difficulty_levels_test": False,
+        "ai_metrics_test": False,
+        "pagination_test": False,
+        "database_verification_test": False,
+        "categorization_test": False,
+        "questions_found": 0,
+        "patterns_found": [],
+        "errors_found": []
+    }
+    
+    async with WebScrapingSystemTester() as tester:
+        # Test 1: API Endpoint - /api/questions/filtered?category=logical
+        logger.info("🔧 TEST 1: API Endpoint - /api/questions/filtered?category=logical")
+        try:
+            start_time = time.time()
+            async with tester.session.get(f"{tester.base_url}/questions/filtered?category=logical") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Check response structure
+                    if "questions" in data and "total_count" in data:
+                        questions = data["questions"]
+                        total_count = data["total_count"]
+                        test_results["questions_found"] = len(questions)
+                        
+                        logger.info(f"✅ API endpoint working - Found {len(questions)} questions, Total: {total_count}")
+                        test_results["api_endpoint_test"] = True
+                        
+                        # Test 2: Question Count - Should return 10 logical questions
+                        if len(questions) == 10:
+                            logger.info("✅ Question count test PASSED - Exactly 10 questions returned")
+                            test_results["question_count_test"] = True
+                        else:
+                            logger.warning(f"⚠️ Question count test - Expected 10, got {len(questions)}")
+                            test_results["errors_found"].append(f"Expected 10 questions, got {len(questions)}")
+                        
+                        # Test 3: Question Structure - Check each question has proper structure
+                        logger.info("🔧 TEST 3: Question Data Quality & Structure")
+                        structure_valid = True
+                        ai_metrics_valid = True
+                        patterns_found = set()
+                        
+                        for i, question in enumerate(questions[:5]):  # Check first 5 questions in detail
+                            # Check required fields
+                            required_fields = ["question_text", "options", "correct_answer", "category"]
+                            missing_fields = [field for field in required_fields if field not in question]
+                            
+                            if missing_fields:
+                                structure_valid = False
+                                test_results["errors_found"].append(f"Question {i+1} missing fields: {missing_fields}")
+                                continue
+                            
+                            # Check options array has 4 options
+                            if not isinstance(question.get("options"), list) or len(question.get("options", [])) != 4:
+                                structure_valid = False
+                                test_results["errors_found"].append(f"Question {i+1} doesn't have 4 options")
+                                continue
+                            
+                            # Check category is logical
+                            if question.get("category") != "logical":
+                                structure_valid = False
+                                test_results["errors_found"].append(f"Question {i+1} category is not 'logical'")
+                                continue
+                            
+                            # Test 4: Check for expected patterns
+                            question_text = question.get("question_text", "").lower()
+                            
+                            # Pattern detection
+                            if "if all" in question_text and "are" in question_text:
+                                patterns_found.add("syllogisms")
+                            elif any(char.isdigit() for char in question_text) and ("sequence" in question_text or "next" in question_text or "," in question_text):
+                                patterns_found.add("number_sequences")
+                            elif "coding" in question_text or "written as" in question_text or "code" in question_text:
+                                patterns_found.add("coding-decoding")
+                            elif "clock" in question_text or "angle" in question_text or "time" in question_text:
+                                patterns_found.add("clock_problems")
+                            
+                            # Test 5: AI Metrics Check
+                            ai_metrics = question.get("ai_metrics", {})
+                            required_metrics = ["quality_score", "clarity_score", "relevance_score", "difficulty_score"]
+                            missing_metrics = [metric for metric in required_metrics if metric not in ai_metrics]
+                            
+                            if missing_metrics:
+                                ai_metrics_valid = False
+                                test_results["errors_found"].append(f"Question {i+1} missing AI metrics: {missing_metrics}")
+                            
+                            logger.info(f"📊 Question {i+1}: Text length: {len(question.get('question_text', ''))}, Options: {len(question.get('options', []))}, AI metrics: {len(ai_metrics)}")
+                        
+                        test_results["question_structure_test"] = structure_valid
+                        test_results["ai_metrics_test"] = ai_metrics_valid
+                        test_results["patterns_found"] = list(patterns_found)
+                        
+                        # Test 4: Pattern Verification
+                        expected_patterns = ["syllogisms", "number_sequences", "coding-decoding", "clock_problems"]
+                        found_patterns = len(patterns_found)
+                        
+                        if found_patterns >= 2:  # At least 2 different patterns
+                            logger.info(f"✅ Question patterns test PASSED - Found {found_patterns} patterns: {list(patterns_found)}")
+                            test_results["question_patterns_test"] = True
+                        else:
+                            logger.warning(f"⚠️ Question patterns test - Expected multiple patterns, found: {list(patterns_found)}")
+                            test_results["errors_found"].append(f"Limited pattern diversity: {list(patterns_found)}")
+                        
+                        logger.info(f"✅ Question structure: {'PASSED' if structure_valid else 'FAILED'}")
+                        logger.info(f"✅ AI metrics: {'PASSED' if ai_metrics_valid else 'FAILED'}")
+                        
+                    else:
+                        test_results["errors_found"].append("Invalid API response structure")
+                        logger.error("❌ Invalid API response structure")
+                else:
+                    error_text = await response.text()
+                    test_results["errors_found"].append(f"API call failed: {response.status} - {error_text[:200]}")
+                    logger.error(f"❌ API call failed: {response.status}")
+                    
+        except Exception as e:
+            test_results["errors_found"].append(f"API endpoint exception: {str(e)}")
+            logger.error(f"❌ API endpoint exception: {e}")
+        
+        # Test 6: Difficulty Levels Test
+        logger.info("🔧 TEST 6: Different Difficulty Levels")
+        difficulty_levels = ["foundation", "placement_ready", "campus_expert"]
+        difficulty_results = {}
+        
+        for difficulty in difficulty_levels:
+            try:
+                async with tester.session.get(f"{tester.base_url}/questions/filtered?category=logical&difficulty={difficulty}") as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        count = len(data.get("questions", []))
+                        difficulty_results[difficulty] = count
+                        logger.info(f"📊 {difficulty}: {count} questions")
+                    else:
+                        difficulty_results[difficulty] = 0
+                        logger.warning(f"⚠️ {difficulty}: API call failed")
+            except Exception as e:
+                difficulty_results[difficulty] = 0
+                logger.error(f"❌ {difficulty}: Exception - {e}")
+        
+        # Check if at least one difficulty level has questions
+        if any(count > 0 for count in difficulty_results.values()):
+            test_results["difficulty_levels_test"] = True
+            logger.info("✅ Difficulty levels test PASSED")
+        else:
+            test_results["errors_found"].append("No questions found for any difficulty level")
+            logger.warning("⚠️ Difficulty levels test - No questions found for any difficulty level")
+        
+        # Test 7: Pagination Test
+        logger.info("🔧 TEST 7: Pagination with limit and skip parameters")
+        try:
+            # Test with limit=5
+            async with tester.session.get(f"{tester.base_url}/questions/filtered?category=logical&limit=5") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if len(data.get("questions", [])) <= 5:
+                        logger.info("✅ Pagination limit test PASSED")
+                        
+                        # Test with skip=2
+                        async with tester.session.get(f"{tester.base_url}/questions/filtered?category=logical&limit=3&skip=2") as response2:
+                            if response2.status == 200:
+                                data2 = await response2.json()
+                                if len(data2.get("questions", [])) <= 3:
+                                    test_results["pagination_test"] = True
+                                    logger.info("✅ Pagination skip test PASSED")
+                                else:
+                                    test_results["errors_found"].append("Pagination skip test failed")
+                            else:
+                                test_results["errors_found"].append("Pagination skip API call failed")
+                    else:
+                        test_results["errors_found"].append("Pagination limit test failed")
+                else:
+                    test_results["errors_found"].append("Pagination limit API call failed")
+        except Exception as e:
+            test_results["errors_found"].append(f"Pagination test exception: {str(e)}")
+            logger.error(f"❌ Pagination test exception: {e}")
+        
+        # Test 8: Database Verification (via API)
+        logger.info("🔧 TEST 8: Database Verification")
+        try:
+            # Get all logical questions to verify database count
+            async with tester.session.get(f"{tester.base_url}/questions/filtered?category=logical&limit=100") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    total_in_db = data.get("total_count", 0)
+                    
+                    if total_in_db == 10:
+                        test_results["database_verification_test"] = True
+                        logger.info(f"✅ Database verification PASSED - Exactly 10 logical questions in database")
+                    else:
+                        test_results["errors_found"].append(f"Database has {total_in_db} logical questions, expected 10")
+                        logger.warning(f"⚠️ Database verification - Found {total_in_db} questions, expected 10")
+                else:
+                    test_results["errors_found"].append("Database verification API call failed")
+        except Exception as e:
+            test_results["errors_found"].append(f"Database verification exception: {str(e)}")
+            logger.error(f"❌ Database verification exception: {e}")
+        
+        # Test 9: Categorization and Metadata Test
+        logger.info("🔧 TEST 9: Categorization and Metadata Test")
+        try:
+            async with tester.session.get(f"{tester.base_url}/questions/filtered?category=logical&limit=3") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    questions = data.get("questions", [])
+                    
+                    categorization_valid = True
+                    for i, question in enumerate(questions):
+                        # Check category
+                        if question.get("category") != "logical":
+                            categorization_valid = False
+                            test_results["errors_found"].append(f"Question {i+1} has wrong category: {question.get('category')}")
+                        
+                        # Check metadata exists
+                        metadata = question.get("metadata", {})
+                        if not metadata:
+                            categorization_valid = False
+                            test_results["errors_found"].append(f"Question {i+1} missing metadata")
+                    
+                    test_results["categorization_test"] = categorization_valid
+                    if categorization_valid:
+                        logger.info("✅ Categorization and metadata test PASSED")
+                    else:
+                        logger.warning("⚠️ Categorization and metadata test FAILED")
+                else:
+                    test_results["errors_found"].append("Categorization test API call failed")
+        except Exception as e:
+            test_results["errors_found"].append(f"Categorization test exception: {str(e)}")
+            logger.error(f"❌ Categorization test exception: {e}")
+    
+    # Final Assessment
+    logger.info("\n" + "=" * 80)
+    logger.info("🎯 LOGICAL QUESTIONS FUNCTIONALITY ASSESSMENT")
+    logger.info("=" * 80)
+    logger.info(f"📊 TEST RESULTS:")
+    logger.info(f"   1. API Endpoint Test: {'✅ PASSED' if test_results['api_endpoint_test'] else '❌ FAILED'}")
+    logger.info(f"   2. Question Count Test (10 questions): {'✅ PASSED' if test_results['question_count_test'] else '❌ FAILED'}")
+    logger.info(f"   3. Question Structure Test: {'✅ PASSED' if test_results['question_structure_test'] else '❌ FAILED'}")
+    logger.info(f"   4. Question Patterns Test: {'✅ PASSED' if test_results['question_patterns_test'] else '❌ FAILED'}")
+    logger.info(f"   5. Difficulty Levels Test: {'✅ PASSED' if test_results['difficulty_levels_test'] else '❌ FAILED'}")
+    logger.info(f"   6. AI Metrics Test: {'✅ PASSED' if test_results['ai_metrics_test'] else '❌ FAILED'}")
+    logger.info(f"   7. Pagination Test: {'✅ PASSED' if test_results['pagination_test'] else '❌ FAILED'}")
+    logger.info(f"   8. Database Verification Test: {'✅ PASSED' if test_results['database_verification_test'] else '❌ FAILED'}")
+    logger.info(f"   9. Categorization Test: {'✅ PASSED' if test_results['categorization_test'] else '❌ FAILED'}")
+    logger.info(f"   • Questions Found: {test_results['questions_found']}")
+    logger.info(f"   • Patterns Found: {test_results['patterns_found']}")
+    logger.info(f"   • Errors Found: {len(test_results['errors_found'])}")
+    
+    if test_results['errors_found']:
+        logger.info("❌ ERRORS DETECTED:")
+        for error in test_results['errors_found']:
+            logger.info(f"   - {error}")
+    
+    # Calculate success rate
+    total_tests = 9
+    passed_tests = sum([
+        test_results['api_endpoint_test'],
+        test_results['question_count_test'],
+        test_results['question_structure_test'],
+        test_results['question_patterns_test'],
+        test_results['difficulty_levels_test'],
+        test_results['ai_metrics_test'],
+        test_results['pagination_test'],
+        test_results['database_verification_test'],
+        test_results['categorization_test']
+    ])
+    
+    success_rate = (passed_tests / total_tests) * 100
+    
+    logger.info(f"📊 OVERALL SUCCESS RATE: {success_rate:.1f}% ({passed_tests}/{total_tests} tests passed)")
+    
+    # Determine overall success
+    critical_tests_passed = (
+        test_results['api_endpoint_test'] and 
+        test_results['question_count_test'] and 
+        test_results['question_structure_test'] and
+        test_results['database_verification_test']
+    )
+    
+    if critical_tests_passed and success_rate >= 80:
+        logger.info("✅ SUCCESS: Logical questions functionality is working correctly!")
+        logger.info("🎉 ANSWER: The critical integration issue has been resolved and students can now access the logical reasoning questions through the API.")
+    elif critical_tests_passed:
+        logger.info("⚠️ PARTIAL SUCCESS: Core functionality working but some issues remain")
+        logger.info("🔍 ANSWER: Basic functionality is working but some features need attention.")
+    else:
+        logger.info("❌ FAILURE: Critical issues remain with logical questions functionality")
+        logger.info("🔍 ANSWER: Critical integration issues still need to be resolved.")
+    
+    logger.info("=" * 80)
+    return test_results
+
+async def main():
+    """Main test execution function - Focus on Logical Questions Functionality"""
+    logger.info("🚀 LOGICAL QUESTIONS FUNCTIONALITY TESTING")
+    logger.info("🎯 Testing the logical questions API and database integration")
+    logger.info("🔍 Focus: Verify the fix is working and students can access logical reasoning questions")
+    
+    # Run the focused logical questions functionality test
+    test_results = await test_logical_questions_functionality()
     
     # Overall summary
     logger.info("\n" + "=" * 80)
     logger.info("🎯 FINAL ASSESSMENT SUMMARY")
     logger.info("=" * 80)
-    logger.info(f"Driver Creation: {'✅ SUCCESS' if test_results['driver_creation_test'] else '❌ FAILED'}")
-    logger.info(f"Job Execution: {'✅ SUCCESS' if test_results['job_start_test'] else '❌ FAILED'}")
-    logger.info(f"Questions Extracted: {test_results['questions_extracted']}")
+    
+    # Calculate success rate
+    total_tests = 9
+    passed_tests = sum([
+        test_results['api_endpoint_test'],
+        test_results['question_count_test'],
+        test_results['question_structure_test'],
+        test_results['question_patterns_test'],
+        test_results['difficulty_levels_test'],
+        test_results['ai_metrics_test'],
+        test_results['pagination_test'],
+        test_results['database_verification_test'],
+        test_results['categorization_test']
+    ])
+    
+    success_rate = (passed_tests / total_tests) * 100
+    
+    logger.info(f"API Endpoint: {'✅ SUCCESS' if test_results['api_endpoint_test'] else '❌ FAILED'}")
+    logger.info(f"Question Count (10): {'✅ SUCCESS' if test_results['question_count_test'] else '❌ FAILED'}")
+    logger.info(f"Question Structure: {'✅ SUCCESS' if test_results['question_structure_test'] else '❌ FAILED'}")
+    logger.info(f"Question Patterns: {'✅ SUCCESS' if test_results['question_patterns_test'] else '❌ FAILED'}")
+    logger.info(f"Database Verification: {'✅ SUCCESS' if test_results['database_verification_test'] else '❌ FAILED'}")
+    logger.info(f"Overall Success Rate: {success_rate:.1f}% ({passed_tests}/{total_tests})")
+    logger.info(f"Questions Found: {test_results['questions_found']}")
+    logger.info(f"Patterns Found: {test_results['patterns_found']}")
     logger.info(f"Errors Found: {len(test_results['errors_found'])}")
     logger.info("=" * 80)
     
     # Answer the review request question
-    if test_results['driver_creation_test'] and test_results['job_start_test']:
-        logger.info("✅ FINAL ANSWER: IndiaBix driver creation fix is working correctly")
+    critical_tests_passed = (
+        test_results['api_endpoint_test'] and 
+        test_results['question_count_test'] and 
+        test_results['question_structure_test'] and
+        test_results['database_verification_test']
+    )
+    
+    if critical_tests_passed and success_rate >= 80:
+        logger.info("✅ FINAL ANSWER: Logical questions functionality is working correctly - the critical integration issue has been resolved")
+    elif critical_tests_passed:
+        logger.info("⚠️ FINAL ANSWER: Core functionality is working but some features need attention")
     else:
-        logger.info("❌ FINAL ANSWER: IndiaBix driver creation issues still need to be resolved")
+        logger.info("❌ FINAL ANSWER: Critical integration issues still need to be resolved")
     
     logger.info("=" * 80)
 
