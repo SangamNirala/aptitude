@@ -148,7 +148,7 @@ class LogicalQuestionsCollectionTester:
                 logger.info(f"   Question text length: {len(question_text)} chars")
                 logger.info(f"   Options count: {len(options)}")
                 logger.info(f"   Correct answer: {correct_answer}")
-                logger.info(f"   Explanation length: {len(explanation)} chars")
+                logger.info(f"   Explanation: {'Available' if explanation else 'Not available'}")
                 logger.info(f"   Source: {question.get('source', 'N/A')}")
                 
                 if passed_checks >= 4:  # At least 4/5 quality checks
