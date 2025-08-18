@@ -1602,6 +1602,7 @@ class JobManagerServiceTester:
             
             # Create scraping-specific job
             scraping_config = ScrapingJobConfig(
+                job_name="Integration Test Job",  # Added required job_name field
                 source_ids=["indiabix", "geeksforgeeks"],
                 max_questions_per_source=10,
                 target_categories=["quantitative", "logical"],
