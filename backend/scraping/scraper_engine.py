@@ -996,13 +996,13 @@ class ScrapingEngine:
         except Exception as e:
             logger.error(f"Error completing job {job.id}: {e}")
     
-    def _fail_job(self, job: ScrapingJob, error_message: str):
+    def _fail_job(self, job: ScrapingJob, last_error: str):
         """Mark job as failed"""
         try:
             job.status = ScrapingJobStatus.FAILED
             job.completed_at = datetime.now()
             job.updated_at = datetime.now()
-            job.error_message = error_message
+            job.last_error = last_error
             
             # Move to completed jobs
             with self.job_lock:
@@ -1018,7 +1018,7 @@ class ScrapingEngine:
             self.stats.failed_jobs += 1
             self.stats.active_jobs = len(self.active_jobs)
             
-            logger.error(f"Job {job.id} failed: {error_message}")
+            logger.error(f"Job {job.id} failed: {last_error}")
             
         except Exception as e:
             logger.error(f"Error failing job {job.id}: {e}")
