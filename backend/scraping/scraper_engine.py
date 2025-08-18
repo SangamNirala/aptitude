@@ -729,7 +729,8 @@ class ScrapingEngine:
     def _get_playwright_driver(self, source_type: str) -> Optional[PlaywrightDriver]:
         """Get Playwright driver for source"""
         try:
-            if source_type == "geeksforgeeks":
+            # Case-insensitive comparison
+            if source_type.lower() == "geeksforgeeks":
                 return create_geeksforgeeks_playwright_driver()
             else:
                 # Generic Playwright driver
