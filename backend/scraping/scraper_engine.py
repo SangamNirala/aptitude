@@ -817,7 +817,62 @@ class ScrapingEngine:
                     await client.close()
                     return None
             
-            # Get the source name
+            # Handle event loop properly - check if we're already in an async context
+            try:
+                # Try to get the current event loop
+                loop = asyncio.get_running_loop()
+                # If we get here, we're already in an async context
+                # We need to run in a thread to avoid "Cannot run the event loop while another loop is running"
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(self._sync_resolve_source_id, source_id)
+                    source_name = future.result(timeout=30)  # 30 second timeout
+                    return source_name
+                    
+            except RuntimeError:
+                # No running event loop, safe to create a new one
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                try:
+                    source_name = loop.run_until_complete(get_source_name())
+                    return source_name
+                finally:
+                    loop.close()
+                
+        except Exception as e:
+            logger.error(f"Error resolving source ID {source_id} to name: {e}")
+            return None
+    
+    def _sync_resolve_source_id(self, source_id: str) -> Optional[str]:
+        """
+        Synchronous wrapper for source ID resolution (used in thread)
+        """
+        try:
+            from services.source_management_service import SourceManagementService
+            from motor.motor_asyncio import AsyncIOMotorClient
+            import os
+            import asyncio
+            
+            mongo_url = os.environ.get('MONGO_URL')
+            if not mongo_url:
+                logger.error("MONGO_URL not found in environment")
+                return None
+            
+            client = AsyncIOMotorClient(mongo_url)
+            db = client[os.environ.get('DB_NAME', 'aptitude_questions')]
+            
+            async def get_source_name():
+                try:
+                    source_manager = SourceManagementService(db)
+                    source_config = await source_manager.get_source(source_id)
+                    await client.close()
+                    return source_config.name if source_config else None
+                except Exception as e:
+                    logger.error(f"Error getting source config: {e}")
+                    await client.close()
+                    return None
+            
+            # Create fresh event loop in thread
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
@@ -827,7 +882,7 @@ class ScrapingEngine:
                 loop.close()
                 
         except Exception as e:
-            logger.error(f"Error resolving source ID {source_id} to name: {e}")
+            logger.error(f"Error in sync source resolution for {source_id}: {e}")
             return None
     
     def _navigate_to_url(self, driver: Any, url: str):
