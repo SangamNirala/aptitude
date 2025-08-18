@@ -591,7 +591,7 @@ class ScrapingEngine:
                     if self.config.enable_content_validation:
                         validator = self._get_content_validator(job.target_config.source_id)
                         quality_score, quality_gate = validate_with_quality_gate(
-                            asdict(extraction_result.question_data), 
+                            extraction_result.question_data.dict(), 
                             job.target_config.source_id
                         )
                         
