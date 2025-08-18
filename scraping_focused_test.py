@@ -123,7 +123,7 @@ class ScrapingSystemTester:
                 "source_names": [source_name.lower()],
                 "max_questions_per_source": max_questions,
                 "target_categories": ["quantitative", "logical", "verbal", "programming"],
-                "priority_level": "high",
+                "priority_level": 1,  # 1=highest priority
                 "configuration": {
                     "enable_ai_processing": True,
                     "quality_threshold": 0.6,
