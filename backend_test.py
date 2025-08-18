@@ -277,12 +277,9 @@ class WebScrapingSystemTester:
                 "source_names": ["geeksforgeeks"],
                 "max_questions_per_source": 500,  # Aim for 500 questions from GeeksforGeeks
                 "target_categories": ["programming", "algorithms", "data-structures"],
-                "priority_level": "high",
-                "configuration": {
-                    "enable_ai_processing": True,
-                    "quality_threshold": 0.7,
-                    "duplicate_detection": True
-                }
+                "priority_level": 1,  # Fixed: Use integer instead of string
+                "enable_ai_processing": True,
+                "enable_duplicate_detection": True
             }
             
             async with self.session.post(
