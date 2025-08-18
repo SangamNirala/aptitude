@@ -1,0 +1,66 @@
+[
+  {
+    "source": "IndiaBix",
+    "category": "logical",
+    "subcategory": "logical_reasoning",
+    "scraped_at": "2025-08-18 10:02:14.676797",
+    "url": "https://www.indiabix.com/logical-reasoning/logical-reasoning/001001",
+    "question_number": 1,
+    "question_text": "Look at this series: 2, 1, (1/2), (1/4), ... What number should come next?",
+    "options": [
+      "Home",
+      "Arithmetic Aptitude",
+      "Data Interpretation",
+      "Verbal Ability"
+    ],
+    "explanation": ""
+  },
+  {
+    "source": "IndiaBix",
+    "category": "logical",
+    "subcategory": "logical_reasoning",
+    "scraped_at": "2025-08-18 10:02:19.569112",
+    "url": "https://www.indiabix.com/logical-reasoning/logical-reasoning/001002",
+    "question_number": 2,
+    "question_text": "Look at this series: 21, 9, 21, 11, 21, 13, 21, ... What number should come next?",
+    "options": [
+      "Home",
+      "Arithmetic Aptitude",
+      "Data Interpretation",
+      "Verbal Ability"
+    ],
+    "explanation": ""
+  },
+  {
+    "source": "IndiaBix",
+    "category": "logical",
+    "subcategory": "logical_reasoning",
+    "scraped_at": "2025-08-18 10:02:24.366542",
+    "url": "https://www.indiabix.com/logical-reasoning/logical-reasoning/001003",
+    "question_number": 3,
+    "question_text": "Look at this series: 1.5, 2.3, 3.1, 3.9, ... What number should come next?",
+    "options": [
+      "Home",
+      "Arithmetic Aptitude",
+      "Data Interpretation",
+      "Verbal Ability"
+    ],
+    "explanation": ""
+  },
+  {
+    "source": "IndiaBix",
+    "category": "logical",
+    "subcategory": "logical_reasoning",
+    "scraped_at": "2025-08-18 10:02:29.069716",
+    "url": "https://www.indiabix.com/logical-reasoning/logical-reasoning/001004",
+    "question_number": 4,
+    "question_text": "Look at this series: 80, 10, 70, 15, 60, ... What number should come next?",
+    "options": [
+      "Home",
+      "Arithmetic Aptitude",
+      "Data Interpretation",
+      "Verbal Ability"
+    ],
+    "explanation": ""
+  }
+]
