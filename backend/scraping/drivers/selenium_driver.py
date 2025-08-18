@@ -189,6 +189,10 @@ class SeleniumDriver:
                 user_agent = self.anti_detection.get_user_agent()
                 options.add_argument(f"--user-agent={user_agent}")
         
+        # Set chromium binary location if available
+        if os.path.exists("/usr/bin/chromium"):
+            options.binary_location = "/usr/bin/chromium"
+        
         # Custom options
         if self.config.custom_chrome_options:
             for option in self.config.custom_chrome_options:
