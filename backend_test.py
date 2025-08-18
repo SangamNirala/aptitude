@@ -447,8 +447,9 @@ class WebScrapingSystemTester:
                     await asyncio.sleep(30)
     
     async def test_scraping_engine_functionality(self):
-        """Test the actual scraping engine components"""
+        """Test the actual scraping engine components - Focus on execution without dataclass errors"""
         logger.info("🔍 Testing Scraping Engine Functionality...")
+        logger.info("🎯 Verifying fixes for job.job_id, job.target_config, job.job_config field access errors")
         
         # Test scraping engine status
         try:
@@ -467,7 +468,13 @@ class WebScrapingSystemTester:
                     engine_status = data.get("scraping_engine", {})
                     active_jobs = data.get("active_jobs", 0)
                     
-                    details = f"Engine Status: {engine_status.get('status', 'unknown')}, Active Jobs: {active_jobs}"
+                    # Check if engine is operational (not down due to dataclass errors)
+                    engine_health = engine_status.get("status", "unknown")
+                    if engine_health == "down" or "error" in engine_health.lower():
+                        success = False
+                        details = f"🚨 Engine Status: {engine_health} - May indicate dataclass serialization issues"
+                    else:
+                        details = f"✅ Engine Status: {engine_health}, Active Jobs: {active_jobs}"
                 else:
                     success = False
                     error_text = await response.text()
@@ -477,6 +484,51 @@ class WebScrapingSystemTester:
                 
         except Exception as e:
             self.log_test_result("Scraping Engine Status", False, f"Exception: {str(e)}")
+        
+        # Test job execution logs to check for specific errors
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scraping/jobs") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = isinstance(data, list)
+                    
+                    # Check recent jobs for execution errors
+                    critical_error_found = False
+                    execution_errors = []
+                    
+                    for job in data[:5]:  # Check last 5 jobs
+                        job_status = job.get("status", "")
+                        error_msg = job.get("error_message", "") or job.get("last_error", "")
+                        
+                        if error_msg:
+                            # Check for the specific errors that were supposed to be fixed
+                            if any(error in error_msg for error in [
+                                "asdict() should be called on dataclass instances",
+                                "AttributeError: 'ScrapingJob' object has no attribute 'job_id'",
+                                "AttributeError: 'ScrapingJob' object has no attribute 'target_config'",
+                                "AttributeError: 'ScrapingJob' object has no attribute 'job_config'"
+                            ]):
+                                critical_error_found = True
+                                execution_errors.append(f"Job {job.get('job_id', 'unknown')[:8]}: {error_msg}")
+                    
+                    if critical_error_found:
+                        success = False
+                        details = f"🚨 CRITICAL DATACLASS ERRORS STILL PRESENT: {'; '.join(execution_errors)}"
+                    else:
+                        details = f"✅ No critical dataclass errors found in recent jobs. Checked {len(data)} jobs."
+                        
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Job Execution Error Check", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Job Execution Error Check", False, f"Exception: {str(e)}")
         
         # Test anti-detection system status
         try:
