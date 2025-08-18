@@ -130,6 +130,10 @@ app.include_router(performance_optimization_router)
 # Include production monitoring router (Task 19) - SIMPLIFIED VERSION FOR TESTING
 app.include_router(production_monitoring_router)
 
+# Include scheduling management router (Task 13)
+from routers.scheduling_management import router as scheduling_management_router
+app.include_router(scheduling_management_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
