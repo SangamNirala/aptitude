@@ -1047,6 +1047,617 @@ class ProductionMonitoringTester:
         return self.test_results
 
 
+class CronSchedulingSystemTester:
+    """Comprehensive tester for Cron-Based Scheduling System (Task 13)"""
+    
+    def __init__(self):
+        # Get backend URL from environment
+        try:
+            with open('/app/frontend/.env', 'r') as f:
+                for line in f:
+                    if line.startswith('REACT_APP_BACKEND_URL='):
+                        self.base_url = line.split('=')[1].strip() + "/api"
+                        break
+                else:
+                    self.base_url = "https://implementation-check-1.preview.emergentagent.com/api"
+        except:
+            self.base_url = "https://implementation-check-1.preview.emergentagent.com/api"
+        
+        self.session = None
+        self.test_results = {
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": [],
+            "performance_metrics": {}
+        }
+        self.created_schedule_ids = []  # Track created schedules for cleanup
+    
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+        
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.session:
+            await self.session.close()
+    
+    def log_test_result(self, test_name: str, success: bool, details: str, response_time: float = 0):
+        """Log test result"""
+        self.test_results["total_tests"] += 1
+        if success:
+            self.test_results["passed_tests"] += 1
+            logger.info(f"✅ {test_name} - PASSED ({response_time:.2f}s)")
+        else:
+            self.test_results["failed_tests"] += 1
+            logger.error(f"❌ {test_name} - FAILED: {details}")
+        
+        self.test_results["test_details"].append({
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_time": response_time,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    
+    async def test_scheduler_status_and_initialization(self):
+        """Test scheduler status and initialization"""
+        logger.info("🔍 Testing Scheduler Status & Initialization...")
+        
+        # Test scheduler status endpoint
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scheduling/") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "status" in data and
+                        "stats" in data and
+                        "check_interval_seconds" in data and
+                        "max_concurrent_schedules" in data
+                    )
+                    details = f"Status: {data.get('status')}, Stats: {len(data.get('stats', {}))}, Interval: {data.get('check_interval_seconds')}s"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Scheduler Status", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Scheduler Status", False, f"Exception: {str(e)}")
+        
+        # Test scheduler statistics
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scheduling/stats") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "total_schedules" in data and
+                        "active_schedules" in data and
+                        "total_executions" in data and
+                        "success_rate" in data and
+                        "system_health" in data
+                    )
+                    details = f"Total: {data.get('total_schedules', 0)}, Active: {data.get('active_schedules', 0)}, Success Rate: {data.get('success_rate', 0):.1f}%"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Scheduler Statistics", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Scheduler Statistics", False, f"Exception: {str(e)}")
+    
+    async def test_schedule_management_endpoints(self):
+        """Test schedule management CRUD operations"""
+        logger.info("📋 Testing Schedule Management Endpoints...")
+        
+        # Test list schedules (should show default schedules)
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scheduling/schedules") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = isinstance(data, list)
+                    details = f"Retrieved {len(data)} schedules"
+                    
+                    # Check for default schedules
+                    default_schedules = ["Daily System Scraping", "Weekly System Cleanup", "Hourly Health Monitoring"]
+                    found_defaults = [schedule for schedule in data if schedule.get("name") in default_schedules]
+                    if found_defaults:
+                        details += f", Found {len(found_defaults)} default schedules"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("List Schedules", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("List Schedules", False, f"Exception: {str(e)}")
+        
+        # Test create schedule
+        created_schedule_id = None
+        try:
+            start_time = time.time()
+            payload = {
+                "name": "Test Schedule for Monitoring",
+                "cron_expression": "*/5 * * * *",  # Every 5 minutes
+                "schedule_type": "monitoring",
+                "description": "Test schedule created during integration testing",
+                "task_function_name": "health_monitoring",
+                "task_args": [],
+                "task_kwargs": {},
+                "max_runtime_hours": 0.5,
+                "retry_on_failure": True,
+                "max_retries": 2
+            }
+            
+            async with self.session.post(
+                f"{self.base_url}/scheduling/schedules",
+                json=payload
+            ) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "schedule_id" in data and
+                        "message" in data and
+                        data.get("name") == payload["name"]
+                    )
+                    created_schedule_id = data.get("schedule_id")
+                    if created_schedule_id:
+                        self.created_schedule_ids.append(created_schedule_id)
+                    details = f"Created schedule ID: {created_schedule_id}, Name: {data.get('name')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Create Schedule", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Create Schedule", False, f"Exception: {str(e)}")
+        
+        # Test create scraping schedule
+        scraping_schedule_id = None
+        try:
+            start_time = time.time()
+            payload = {
+                "name": "Test Scraping Schedule",
+                "cron_expression": "0 */2 * * *",  # Every 2 hours
+                "sources": ["indiabix", "geeksforgeeks"],
+                "max_questions_per_source": 10,
+                "target_categories": ["quantitative", "logical"],
+                "priority_level": "normal",
+                "description": "Test scraping schedule for integration testing"
+            }
+            
+            async with self.session.post(
+                f"{self.base_url}/scheduling/schedules/scraping",
+                json=payload
+            ) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "schedule_id" in data and
+                        "message" in data and
+                        "sources" in data and
+                        data.get("name") == payload["name"]
+                    )
+                    scraping_schedule_id = data.get("schedule_id")
+                    if scraping_schedule_id:
+                        self.created_schedule_ids.append(scraping_schedule_id)
+                    details = f"Created scraping schedule ID: {scraping_schedule_id}, Sources: {data.get('sources', [])}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Create Scraping Schedule", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Create Scraping Schedule", False, f"Exception: {str(e)}")
+        
+        # Test get schedule details (if we created one)
+        if created_schedule_id:
+            try:
+                start_time = time.time()
+                async with self.session.get(f"{self.base_url}/scheduling/schedules/{created_schedule_id}") as response:
+                    response_time = time.time() - start_time
+                    
+                    if response.status == 200:
+                        data = await response.json()
+                        success = (
+                            "schedule_id" in data and
+                            "name" in data and
+                            "cron_expression" in data and
+                            "status" in data and
+                            "metrics" in data and
+                            data["schedule_id"] == created_schedule_id
+                        )
+                        details = f"Schedule: {data.get('name')}, Status: {data.get('status')}, Cron: {data.get('cron_expression')}"
+                    else:
+                        success = False
+                        error_text = await response.text()
+                        details = f"Status: {response.status}, Error: {error_text[:200]}"
+                    
+                    self.log_test_result("Get Schedule Details", success, details, response_time)
+                    
+            except Exception as e:
+                self.log_test_result("Get Schedule Details", False, f"Exception: {str(e)}")
+    
+    async def test_schedule_lifecycle_operations(self):
+        """Test schedule lifecycle operations (pause/resume/execute/delete)"""
+        logger.info("🔄 Testing Schedule Lifecycle Operations...")
+        
+        # First, create a test schedule for lifecycle testing
+        test_schedule_id = None
+        try:
+            payload = {
+                "name": "Lifecycle Test Schedule",
+                "cron_expression": "0 */6 * * *",  # Every 6 hours
+                "schedule_type": "monitoring",
+                "description": "Schedule for testing lifecycle operations",
+                "task_function_name": "health_monitoring",
+                "max_runtime_hours": 1.0
+            }
+            
+            async with self.session.post(
+                f"{self.base_url}/scheduling/schedules",
+                json=payload
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    test_schedule_id = data.get("schedule_id")
+                    if test_schedule_id:
+                        self.created_schedule_ids.append(test_schedule_id)
+                        
+        except Exception as e:
+            logger.warning(f"Could not create test schedule for lifecycle testing: {str(e)}")
+        
+        if not test_schedule_id:
+            self.log_test_result("Schedule Lifecycle Setup", False, "Could not create test schedule")
+            return
+        
+        # Test pause schedule
+        try:
+            start_time = time.time()
+            async with self.session.post(f"{self.base_url}/scheduling/schedules/{test_schedule_id}/pause") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = "message" in data and "paused" in data["message"].lower()
+                    details = f"Pause message: {data.get('message', 'N/A')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Pause Schedule", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Pause Schedule", False, f"Exception: {str(e)}")
+        
+        # Test resume schedule
+        try:
+            start_time = time.time()
+            async with self.session.post(f"{self.base_url}/scheduling/schedules/{test_schedule_id}/resume") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = "message" in data and "resumed" in data["message"].lower()
+                    details = f"Resume message: {data.get('message', 'N/A')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Resume Schedule", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Resume Schedule", False, f"Exception: {str(e)}")
+        
+        # Test manual execution
+        try:
+            start_time = time.time()
+            async with self.session.post(f"{self.base_url}/scheduling/schedules/{test_schedule_id}/execute") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "message" in data and
+                        "schedule_id" in data and
+                        data["schedule_id"] == test_schedule_id
+                    )
+                    details = f"Execution message: {data.get('message', 'N/A')}, Schedule: {data.get('schedule_name', 'N/A')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Manual Schedule Execution", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Manual Schedule Execution", False, f"Exception: {str(e)}")
+        
+        # Test get execution logs
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scheduling/schedules/{test_schedule_id}/logs?limit=5") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "schedule_id" in data and
+                        "logs" in data and
+                        "count" in data and
+                        data["schedule_id"] == test_schedule_id
+                    )
+                    details = f"Retrieved {data.get('count', 0)} log entries for schedule {data.get('schedule_id', 'N/A')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Get Execution Logs", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Get Execution Logs", False, f"Exception: {str(e)}")
+        
+        # Test update schedule
+        try:
+            start_time = time.time()
+            update_payload = {
+                "description": "Updated description for lifecycle testing",
+                "max_runtime_hours": 2.0
+            }
+            
+            async with self.session.put(
+                f"{self.base_url}/scheduling/schedules/{test_schedule_id}",
+                json=update_payload
+            ) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = "message" in data and "updated" in data["message"].lower()
+                    details = f"Update message: {data.get('message', 'N/A')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Update Schedule", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Update Schedule", False, f"Exception: {str(e)}")
+    
+    async def test_scheduler_control_endpoints(self):
+        """Test scheduler start/stop control endpoints"""
+        logger.info("⚡ Testing Scheduler Control Endpoints...")
+        
+        # Test start scheduler (should already be running)
+        try:
+            start_time = time.time()
+            async with self.session.post(f"{self.base_url}/scheduling/start") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = "message" in data
+                    details = f"Start message: {data.get('message', 'N/A')}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Start Scheduler", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Start Scheduler", False, f"Exception: {str(e)}")
+        
+        # Test task functions list
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scheduling/task-functions") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = (
+                        "task_functions" in data and
+                        "count" in data and
+                        isinstance(data["task_functions"], list)
+                    )
+                    
+                    # Check for built-in functions
+                    expected_functions = ["scheduled_scraping", "system_cleanup", "health_monitoring"]
+                    found_functions = [func for func in expected_functions if func in data.get("task_functions", [])]
+                    
+                    details = f"Found {data.get('count', 0)} task functions, Built-in functions: {len(found_functions)}/{len(expected_functions)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("List Task Functions", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("List Task Functions", False, f"Exception: {str(e)}")
+        
+        # Test schedule presets
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scheduling/presets") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    success = "presets" in data and isinstance(data["presets"], dict)
+                    
+                    presets = data.get("presets", {})
+                    expected_presets = ["daily_scraping", "weekly_cleanup", "hourly_monitoring"]
+                    found_presets = [preset for preset in expected_presets if preset in presets]
+                    
+                    details = f"Found {len(presets)} presets, Expected presets: {len(found_presets)}/{len(expected_presets)}"
+                else:
+                    success = False
+                    error_text = await response.text()
+                    details = f"Status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Get Schedule Presets", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Get Schedule Presets", False, f"Exception: {str(e)}")
+    
+    async def test_error_scenarios(self):
+        """Test error handling scenarios"""
+        logger.info("🚨 Testing Error Scenarios...")
+        
+        # Test invalid cron expression
+        try:
+            start_time = time.time()
+            payload = {
+                "name": "Invalid Cron Test",
+                "cron_expression": "invalid cron expression",
+                "task_function_name": "health_monitoring"
+            }
+            
+            async with self.session.post(
+                f"{self.base_url}/scheduling/schedules",
+                json=payload
+            ) as response:
+                response_time = time.time() - start_time
+                
+                # Should return 400 for invalid cron expression
+                success = response.status == 400
+                if success:
+                    details = "Correctly rejected invalid cron expression"
+                else:
+                    error_text = await response.text()
+                    details = f"Unexpected status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Invalid Cron Expression Handling", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Invalid Cron Expression Handling", False, f"Exception: {str(e)}")
+        
+        # Test non-existent task function
+        try:
+            start_time = time.time()
+            payload = {
+                "name": "Invalid Task Function Test",
+                "cron_expression": "0 * * * *",
+                "task_function_name": "non_existent_function"
+            }
+            
+            async with self.session.post(
+                f"{self.base_url}/scheduling/schedules",
+                json=payload
+            ) as response:
+                response_time = time.time() - start_time
+                
+                # Should return 400 for non-existent function
+                success = response.status == 400
+                if success:
+                    details = "Correctly rejected non-existent task function"
+                else:
+                    error_text = await response.text()
+                    details = f"Unexpected status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Invalid Task Function Handling", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Invalid Task Function Handling", False, f"Exception: {str(e)}")
+        
+        # Test operations on non-existent schedule
+        fake_schedule_id = "non-existent-schedule-id"
+        
+        try:
+            start_time = time.time()
+            async with self.session.get(f"{self.base_url}/scheduling/schedules/{fake_schedule_id}") as response:
+                response_time = time.time() - start_time
+                
+                # Should return 404 for non-existent schedule
+                success = response.status == 404
+                if success:
+                    details = "Correctly returned 404 for non-existent schedule"
+                else:
+                    error_text = await response.text()
+                    details = f"Unexpected status: {response.status}, Error: {error_text[:200]}"
+                
+                self.log_test_result("Non-existent Schedule Handling", success, details, response_time)
+                
+        except Exception as e:
+            self.log_test_result("Non-existent Schedule Handling", False, f"Exception: {str(e)}")
+    
+    async def cleanup_test_schedules(self):
+        """Clean up schedules created during testing"""
+        logger.info("🧹 Cleaning up test schedules...")
+        
+        for schedule_id in self.created_schedule_ids:
+            try:
+                async with self.session.delete(f"{self.base_url}/scheduling/schedules/{schedule_id}") as response:
+                    if response.status == 200:
+                        logger.info(f"Cleaned up test schedule: {schedule_id}")
+                    else:
+                        logger.warning(f"Could not clean up schedule {schedule_id}: {response.status}")
+            except Exception as e:
+                logger.warning(f"Error cleaning up schedule {schedule_id}: {str(e)}")
+    
+    async def run_all_tests(self):
+        """Run all cron scheduling system tests"""
+        logger.info("🚀 Starting Cron-Based Scheduling System Testing (Task 13)...")
+        start_time = time.time()
+        
+        # Run all test suites
+        await self.test_scheduler_status_and_initialization()
+        await self.test_schedule_management_endpoints()
+        await self.test_schedule_lifecycle_operations()
+        await self.test_scheduler_control_endpoints()
+        await self.test_error_scenarios()
+        
+        # Clean up test schedules
+        await self.cleanup_test_schedules()
+        
+        total_time = time.time() - start_time
+        
+        # Generate summary
+        logger.info("=" * 80)
+        logger.info("🎯 CRON-BASED SCHEDULING SYSTEM TEST SUMMARY (TASK 13)")
+        logger.info("=" * 80)
+        logger.info(f"Total Tests: {self.test_results['total_tests']}")
+        logger.info(f"✅ Passed: {self.test_results['passed_tests']}")
+        logger.info(f"❌ Failed: {self.test_results['failed_tests']}")
+        logger.info(f"Success Rate: {(self.test_results['passed_tests'] / max(self.test_results['total_tests'], 1)) * 100:.1f}%")
+        logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info("=" * 80)
+        
+        # Show failed tests
+        failed_tests = [t for t in self.test_results["test_details"] if not t["success"]]
+        if failed_tests:
+            logger.info("❌ FAILED TESTS:")
+            for test in failed_tests:
+                logger.info(f"  - {test['test_name']}: {test['details']}")
+        
+        return self.test_results
+
 class AntiDetectionSystemTester:
     """Tester for Anti-Detection & Rate Limiting System components"""
     
