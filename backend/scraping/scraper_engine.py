@@ -169,12 +169,9 @@ class ScrapingEngine:
         try:
             # Create scraping job
             job = ScrapingJob(
-                job_id=str(uuid.uuid4()),
-                job_config=job_config,
-                status=ScrapingJobStatus.QUEUED,
-                created_at=datetime.now(),
-                source_type=job_config.target.source_id,
-                target_config=job_config.target
+                id=str(uuid.uuid4()),
+                config=job_config,
+                status=ScrapingJobStatus.QUEUED
             )
             
             # Add to queue
