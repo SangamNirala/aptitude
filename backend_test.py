@@ -371,44 +371,80 @@ class WebScrapingSystemTester:
         return indiabix_job_id, geeksforgeeks_job_id
     
     async def test_job_monitoring_and_progress(self, job_ids):
-        """Monitor job progress and collect statistics"""
+        """Monitor job progress and collect statistics - Focus on execution errors"""
         logger.info("📊 Testing Job Monitoring and Progress...")
+        logger.info("🔍 Checking for dataclass serialization errors and field access issues")
         
         for job_id in job_ids:
             if not job_id:
                 continue
                 
-            try:
-                start_time = time.time()
-                async with self.session.get(f"{self.base_url}/scraping/jobs/{job_id}") as response:
-                    response_time = time.time() - start_time
-                    
-                    if response.status == 200:
-                        data = await response.json()
-                        success = (
-                            "job_id" in data and
-                            "status" in data and
-                            "progress" in data and
-                            "statistics" in data
-                        )
+            # Monitor job multiple times to catch execution issues
+            for check_num in range(3):  # Check 3 times over 90 seconds
+                try:
+                    start_time = time.time()
+                    async with self.session.get(f"{self.base_url}/scraping/jobs/{job_id}") as response:
+                        response_time = time.time() - start_time
                         
-                        # Extract progress information
-                        progress = data.get("progress", {})
-                        statistics = data.get("statistics", {})
-                        questions_extracted = statistics.get("questions_extracted", 0)
+                        if response.status == 200:
+                            data = await response.json()
+                            success = (
+                                "job_id" in data and
+                                "status" in data
+                            )
+                            
+                            # Check for specific error patterns mentioned in review request
+                            status = data.get("status", "unknown")
+                            error_message = data.get("error_message", "")
+                            last_error = data.get("last_error", "")
+                            
+                            # Look for the specific errors that were fixed
+                            critical_errors = [
+                                "asdict() should be called on dataclass instances",
+                                "AttributeError",
+                                "job_id",
+                                "target_config", 
+                                "job_config"
+                            ]
+                            
+                            has_critical_error = any(error in str(error_message) + str(last_error) for error in critical_errors)
+                            
+                            if has_critical_error:
+                                success = False
+                                details = f"CRITICAL ERROR DETECTED: {error_message or last_error}"
+                                logger.error(f"🚨 Job {job_id[:8]} has critical error: {error_message or last_error}")
+                            else:
+                                # Extract progress information
+                                progress = data.get("progress", {})
+                                statistics = data.get("statistics", {})
+                                questions_extracted = statistics.get("questions_extracted", 0) or data.get("questions_extracted", 0)
+                                
+                                if check_num == 2:  # Only count on final check to avoid duplicates
+                                    self.test_results["scraping_stats"]["questions_collected"] += questions_extracted
+                                
+                                details = f"Check {check_num+1}: Status: {status}, Questions: {questions_extracted}"
+                                
+                                # Check if job is actually executing (not stuck in PENDING)
+                                if status == "pending" and check_num >= 1:
+                                    details += " (Job may be stuck in PENDING status)"
+                                elif status == "running":
+                                    details += " ✅ Job executing successfully"
+                                elif status == "failed":
+                                    details += f" ❌ Job failed: {error_message or last_error}"
+                        else:
+                            success = False
+                            error_text = await response.text()
+                            details = f"Status: {response.status}, Error: {error_text[:200]}"
                         
-                        self.test_results["scraping_stats"]["questions_collected"] += questions_extracted
+                        self.log_test_result(f"Monitor Job {job_id[:8]} Check {check_num+1}", success, details, response_time)
                         
-                        details = f"Status: {data.get('status')}, Progress: {progress.get('percentage', 0):.1f}%, Questions: {questions_extracted}"
-                    else:
-                        success = False
-                        error_text = await response.text()
-                        details = f"Status: {response.status}, Error: {error_text[:200]}"
-                    
-                    self.log_test_result(f"Monitor Job {job_id[:8]}", success, details, response_time)
-                    
-            except Exception as e:
-                self.log_test_result(f"Monitor Job {job_id[:8]}", False, f"Exception: {str(e)}")
+                except Exception as e:
+                    self.log_test_result(f"Monitor Job {job_id[:8]} Check {check_num+1}", False, f"Exception: {str(e)}")
+                
+                # Wait 30 seconds between checks
+                if check_num < 2:
+                    logger.info(f"⏳ Waiting 30 seconds before next check...")
+                    await asyncio.sleep(30)
     
     async def test_scraping_engine_functionality(self):
         """Test the actual scraping engine components"""
