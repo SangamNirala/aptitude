@@ -492,13 +492,11 @@ const ComprehensiveAptitudeQuestions = () => {
       return;
     }
     
-    const category = aptitudeCategories.find(cat => cat.id === selectedAptitudeCategory);
-    const difficulty = smartLevels.find(level => level.id === selectedDifficulty);
-    
-    toast({
-      title: "🚀 Starting Enhanced Practice Session!",
-      description: `Loading ${difficulty?.name} level ${category?.title} with AI-powered insights...`
-    });
+    setIsPracticeSessionActive(true);
+  };
+
+  const handleBackFromPractice = () => {
+    setIsPracticeSessionActive(false);
   };
 
   return (
