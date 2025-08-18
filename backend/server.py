@@ -148,13 +148,13 @@ async def startup_event():
     logger.info("🚀 Starting AI-Enhanced Web Scraping System Production Startup")
     
     try:
-        # Initialize production system
-        startup_success = await initialize_production_system()
+        # Initialize production system - TEMPORARILY DISABLED
+        # startup_success = await initialize_production_system()
         
-        if not startup_success:
-            logger.error("❌ Production startup failed - some components may not be fully functional")
-        else:
-            logger.info("✅ Production system startup completed successfully")
+        # if not startup_success:
+        #     logger.error("❌ Production startup failed - some components may not be fully functional")
+        # else:
+        #     logger.info("✅ Production system startup completed successfully")
         
         # Continue with existing initialization for backwards compatibility
         logger.info("🔧 Performing additional service initialization...")
