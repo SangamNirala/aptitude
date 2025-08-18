@@ -273,7 +273,7 @@ class ScrapingEngine:
                     job = self.active_jobs[job_id]
                     job.status = ScrapingJobStatus.CANCELLED
                     job.updated_at = datetime.now()
-                    job.error_message = "Job cancelled by user"
+                    job.last_error = "Job cancelled by user"
                     
                     logger.info(f"Scraping job cancelled: {job_id}")
                     return True
