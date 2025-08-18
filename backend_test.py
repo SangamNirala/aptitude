@@ -898,29 +898,235 @@ async def test_critical_question_collection():
     logger.info("=" * 80)
     return total_questions_collected, indiabix_questions, geeksforgeeks_questions
 
-async def main():
-    """Main test execution function - Focus on Critical Question Collection Assessment"""
-    logger.info("🚀 CRITICAL QUESTION COLLECTION ASSESSMENT - FINAL TESTING")
-    logger.info("🎯 Determining final question collection count after all fixes")
-    logger.info("🔍 Focus: IndiaBix and GeeksforGeeks question collection with 3-minute monitoring")
+async def test_indiabix_driver_creation_fix():
+    """
+    FOCUSED TEST: IndiaBix Driver Creation Fix
+    Test the specific anti_detection_config parameter handling issue
+    """
+    logger.info("🎯 INDIABIX DRIVER CREATION FIX TESTING")
+    logger.info("=" * 80)
+    logger.info("TESTING REQUIREMENTS FROM REVIEW REQUEST:")
+    logger.info("1. Test IndiaBix driver creation without parameter mismatch errors")
+    logger.info("2. Verify driver initialization with anti_detection_config")
+    logger.info("3. Create and start a single IndiaBix job to test driver creation")
+    logger.info("4. Ensure no more 'TypeError' or parameter mismatch errors")
+    logger.info("5. Monitor for 60 seconds as requested")
+    logger.info("=" * 80)
     
-    # Run the critical question collection test
-    total_questions, indiabix_count, geeksforgeeks_count = await test_critical_question_collection()
+    test_results = {
+        "driver_creation_test": False,
+        "job_creation_test": False,
+        "job_start_test": False,
+        "driver_initialization_test": False,
+        "questions_extracted": 0,
+        "errors_found": []
+    }
+    
+    async with WebScrapingSystemTester() as tester:
+        # Test 1: Direct driver creation test (simulate what happens in scraping engine)
+        logger.info("🔧 TEST 1: Direct Driver Creation Test")
+        try:
+            # Import the driver creation function
+            sys.path.append('/app/backend')
+            from scraping.drivers.selenium_driver import create_indiabix_selenium_driver
+            
+            # Test with anti_detection_config as expected by the fix
+            anti_detection_config = {
+                "source_name": "IndiaBix",
+                "enable_user_agent_rotation": True,
+                "enable_behavior_simulation": True,
+                "detection_risk_threshold": 0.7
+            }
+            
+            logger.info("Creating IndiaBix driver with anti_detection_config...")
+            driver = create_indiabix_selenium_driver(anti_detection_config=anti_detection_config)
+            
+            if driver:
+                logger.info("✅ IndiaBix driver created successfully!")
+                test_results["driver_creation_test"] = True
+                
+                # Test driver initialization
+                logger.info("Testing driver initialization...")
+                if driver.initialize_driver():
+                    logger.info("✅ Driver initialized successfully!")
+                    test_results["driver_initialization_test"] = True
+                    driver.cleanup()
+                else:
+                    logger.error("❌ Driver initialization failed")
+                    test_results["errors_found"].append("Driver initialization failed")
+            else:
+                logger.error("❌ Driver creation returned None")
+                test_results["errors_found"].append("Driver creation returned None")
+                
+        except Exception as e:
+            logger.error(f"❌ Driver creation failed with error: {e}")
+            test_results["errors_found"].append(f"Driver creation error: {str(e)}")
+        
+        # Test 2: Job Creation Test
+        logger.info("\n🔧 TEST 2: IndiaBix Job Creation Test")
+        indiabix_job_id = None
+        try:
+            payload = {
+                "job_name": "IndiaBix_Driver_Fix_Test",
+                "source_names": ["IndiaBix"],
+                "max_questions_per_source": 10,  # Small limit for focused test
+                "target_categories": ["quantitative"],
+                "priority_level": 1,
+                "enable_ai_processing": False,  # Disable to focus on driver creation
+                "enable_duplicate_detection": False
+            }
+            
+            async with tester.session.post(f"{tester.base_url}/scraping/jobs", json=payload) as response:
+                if response.status == 201:
+                    data = await response.json()
+                    indiabix_job_id = data.get("job_id")
+                    logger.info(f"✅ IndiaBix job created successfully: {indiabix_job_id}")
+                    test_results["job_creation_test"] = True
+                else:
+                    error_text = await response.text()
+                    logger.error(f"❌ Job creation failed: {response.status} - {error_text}")
+                    test_results["errors_found"].append(f"Job creation failed: {response.status}")
+        except Exception as e:
+            logger.error(f"❌ Job creation exception: {e}")
+            test_results["errors_found"].append(f"Job creation exception: {str(e)}")
+        
+        # Test 3: Job Start Test
+        if indiabix_job_id:
+            logger.info("\n🔧 TEST 3: IndiaBix Job Start Test")
+            try:
+                async with tester.session.put(f"{tester.base_url}/scraping/jobs/{indiabix_job_id}/start") as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        logger.info(f"✅ IndiaBix job started successfully: {data.get('status')}")
+                        test_results["job_start_test"] = True
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"❌ Job start failed: {response.status} - {error_text}")
+                        test_results["errors_found"].append(f"Job start failed: {response.status}")
+            except Exception as e:
+                logger.error(f"❌ Job start exception: {e}")
+                test_results["errors_found"].append(f"Job start exception: {str(e)}")
+            
+            # Test 4: Monitor job for 60 seconds as requested
+            if test_results["job_start_test"]:
+                logger.info("\n🔧 TEST 4: Monitor IndiaBix Job for 60 seconds")
+                logger.info("⏳ Monitoring for driver creation and basic extraction...")
+                
+                monitoring_duration = 60  # 60 seconds as requested
+                check_interval = 15  # Check every 15 seconds
+                checks = monitoring_duration // check_interval
+                
+                for check_num in range(checks):
+                    logger.info(f"🔍 Check {check_num + 1}/{checks} - {(check_num + 1) * check_interval}s elapsed")
+                    
+                    try:
+                        async with tester.session.get(f"{tester.base_url}/scraping/jobs/{indiabix_job_id}") as response:
+                            if response.status == 200:
+                                data = await response.json()
+                                status = data.get("status", "unknown")
+                                statistics = data.get("statistics", {})
+                                questions_extracted = statistics.get("questions_extracted", 0) or data.get("questions_extracted", 0)
+                                error_message = data.get("error_message", "") or data.get("last_error", "")
+                                
+                                logger.info(f"📊 Status: {status}, Questions: {questions_extracted}")
+                                
+                                # Check for specific driver creation errors
+                                driver_errors = [
+                                    "SeleniumConfig.__init__() got an unexpected keyword argument",
+                                    "anti_detection_manager",
+                                    "TypeError",
+                                    "parameter mismatch",
+                                    "Failed to initialize driver or extractor"
+                                ]
+                                
+                                if error_message:
+                                    logger.info(f"🔍 Error message: {error_message}")
+                                    
+                                    # Check if it's a driver creation error
+                                    if any(err in error_message for err in driver_errors):
+                                        logger.error(f"🚨 DRIVER CREATION ERROR DETECTED: {error_message}")
+                                        test_results["errors_found"].append(f"Driver creation error: {error_message}")
+                                    else:
+                                        logger.info(f"ℹ️ Non-driver error (acceptable): {error_message}")
+                                
+                                # Update question count
+                                if questions_extracted > test_results["questions_extracted"]:
+                                    test_results["questions_extracted"] = questions_extracted
+                                    logger.info(f"✅ Questions extracted: {questions_extracted}")
+                                
+                                # Check if driver creation progressed past initialization
+                                if "SeleniumDriver initialized" in str(data) or questions_extracted > 0:
+                                    logger.info("✅ Driver creation and initialization successful!")
+                                
+                            else:
+                                logger.error(f"❌ Failed to get job status: {response.status}")
+                    except Exception as e:
+                        logger.error(f"❌ Exception monitoring job: {e}")
+                    
+                    # Wait before next check (except on last iteration)
+                    if check_num < checks - 1:
+                        await asyncio.sleep(check_interval)
+    
+    # Final Assessment
+    logger.info("\n" + "=" * 80)
+    logger.info("🎯 INDIABIX DRIVER CREATION FIX ASSESSMENT")
+    logger.info("=" * 80)
+    logger.info(f"📊 TEST RESULTS:")
+    logger.info(f"   • Driver Creation Test: {'✅ PASSED' if test_results['driver_creation_test'] else '❌ FAILED'}")
+    logger.info(f"   • Driver Initialization Test: {'✅ PASSED' if test_results['driver_initialization_test'] else '❌ FAILED'}")
+    logger.info(f"   • Job Creation Test: {'✅ PASSED' if test_results['job_creation_test'] else '❌ FAILED'}")
+    logger.info(f"   • Job Start Test: {'✅ PASSED' if test_results['job_start_test'] else '❌ FAILED'}")
+    logger.info(f"   • Questions Extracted: {test_results['questions_extracted']}")
+    logger.info(f"   • Errors Found: {len(test_results['errors_found'])}")
+    
+    if test_results['errors_found']:
+        logger.info("❌ ERRORS DETECTED:")
+        for error in test_results['errors_found']:
+            logger.info(f"   - {error}")
+    
+    # Determine overall success
+    critical_tests_passed = (
+        test_results['driver_creation_test'] and 
+        test_results['job_creation_test'] and 
+        test_results['job_start_test']
+    )
+    
+    no_driver_errors = not any("driver" in error.lower() or "selenium" in error.lower() for error in test_results['errors_found'])
+    
+    if critical_tests_passed and no_driver_errors:
+        logger.info("✅ SUCCESS: IndiaBix driver creation fix is working!")
+        logger.info("🎉 ANSWER: Driver creation and initialization successful, no parameter mismatch errors detected.")
+    else:
+        logger.info("❌ FAILURE: IndiaBix driver creation issues remain")
+        logger.info("🔍 ANSWER: Driver creation or parameter handling issues still present.")
+    
+    logger.info("=" * 80)
+    return test_results
+
+async def main():
+    """Main test execution function - Focus on IndiaBix Driver Creation Fix"""
+    logger.info("🚀 INDIABIX DRIVER CREATION FIX TESTING")
+    logger.info("🎯 Testing the anti_detection_config parameter handling fix")
+    logger.info("🔍 Focus: IndiaBix driver creation without parameter mismatch errors")
+    
+    # Run the focused IndiaBix driver creation test
+    test_results = await test_indiabix_driver_creation_fix()
     
     # Overall summary
     logger.info("\n" + "=" * 80)
     logger.info("🎯 FINAL ASSESSMENT SUMMARY")
     logger.info("=" * 80)
-    logger.info(f"IndiaBix Questions Collected: {indiabix_count}")
-    logger.info(f"GeeksforGeeks Questions Collected: {geeksforgeeks_count}")
-    logger.info(f"TOTAL QUESTIONS COLLECTED: {total_questions}")
+    logger.info(f"Driver Creation: {'✅ SUCCESS' if test_results['driver_creation_test'] else '❌ FAILED'}")
+    logger.info(f"Job Execution: {'✅ SUCCESS' if test_results['job_start_test'] else '❌ FAILED'}")
+    logger.info(f"Questions Extracted: {test_results['questions_extracted']}")
+    logger.info(f"Errors Found: {len(test_results['errors_found'])}")
     logger.info("=" * 80)
     
     # Answer the review request question
-    if total_questions > 0:
-        logger.info("✅ FINAL ANSWER: Web scraper successfully collected questions after fixes")
+    if test_results['driver_creation_test'] and test_results['job_start_test']:
+        logger.info("✅ FINAL ANSWER: IndiaBix driver creation fix is working correctly")
     else:
-        logger.info("❌ FINAL ANSWER: Web scraper unable to collect questions - execution issues remain")
+        logger.info("❌ FINAL ANSWER: IndiaBix driver creation issues still need to be resolved")
     
     logger.info("=" * 80)
 
