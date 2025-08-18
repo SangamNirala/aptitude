@@ -210,11 +210,11 @@
 
 ## test_plan:
   current_focus: 
-    - "Content Extraction Enhancement (GeeksforGeeks Extractor)"
+    - "GeeksforGeeks Logical Questions Collection - COMPLETED"
   stuck_tasks: 
-    - "Content Extraction Enhancement (GeeksforGeeks Extractor)"
+    - 
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "high_first"
 
   - task: "Scraping Database Models Setup"
     implemented: true
