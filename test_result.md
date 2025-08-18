@@ -216,9 +216,9 @@
 
 ## test_plan:
   current_focus: 
-    - "GeeksforGeeks Logical Questions Collection - COMPLETED"
+    - "Enhanced UI Integration - CRITICAL INTEGRATION GAP"
   stuck_tasks: 
-    - 
+    - "Enhanced UI Integration - Frontend not displaying backend questions to students"
   test_all: false
   test_priority: "high_first"
 
