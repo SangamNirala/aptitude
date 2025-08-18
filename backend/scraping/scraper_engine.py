@@ -565,7 +565,7 @@ class ScrapingEngine:
             # Get first source for this job
             if not job_config.source_ids:
                 logger.error(f"Job {job.id} has no source_ids configured")
-                job.error_message = "No source IDs configured"
+                job.last_error = "No source IDs configured"
                 return False
                 
             source_id = job_config.source_ids[0]
