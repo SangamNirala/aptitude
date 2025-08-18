@@ -104,6 +104,7 @@ greenlet>=3.2.0
 cron-descriptor>=1.4.0
 python-crontab>=3.0.0
 croniter>=2.0.0
+websockets>=13.0
 
 # Dependencies for Task 18 (Performance Optimization & Scaling)
 numpy>=1.26.0
