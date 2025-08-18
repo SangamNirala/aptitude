@@ -30,18 +30,18 @@ INDIABIX_CONFIG = DataSourceConfig(
         "correct_answer": "div.bix-div-answer",
         "explanation": "div.bix-div-answer p",
         
-        # Navigation Elements - Updated for Bootstrap-based design
-        "next_button": "button:contains('Next'), a:contains('Next'), .btn-next, .next-question",
-        "page_numbers": "nav.pagination a, .pagination a, .page-numbers a",
-        "current_page": "nav.pagination .active, .pagination .current, .page-numbers .current",
+        # Navigation Elements - Working BIX selectors
+        "next_button": "a.bix-btn-next",
+        "page_numbers": "div.bix-pagination a",
+        "current_page": "div.bix-pagination span.current",
         
-        # Category Elements - Updated for modern structure
-        "category_links": "nav a, .nav-links a, .category-menu a",
-        "subcategory_links": ".submenu a, .subcategory-links a",
+        # Category Elements - Working BIX selectors 
+        "category_links": "div.bix-menu-section a",
+        "subcategory_links": "div.bix-submenu a",
         
-        # Quality Indicators - Generic selectors
-        "question_number": ".question-number, .q-number, [class*='question-num']",
-        "difficulty_indicator": ".difficulty, .level, [class*='difficulty']",
+        # Quality Indicators - Working BIX selectors
+        "question_number": "div.bix-td-qno",
+        "difficulty_indicator": "div.bix-difficulty",
         
         # Anti-Detection Elements
         "loading_indicator": "div.loader, .spinner, .loading, [class*='loading']",
