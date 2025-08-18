@@ -611,6 +611,10 @@ class CronScheduler:
         self.task_functions[name] = function
         logger.info(f"Registered task function: {name}")
     
+    def get_scheduler_stats(self) -> Dict[str, Any]:
+        """Get scheduler statistics (alias for get_scheduler_status)"""
+        return self.get_scheduler_status()
+    
     def get_scheduler_status(self) -> Dict[str, Any]:
         """Get comprehensive scheduler status"""
         try:
