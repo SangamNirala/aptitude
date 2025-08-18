@@ -633,7 +633,7 @@ class ScrapingEngine:
                        f"{batch_result.failed_extractions} failed")
             
         except Exception as e:
-            logger.error(f"Error processing batch result for job {job.job_id}: {e}")
+            logger.error(f"Error processing batch result for job {job.id}: {e}")
     
     # =============================================================================
     # DRIVER MANAGEMENT
