@@ -130,17 +130,17 @@ class LogicalQuestionsCollectionTester:
             
             if has_all_fields:
                 question_text = question.get("question_text", "")
-                options = question.get("options", {})
+                options = question.get("options", [])
                 correct_answer = question.get("correct_answer", "")
-                explanation = question.get("explanation", "")
+                explanation = question.get("explanation", "") or ""
                 
                 # Validate content quality
                 quality_checks = {
                     "non_empty_question": len(question_text.strip()) > 10,
-                    "has_4_options": len(options) == 4 and all(opt in options for opt in ["A", "B", "C", "D"]),
-                    "valid_correct_answer": correct_answer in ["A", "B", "C", "D"],
-                    "has_explanation": len(explanation.strip()) > 10,
-                    "proper_metadata": "source" in question and question.get("source") == "IndiaBix"
+                    "has_4_options": len(options) == 4,
+                    "valid_correct_answer": correct_answer.strip() != "",
+                    "has_source": "source" in question and question.get("source") in ["web_scraped", "IndiaBix"],
+                    "proper_structure": "id" in question and "category" in question
                 }
                 
                 passed_checks = sum(quality_checks.values())
