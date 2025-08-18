@@ -281,7 +281,7 @@ class IndiaBixLogicalScraper:
     
     def save_to_database(self):
         """Save collected questions to MongoDB"""
-        if not self.collection or not self.questions_collected:
+        if self.collection is None or not self.questions_collected:
             logger.warning("⚠️ No database connection or no questions to save")
             return False
         
