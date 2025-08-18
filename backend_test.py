@@ -800,6 +800,7 @@ class ProductionMonitoringTester:
         
         # Test manual error capture
         try:
+            import json  # Add json import for context conversion
             start_time = time.time()
             payload = {
                 "message": "Test error for production monitoring validation",
