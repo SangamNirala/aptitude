@@ -322,7 +322,9 @@ class SeleniumDriver:
             
             # Record successful request
             request_time = time.time() - start_time
-            self.rate_limiter.record_success()
+            self.rate_limiter._last_request_time = time.time()
+            self.rate_limiter._consecutive_successes += 1
+            self.rate_limiter._consecutive_failures = 0
             
             if self.anti_detection:
                 self.anti_detection.after_request(url, success=True, response_time=request_time)
@@ -330,7 +332,8 @@ class SeleniumDriver:
         except Exception as e:
             # Record failed request
             request_time = time.time() - start_time
-            self.rate_limiter.record_failure()
+            self.rate_limiter._consecutive_failures += 1
+            self.rate_limiter._consecutive_successes = 0
             
             if self.anti_detection:
                 self.anti_detection.after_request(url, success=False, response_time=request_time, error=str(e))
