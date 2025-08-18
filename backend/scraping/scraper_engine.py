@@ -751,7 +751,7 @@ class ScrapingEngine:
             else:
                 # Generic Selenium driver
                 from scraping.drivers.selenium_driver import create_selenium_driver
-                return create_selenium_driver()
+                return create_selenium_driver(source_name=source_type)
         
         except Exception as e:
             logger.error(f"Error creating Selenium driver for {source_type}: {e}")
