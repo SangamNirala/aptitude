@@ -300,11 +300,16 @@ class SeleniumDriver:
     @contextmanager
     def rate_limited_request(self, url: str):
         """Context manager for rate-limited requests"""
-        # Apply rate limiting
-        delay = self.rate_limiter.get_delay()
-        if delay > 0:
-            logger.debug(f"⏰ Rate limiting: waiting {delay:.2f}s before request to {url}")
-            time.sleep(delay)
+        # Apply rate limiting - use synchronous delay calculation
+        current_time = time.time()
+        time_since_last = current_time - self.rate_limiter._last_request_time
+        min_interval = 1.0 / self.rate_limiter.config.requests_per_second
+        
+        if time_since_last < min_interval:
+            delay = min_interval - time_since_last
+            if delay > 0:
+                logger.debug(f"⏰ Rate limiting: waiting {delay:.2f}s before request to {url}")
+                time.sleep(delay)
         
         # Apply anti-detection measures
         if self.anti_detection:
