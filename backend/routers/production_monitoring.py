@@ -9,21 +9,37 @@ from typing import Dict, Any, List, Optional
 import logging
 from pydantic import BaseModel, Field
 
-from utils.health_monitoring import (
-    health_monitor, get_health_summary, run_health_check, 
-    run_all_health_checks, get_system_metrics
-)
-from utils.error_tracking import (
-    error_tracker, get_error_dashboard_data, ErrorCategory, ErrorSeverity
-)
-from utils.production_logging import get_performance_logger, get_security_logger
-from config.production_config import get_production_config, validate_production_readiness
+try:
+    from utils.health_monitoring import (
+        health_monitor, get_health_summary, run_health_check, 
+        run_all_health_checks, get_system_metrics
+    )
+    from utils.error_tracking import (
+        error_tracker, get_error_dashboard_data, ErrorCategory, ErrorSeverity
+    )
+    from utils.production_logging import get_performance_logger, get_security_logger
+    from config.production_config import get_production_config, validate_production_readiness
+    
+    PRODUCTION_MONITORING_AVAILABLE = True
+except ImportError as e:
+    logging.warning(f"Production monitoring components not available: {e}")
+    PRODUCTION_MONITORING_AVAILABLE = False
 
 router = APIRouter(prefix="/api/production", tags=["Production Monitoring"])
 
 logger = logging.getLogger(__name__)
-performance_logger = get_performance_logger()
-security_logger = get_security_logger()
+
+if PRODUCTION_MONITORING_AVAILABLE:
+    try:
+        performance_logger = get_performance_logger()
+        security_logger = get_security_logger()
+    except Exception as e:
+        logging.warning(f"Could not initialize production loggers: {e}")
+        performance_logger = None
+        security_logger = None
+else:
+    performance_logger = None
+    security_logger = None
 
 
 # Response Models
