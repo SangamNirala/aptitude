@@ -198,9 +198,8 @@
 
 ## test_plan:
   current_focus: 
-    - "Scraping Engine Execution Testing (Critical Fix Verification)"
-  stuck_tasks: 
-    - "Scraping Engine Execution Testing (Critical Fix Verification)"
+    - "API Parameter Validation Fixes for Job Execution"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
