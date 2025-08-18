@@ -805,7 +805,7 @@ class ProductionMonitoringTester:
             payload = {
                 "message": "Test error for production monitoring validation",
                 "category": "application",  # Use lowercase as expected by the API
-                "severity": "MEDIUM",
+                "severity": "medium",  # Use lowercase as expected by the API
                 "context": {"test": True, "source": "production_test"}
             }
             
