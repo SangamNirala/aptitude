@@ -833,10 +833,10 @@ class ScrapingEngine:
             self.stats.failed_jobs += 1
             self.stats.active_jobs = len(self.active_jobs)
             
-            logger.error(f"Job {job.job_id} failed: {error_message}")
+            logger.error(f"Job {job.id} failed: {error_message}")
             
         except Exception as e:
-            logger.error(f"Error failing job {job.job_id}: {e}")
+            logger.error(f"Error failing job {job.id}: {e}")
     
     # =============================================================================
     # PUBLIC API METHODS
