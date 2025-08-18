@@ -234,18 +234,18 @@ class ScrapingEngine:
                 if job_id in self.completed_jobs:
                     job = self.completed_jobs[job_id]
                     return {
-                        "job_id": job.job_id,
+                        "job_id": job.id,
                         "status": job.status.value,
                         "created_at": job.created_at,
                         "updated_at": job.updated_at,
                         "completed_at": job.completed_at,
-                        "total_questions_extracted": job.total_questions_extracted,
-                        "successful_extractions": job.successful_extractions,
-                        "failed_extractions": job.failed_extractions,
-                        "error_message": job.error_message,
+                        "total_questions_extracted": job.questions_extracted,
+                        "successful_extractions": job.questions_approved,
+                        "failed_extractions": job.questions_rejected,
+                        "error_message": job.last_error,
                         "execution_time_seconds": (
                             job.completed_at - job.created_at
-                        ).total_seconds() if job.completed_at else None
+                        ).total_seconds() if job.completed_at and job.created_at else None
                     }
             
             return None
