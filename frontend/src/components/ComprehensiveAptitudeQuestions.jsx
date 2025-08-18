@@ -28,6 +28,7 @@ const ComprehensiveAptitudeQuestions = () => {
   const [selectedLearningPath, setSelectedLearningPath] = useState('');
   const [selectedStudyMode, setSelectedStudyMode] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('');
+  const [isPracticeSessionActive, setIsPracticeSessionActive] = useState(false);
 
   const { toast } = useToast();
 
