@@ -557,7 +557,7 @@ class ScrapingEngine:
         
         return False
     
-    def _execute_single_job_attempt(self, job: ScrapingJob, driver: Any, extractor: Any) -> bool:
+    def _execute_single_job_attempt(self, job: ScrapingJob, driver: Any, extractor: Any, source_name: str = None) -> bool:
         """Execute a single job attempt"""
         try:
             job_config = job.config
@@ -568,51 +568,17 @@ class ScrapingEngine:
                 job.error_message = "No source IDs configured"
                 return False
                 
-            source_id = job_config.source_ids[0]  # Use first source for now
+            source_id = job_config.source_ids[0]
             
-            # Resolve source ID to source name 
-            # Import here to avoid circular imports
-            from services.source_management_service import SourceManagementService
-            from motor.motor_asyncio import AsyncIOMotorClient
-            import os
-            import asyncio
-            
-            # Get source configuration to resolve ID to name
-            mongo_url = os.environ.get('MONGO_URL')
-            if not mongo_url:
-                logger.error("MONGO_URL not found in environment")
-                job.error_message = "Database configuration error"
-                return False
-            
-            client = AsyncIOMotorClient(mongo_url)
-            db = client[os.environ.get('DB_NAME', 'aptitude_questions')]
-            
-            # Run async source lookup in sync context
-            async def get_source_name():
-                try:
-                    source_manager = SourceManagementService(db)
-                    source_config = await source_manager.get_source(source_id)
-                    await client.close()
-                    return source_config.name if source_config else None
-                except Exception as e:
-                    logger.error(f"Error getting source config: {e}")
-                    await client.close()
-                    return None
-            
-            # Get the source name
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            try:
-                source_name = loop.run_until_complete(get_source_name())
-            finally:
-                loop.close()
-            
+            # If source_name not provided, resolve it (fallback case)
             if not source_name:
-                logger.error(f"Could not resolve source ID {source_id} to source name")
-                job.error_message = f"Could not resolve source ID {source_id}"
-                return False
+                source_name = self._resolve_source_id_to_name(source_id)
+                if not source_name:
+                    logger.error(f"Could not resolve source ID {source_id} to source name")
+                    job.error_message = f"Could not resolve source ID {source_id}"
+                    return False
             
-            logger.info(f"Resolved source ID {source_id} to source name: {source_name}")
+            logger.info(f"Using source name: {source_name} for job {job.id}")
             
             # For now, we'll use a simplified approach and get targets from config
             # In a full implementation, you'd use source_management.get_source_targets()
@@ -638,36 +604,31 @@ class ScrapingEngine:
             while current_page <= max_pages:
                 # Check if job was cancelled
                 if job.status == ScrapingJobStatus.CANCELLED:
-                    return False
-                
-                # Check timeout
-                if self._is_job_timeout(job):
-                    job.error_message = "Job timeout exceeded"
+                    logger.info(f"Job {job.id} was cancelled")
                     return False
                 
                 # Update progress
-                with self.job_lock:
-                    if job.id in self.job_progress:
-                        self.job_progress[job.id].current_page = current_page
-                
-                # Create extraction context
-                context = create_extraction_context(
-                    target=target,
-                    page_url=self._get_current_url(driver),
-                    page_number=current_page
-                )
+                self._update_job_progress(job, current_page, max_pages, total_extracted)
                 
                 # Extract questions from current page
-                batch_result = extractor.extract_questions_from_page(driver, context)
+                context = create_extraction_context(
+                    source_name=source_name,
+                    target_url=target.target_url,
+                    current_page=current_page,
+                    max_questions_per_page=target.max_questions_per_page,
+                    extraction_timeout=target.extraction_timeout_seconds
+                )
                 
-                # Process extraction results
-                self._process_batch_result(job, batch_result)
+                batch_result = extractor.extract_batch(driver, context)
                 
-                total_extracted += batch_result.successful_extractions
+                if batch_result and batch_result.successful_extractions > 0:
+                    self._process_batch_result(job, batch_result)
+                    total_extracted += batch_result.successful_extractions
+                    
+                    logger.info(f"Job {job.id} page {current_page}: extracted {batch_result.successful_extractions} questions")
                 
-                # Check if we've reached max questions
                 if total_extracted >= max_questions:
-                    logger.info(f"Job {job.id} reached max questions limit: {max_questions}")
+                    logger.info(f"Job {job.id} reached max questions limit ({max_questions})")
                     break
                 
                 # Handle pagination
