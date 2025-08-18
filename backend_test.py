@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend Testing for AI-Enhanced Aptitude Questions API
-Tests all AI services integration and endpoints + Anti-Detection & Rate Limiting System
+Comprehensive Backend Testing for AI-Enhanced Web Scraping System
+Tests scraping API endpoints, scraping engine functionality, source configuration, job execution, and database integration
+Focus: IndiaBix and GeeksforGeeks scraping with goal of collecting 1000+ questions
 """
 
 import asyncio
