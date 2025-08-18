@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """
-Focused Test for Logical Reasoning Questions Collection from IndiaBix
-Tests the specific review request requirements:
-1. Question API Testing: /api/questions/filtered?category=logical&limit=10
-2. Database Verification: Check MongoDB for 10 documents with category='logical'
-3. Question Content Quality: Validate question structure and content
-4. API Response Format: Verify proper JSON structure
+Comprehensive Testing for GeeksforGeeks Logical Questions Collection
+Tests the newly added logical questions functionality to verify that 10 GeeksforGeeks 
+logical questions are properly stored and accessible through the API.
+
+Review Request Requirements:
+1. Database Verification: Check exactly 10 logical questions in enhanced_questions collection
+2. API Endpoint Testing: Test /api/questions/filtered with various filters
+3. Question Quality Verification: Check proper schema, AI metrics, analytics fields
+4. Specific Content Verification: Verify logical reasoning patterns
 """
 
 import asyncio
@@ -29,23 +32,36 @@ logger = logging.getLogger(__name__)
 
 class LogicalQuestionsCollectionTester:
     """
-    Focused tester for Logical Reasoning Questions Collection from IndiaBix
-    Tests the specific review request requirements
+    Comprehensive tester for GeeksforGeeks Logical Questions functionality
+    Tests all requirements from the review request
     """
     
     def __init__(self):
-        # Use local backend URL for testing since external URL has connectivity issues
-        self.base_url = "http://localhost:8001/api"
+        # Get backend URL from environment
+        try:
+            with open('/app/frontend/.env', 'r') as f:
+                for line in f:
+                    if line.startswith('REACT_APP_BACKEND_URL='):
+                        self.base_url = line.split('=')[1].strip() + "/api"
+                        break
+                else:
+                    self.base_url = "https://quizdata.preview.emergentagent.com/api"
+        except:
+            self.base_url = "https://quizdata.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {
-            "api_endpoint_test": False,
-            "database_verification": False,
-            "content_quality_test": False,
-            "response_format_test": False,
-            "questions_found": 0,
-            "questions_data": [],
-            "errors_found": []
+            "total_tests": 0,
+            "passed_tests": 0,
+            "failed_tests": 0,
+            "test_details": [],
+            "logical_questions_stats": {
+                "total_logical_questions": 0,
+                "questions_with_proper_schema": 0,
+                "questions_with_ai_metrics": 0,
+                "questions_with_analytics": 0,
+                "logical_reasoning_patterns": []
+            }
         }
     
     async def __aenter__(self):
