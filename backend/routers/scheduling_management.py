@@ -513,7 +513,7 @@ async def _add_default_schedules(scheduler: CronScheduler):
                 "sources": ["indiabix", "geeksforgeeks"],
                 "max_questions_per_source": 25,
                 "target_categories": ["quantitative", "logical", "verbal"],
-                "priority_level": "medium"
+                "priority_level": "normal"
             },
             schedule_type=ScheduleType.SCRAPING,
             description="Daily scraping of IndiaBix and GeeksforGeeks"
