@@ -36,7 +36,7 @@ def create_logical_questions():
                 "quality_score": 85.0,
                 "difficulty_score": 5.0,
                 "relevance_score": 80.0,
-                "concept_clarity": 85.0
+                "clarity_score": 85.0
             },
             "analytics": {
                 "attempts": 0,
