@@ -372,6 +372,10 @@ async def start_job(
     try:
         logger.info(f"Starting job {job_id}")
         
+        # Use default values if no request body provided
+        if request is None:
+            request = JobStartRequest()
+        
         if not job_manager:
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
