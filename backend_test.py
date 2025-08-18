@@ -1375,7 +1375,7 @@ class JobManagerServiceTester:
             resource_limits = ResourceLimits(
                 max_cpu_percent=80.0,
                 max_memory_mb=1024,
-                max_execution_time_hours=2.0,
+                max_job_duration_hours=2.0,  # Fixed parameter name
                 max_queue_size=100
             )
             
