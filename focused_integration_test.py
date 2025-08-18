@@ -34,9 +34,9 @@ class FocusedIntegrationTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://scale-master-6.preview.emergentagent.com/api"
+                    self.base_url = "https://deploy-monitor-3.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://scale-master-6.preview.emergentagent.com/api"
+            self.base_url = "https://deploy-monitor-3.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {
