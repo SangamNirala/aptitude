@@ -369,7 +369,7 @@ def create_logical_questions():
                 "quality_score": 85.0,
                 "difficulty_score": 8.0,
                 "relevance_score": 80.0,
-                "concept_clarity": 70.0
+                "clarity_score": 70.0
             },
             "analytics": {
                 "attempts": 0,
