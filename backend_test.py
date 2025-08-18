@@ -38,9 +38,9 @@ class MonitoringDashboardTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://test-integration.preview.emergentagent.com/api"
+                    self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://test-integration.preview.emergentagent.com/api"
+            self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {
@@ -471,9 +471,9 @@ class AIAptitudeAPITester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://test-integration.preview.emergentagent.com/api"
+                    self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://test-integration.preview.emergentagent.com/api"
+            self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {
@@ -564,9 +564,9 @@ class ProductionMonitoringTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://test-integration.preview.emergentagent.com/api"
+                    self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://test-integration.preview.emergentagent.com/api"
+            self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {
@@ -1345,9 +1345,9 @@ class ContentExtractorsTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://test-integration.preview.emergentagent.com/api"
+                    self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://test-integration.preview.emergentagent.com/api"
+            self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         
         self.session = None
     
@@ -2802,9 +2802,9 @@ class CronSchedulingSystemTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://test-integration.preview.emergentagent.com/api"
+                    self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://test-integration.preview.emergentagent.com/api"
+            self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {
@@ -9592,9 +9592,9 @@ class PerformanceOptimizationTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://test-integration.preview.emergentagent.com/api"
+                    self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://test-integration.preview.emergentagent.com/api"
+            self.base_url = "https://scraper-central.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {
@@ -9861,9 +9861,9 @@ async def main():
                     base_url = line.split('=')[1].strip() + "/api"
                     break
             else:
-                base_url = "https://test-integration.preview.emergentagent.com/api"
+                base_url = "https://scraper-central.preview.emergentagent.com/api"
     except:
-        base_url = "https://test-integration.preview.emergentagent.com/api"
+        base_url = "https://scraper-central.preview.emergentagent.com/api"
     
     logger.info(f"Testing backend at: {base_url}")
     
@@ -10614,9 +10614,9 @@ async def test_tasks_14_15():
                     base_url = line.split('=')[1].strip() + "/api"
                     break
             else:
-                base_url = "https://test-integration.preview.emergentagent.com/api"
+                base_url = "https://scraper-central.preview.emergentagent.com/api"
     except:
-        base_url = "https://test-integration.preview.emergentagent.com/api"
+        base_url = "https://scraper-central.preview.emergentagent.com/api"
     
     logger.info(f"Testing backend at: {base_url}")
     
