@@ -370,11 +370,19 @@ async def get_scheduler_stats(scheduler: CronScheduler = Depends(get_scheduler))
     """Get comprehensive scheduler statistics"""
     try:
         stats = scheduler.get_scheduler_stats()
-        system_health = scheduler._assess_system_health() if hasattr(scheduler, '_assess_system_health') else {"status": "unknown"}
         
+        # Extract the required fields for the response model
         return SchedulerStatsResponse(
-            **stats,
-            system_health=system_health
+            total_schedules=stats.get("statistics", {}).get("total_schedules", 0),
+            active_schedules=stats.get("statistics", {}).get("active_schedules", 0),
+            paused_schedules=stats.get("statistics", {}).get("paused_schedules", 0),
+            total_executions=stats.get("statistics", {}).get("total_executions", 0),
+            successful_executions=stats.get("statistics", {}).get("successful_executions", 0),
+            failed_executions=stats.get("statistics", {}).get("failed_executions", 0),
+            success_rate=stats.get("statistics", {}).get("success_rate", 0.0),
+            avg_execution_time=stats.get("statistics", {}).get("avg_execution_time", 0.0),
+            scheduler_uptime_hours=stats.get("statistics", {}).get("scheduler_uptime_hours", 0.0),
+            system_health=stats.get("system_health", {"status": "unknown"})
         )
     except Exception as e:
         logger.error(f"Error getting scheduler stats: {str(e)}")
