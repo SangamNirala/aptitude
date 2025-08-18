@@ -304,12 +304,12 @@ class ScrapingEngine:
                 completed_job_info = []
                 for job_id, job in self.completed_jobs.items():
                     completed_job_info.append({
-                        "job_id": job.job_id,
+                        "job_id": job.id,
                         "status": job.status.value,
-                        "source_type": job.source_type,
+                        "source_type": job.config.source_ids[0] if job.config.source_ids else "unknown",
                         "created_at": job.created_at,
                         "completed_at": job.completed_at,
-                        "total_questions": job.total_questions_extracted
+                        "total_questions": job.questions_extracted
                     })
                 
                 return {
