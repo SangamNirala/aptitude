@@ -587,7 +587,7 @@ class ScrapingEngine:
             
             if not targets:
                 logger.error(f"No targets found for source {source_name}")
-                job.error_message = f"No targets found for source {source_name}"
+                job.last_error = f"No targets found for source {source_name}"
                 return False
             
             # Use first target for this execution
