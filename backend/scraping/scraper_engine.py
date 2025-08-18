@@ -553,7 +553,7 @@ class ScrapingEngine:
                 
             except Exception as e:
                 logger.error(f"Job {job.id} attempt {attempt + 1} failed: {e}")
-                job.error_message = f"Attempt {attempt + 1} failed: {str(e)}"
+                job.last_error = f"Attempt {attempt + 1} failed: {str(e)}"
         
         return False
     
