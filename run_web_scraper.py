@@ -91,73 +91,73 @@ class WebScraperRunner:
             from models.scraping_models import ScrapingJobConfig, ScrapingTarget
             from config.scraping_config import get_source_targets
             
-            # Job 1: IndiaBix Quantitative Aptitude (High Priority)
-            indiabix_quant_targets = [t for t in get_source_targets("indiabix") 
-                                    if t.category == "quantitative"]
+            # Get available sources from database
+            sources = await self.source_manager.get_all_sources()
+            indiabix_source = next((s for s in sources if s.name == "IndiaBix"), None)
+            geeks_source = next((s for s in sources if s.name == "GeeksforGeeks"), None)
             
-            if indiabix_quant_targets:
+            if indiabix_source:
+                # Job 1: IndiaBix Comprehensive Collection
                 job_config_1 = ScrapingJobConfig(
-                    job_name="IndiaBix Quantitative Collection",
-                    target=indiabix_quant_targets[0],  # Take first target
-                    max_questions=800,
-                    max_pages=100,
-                    extraction_method=indiabix_quant_targets[0].source_id
+                    job_name="IndiaBix Comprehensive Collection",
+                    description="Comprehensive collection from IndiaBix covering all categories",
+                    source_ids=[indiabix_source.id],
+                    max_questions_per_source=1200,
+                    quality_threshold=70.0,
+                    enable_ai_processing=True,
+                    enable_duplicate_detection=True
                 )
                 
                 job_id_1 = self.scraping_engine.submit_scraping_job(job_config_1)
                 job_ids.append(job_id_1)
-                logger.info(f"✅ Created IndiaBix Quantitative job: {job_id_1}")
-            
-            # Job 2: IndiaBix Logical Reasoning
-            indiabix_logical_targets = [t for t in get_source_targets("indiabix") 
-                                      if t.category == "logical"]
-            
-            if indiabix_logical_targets:
+                logger.info(f"✅ Created IndiaBix Comprehensive job: {job_id_1}")
+                
+                # Job 2: IndiaBix High Volume Collection  
                 job_config_2 = ScrapingJobConfig(
-                    job_name="IndiaBix Logical Reasoning Collection", 
-                    target=indiabix_logical_targets[0],
-                    max_questions=700,
-                    max_pages=80,
-                    extraction_method=indiabix_logical_targets[0].source_id
+                    job_name="IndiaBix High Volume Collection",
+                    description="High volume collection from IndiaBix for maximum questions",
+                    source_ids=[indiabix_source.id],
+                    max_questions_per_source=1500,
+                    quality_threshold=65.0,
+                    enable_ai_processing=True,
+                    enable_duplicate_detection=True
                 )
                 
                 job_id_2 = self.scraping_engine.submit_scraping_job(job_config_2)
                 job_ids.append(job_id_2)
-                logger.info(f"✅ Created IndiaBix Logical job: {job_id_2}")
+                logger.info(f"✅ Created IndiaBix High Volume job: {job_id_2}")
             
-            # Job 3: IndiaBix Verbal Ability
-            indiabix_verbal_targets = [t for t in get_source_targets("indiabix")
-                                     if t.category == "verbal"]
-            
-            if indiabix_verbal_targets:
+            if geeks_source:
+                # Job 3: GeeksforGeeks Comprehensive Collection
                 job_config_3 = ScrapingJobConfig(
-                    job_name="IndiaBix Verbal Ability Collection",
-                    target=indiabix_verbal_targets[0],
-                    max_questions=600,
-                    max_pages=70,
-                    extraction_method=indiabix_verbal_targets[0].source_id
+                    job_name="GeeksforGeeks Comprehensive Collection",
+                    description="Comprehensive collection from GeeksforGeeks CS topics",
+                    source_ids=[geeks_source.id],
+                    max_questions_per_source=1000,
+                    quality_threshold=70.0,
+                    enable_ai_processing=True,
+                    enable_duplicate_detection=True
                 )
                 
                 job_id_3 = self.scraping_engine.submit_scraping_job(job_config_3)
                 job_ids.append(job_id_3)
-                logger.info(f"✅ Created IndiaBix Verbal job: {job_id_3}")
+                logger.info(f"✅ Created GeeksforGeeks Comprehensive job: {job_id_3}")
             
-            # Job 4: GeeksforGeeks CS Fundamentals
-            geeks_targets = [t for t in get_source_targets("geeksforgeeks") 
-                           if t.category == "cs_fundamentals"]
-            
-            if geeks_targets:
+            # Job 4: Mixed Sources Maximum Collection
+            if indiabix_source and geeks_source:
                 job_config_4 = ScrapingJobConfig(
-                    job_name="GeeksforGeeks CS Fundamentals Collection",
-                    target=geeks_targets[0],
-                    max_questions=500,
-                    max_pages=60,
-                    extraction_method=geeks_targets[0].source_id
+                    job_name="Mixed Sources Maximum Collection",
+                    description="Combined collection from both sources for maximum questions",
+                    source_ids=[indiabix_source.id, geeks_source.id],
+                    max_questions_per_source=800,
+                    quality_threshold=60.0,
+                    enable_ai_processing=True,
+                    enable_duplicate_detection=True
                 )
                 
                 job_id_4 = self.scraping_engine.submit_scraping_job(job_config_4)
                 job_ids.append(job_id_4)
-                logger.info(f"✅ Created GeeksforGeeks CS job: {job_id_4}")
+                logger.info(f"✅ Created Mixed Sources job: {job_id_4}")
             
             logger.info(f"🎯 Created {len(job_ids)} scraping jobs for execution")
             return job_ids
