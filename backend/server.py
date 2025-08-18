@@ -223,9 +223,9 @@ async def shutdown_db_client():
     logger.info("🔄 Starting production system shutdown...")
     
     try:
-        # Stop health monitoring
-        from utils.health_monitoring import health_monitor
-        await health_monitor.stop_monitoring()
+        # Stop health monitoring - TEMPORARILY DISABLED
+        # from utils.health_monitoring import health_monitor
+        # await health_monitor.stop_monitoring()
         
         # Log shutdown
         logger.info("✅ Health monitoring stopped")
