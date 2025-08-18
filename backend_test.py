@@ -804,7 +804,7 @@ class ProductionMonitoringTester:
             start_time = time.time()
             payload = {
                 "message": "Test error for production monitoring validation",
-                "category": "APPLICATION",
+                "category": "application",  # Use lowercase as expected by the API
                 "severity": "MEDIUM",
                 "context": {"test": True, "source": "production_test"}
             }
