@@ -235,12 +235,9 @@ class WebScrapingSystemTester:
                 "source_names": ["indiabix"],
                 "max_questions_per_source": 500,  # Aim for 500 questions from IndiaBix
                 "target_categories": ["quantitative", "logical", "verbal"],
-                "priority_level": "high",
-                "configuration": {
-                    "enable_ai_processing": True,
-                    "quality_threshold": 0.7,
-                    "duplicate_detection": True
-                }
+                "priority_level": 1,  # Fixed: Use integer instead of string
+                "enable_ai_processing": True,
+                "enable_duplicate_detection": True
             }
             
             async with self.session.post(
