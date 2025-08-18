@@ -396,9 +396,9 @@
   
   - task: "Scraping Engine Execution Testing (Critical Fix Verification)"
     implemented: true
-    working: true
+    working: false
     file: "backend/scraping/scraper_engine.py"
-    stuck_count: 2
+    stuck_count: 3
     priority: "high"
     needs_retesting: false
     status_history:
@@ -414,6 +414,9 @@
         - working: true
         - agent: "main"
         - comment: "✅ SOURCE RESOLUTION FIXES IMPLEMENTED: Fixed the critical source ID to name mapping issue through multiple changes: 1) MOVED SOURCE RESOLUTION EARLIER: Modified _process_job to resolve source ID to name before driver creation, avoiding UUID being passed to driver functions, 2) FIXED EVENT LOOP ISSUE: Replaced complex async database lookup with config-based fallback approach that handles event loop conflicts properly, 3) FIXED FIELD MAPPING: Updated all 'error_message' references to 'last_error' to match ScrapingJob model schema, 4) IMPROVED ERROR HANDLING: Added proper exception handling and logging throughout the resolution chain. ✅ VERIFICATION: Direct API testing shows source resolution now working: 'Resolved source ID b1bb3bda-7a25-4b13-972b-f74c623a68f6 to source name: IndiaBix', driver creation progressing to 'SeleniumDriver initialized for IndiaBix'. Current issue: Jobs still complete with 0 questions due to 'Failed to initialize driver or extractor' - investigation needed on driver/extractor factory functions."
+        - working: false
+        - agent: "testing"
+        - comment: "🎯 COMPREHENSIVE DRIVER/EXTRACTOR INTEGRATION TESTING COMPLETED: Achieved 96.7% API success rate (29/30 tests passed) with detailed analysis of question collection capability. ✅ CRITICAL FIXES VERIFIED: 1) Source ID to name resolution working correctly ('Resolved source ID to source name: IndiaBix/GeeksforGeeks'), 2) Case-insensitive source name matching working (all case variations tested successfully), 3) Job creation and start operations functional, 4) No more 'NoneType' object has no attribute 'execute_job' errors. ❌ NEW CRITICAL ISSUES IDENTIFIED: 1) IndiaBix Driver Initialization Failure: 'SeleniumConfig.__init__() got an unexpected keyword argument anti_detection_manager' - parameter mismatch in driver creation, 2) GeeksforGeeks Content Extraction Failure: 'No question containers found on GeeksforGeeks page' - extractor not finding target elements on pages. ❌ QUESTION COLLECTION RESULTS: **Total questions collected from IndiaBix: 0** (driver initialization failure), **Total questions collected from GeeksforGeeks: 0** (no question containers found), **TOTAL QUESTIONS COLLECTED: 0**. 🔍 PROGRESS ASSESSMENT: System has progressed from execute_job errors to driver initialization and content extraction issues. The main agent's dataclass and source resolution fixes are working, but new driver/extractor integration problems prevent actual question collection."
 
   - task: "Cron-Based Scheduling System (TASK 13)"
     implemented: true
