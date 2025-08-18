@@ -187,7 +187,7 @@ async def startup_event():
             await initialize_scraping_services()
             await initialize_analytics_services()
             await initialize_monitoring_services()
-            await initialize_production_monitoring()
+            # await initialize_production_monitoring()  # TEMPORARILY DISABLED
             logger.info("✅ All services initialized successfully")
         except Exception as e:
             logger.error(f"❌ Services initialization failed: {str(e)}")
