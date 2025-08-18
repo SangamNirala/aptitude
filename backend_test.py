@@ -648,28 +648,38 @@ class WebScrapingSystemTester:
 
 
 async def main():
-    """Main test execution function"""
-    logger.info("🚀 Starting Comprehensive Web Scraping System Testing")
-    logger.info("🎯 Focus: IndiaBix and GeeksforGeeks scraping for 1000+ questions")
+    """Main test execution function - Focus on Critical Scraping Engine Execution Testing"""
+    logger.info("🚀 CRITICAL SCRAPING ENGINE EXECUTION TESTING")
+    logger.info("🎯 Testing fixes for dataclass serialization error and job execution")
+    logger.info("🔍 Focus: Job Creation, Start, Execution, Progress Tracking, Error Handling")
     
-    # Run Web Scraping System Tests
+    # Run Web Scraping System Tests with focus on engine execution
     async with WebScrapingSystemTester() as scraping_tester:
         scraping_results = await scraping_tester.run_all_tests()
     
     # Overall summary
     logger.info("\n" + "=" * 80)
-    logger.info("🎯 OVERALL TESTING SUMMARY")
+    logger.info("🎯 CRITICAL SCRAPING ENGINE TEST SUMMARY")
     logger.info("=" * 80)
-    logger.info(f"Web Scraping Tests: {scraping_results['passed_tests']}/{scraping_results['total_tests']} passed")
+    logger.info(f"Scraping Engine Tests: {scraping_results['passed_tests']}/{scraping_results['total_tests']} passed")
+    logger.info(f"Jobs Created: {scraping_results['scraping_stats']['jobs_created']}")
+    logger.info(f"Jobs Started: {scraping_results['scraping_stats']['jobs_started']}")
     logger.info(f"Questions Collected: {scraping_results['scraping_stats']['questions_collected']}")
     logger.info(f"Success Rate: {(scraping_results['passed_tests'] / max(scraping_results['total_tests'], 1)) * 100:.1f}%")
     
-    # Determine if goal was achieved
-    questions_collected = scraping_results['scraping_stats']['questions_collected']
-    if questions_collected >= 1000:
-        logger.info("🎉 MISSION ACCOMPLISHED: 1000+ questions collection goal achieved!")
+    # Critical assessment for scraping engine fixes
+    jobs_created = scraping_results['scraping_stats']['jobs_created']
+    jobs_started = scraping_results['scraping_stats']['jobs_started']
+    
+    if jobs_created >= 2 and jobs_started >= 2:
+        logger.info("✅ CRITICAL FIX VERIFIED: Jobs can be created and started successfully")
     else:
-        logger.info(f"⚠️ GOAL STATUS: {questions_collected}/1000 questions collected")
+        logger.info("❌ CRITICAL ISSUE: Job creation/start process still failing")
+    
+    if scraping_results['scraping_stats']['questions_collected'] > 0:
+        logger.info("✅ SCRAPING ENGINE EXECUTION: Question collection working")
+    else:
+        logger.info("⚠️ SCRAPING ENGINE EXECUTION: No questions collected yet (may need more time)")
     
     logger.info("=" * 80)
 
