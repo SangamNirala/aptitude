@@ -714,8 +714,14 @@ class ScrapingEngine:
         try:
             # Case-insensitive comparison
             if source_type.lower() == "indiabix":
+                # Pass anti-detection config instead of manager instance
                 return create_indiabix_selenium_driver(
-                    anti_detection_manager=self.anti_detection
+                    anti_detection_config={
+                        "source_name": source_type,
+                        "enable_user_agent_rotation": True,
+                        "enable_behavior_simulation": True,
+                        "detection_risk_threshold": 0.7
+                    }
                 )
             else:
                 # Generic Selenium driver
