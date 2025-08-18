@@ -42,7 +42,7 @@ class ScrapingScheduleRequest(BaseModel):
     sources: List[str] = Field(..., description="Source names to scrape")
     max_questions_per_source: int = Field(default=50, description="Maximum questions per source")
     target_categories: List[str] = Field(default_factory=list, description="Target categories")
-    priority_level: JobPriority = Field(default=JobPriority.MEDIUM, description="Job priority")
+    priority_level: JobPriority = Field(default=JobPriority.NORMAL, description="Job priority")
     description: Optional[str] = Field(None, description="Schedule description")
 
 class ScheduleResponse(BaseModel):
