@@ -34,7 +34,7 @@ def create_scraping_job():
         print("🚀 Creating scraping job...")
         response = requests.post(url, json=job_data)
         
-        if response.status_code == 200:
+        if response.status_code in [200, 201]:
             job_info = response.json()
             print(f"✅ Job created successfully: {job_info['job_id']}")
             return job_info['job_id']
