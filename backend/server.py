@@ -123,8 +123,8 @@ app.include_router(monitoring_dashboard_router)
 # Include performance optimization router (Task 18)
 app.include_router(performance_optimization_router)
 
-# Include production monitoring router (Task 19) - TEMPORARILY DISABLED
-# app.include_router(production_monitoring_router)
+# Include production monitoring router (Task 19) - SIMPLIFIED VERSION FOR TESTING
+app.include_router(production_monitoring_router)
 
 app.add_middleware(
     CORSMiddleware,
