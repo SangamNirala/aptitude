@@ -628,7 +628,7 @@ class ScrapingEngine:
             # Update statistics
             self.stats.total_questions_extracted += batch_result.successful_extractions
             
-            logger.info(f"Job {job.job_id} batch processed: "
+            logger.info(f"Job {job.id} batch processed: "
                        f"{batch_result.successful_extractions} successful, "
                        f"{batch_result.failed_extractions} failed")
             
