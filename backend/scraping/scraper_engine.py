@@ -805,11 +805,11 @@ class ScrapingEngine:
                     (self.stats.total_jobs_completed + self.stats.failed_jobs)
                 )
             
-            logger.info(f"Job {job.job_id} completed successfully. "
+            logger.info(f"Job {job.id} completed successfully. "
                        f"Extracted: {job.successful_extractions}, Failed: {job.failed_extractions}")
             
         except Exception as e:
-            logger.error(f"Error completing job {job.job_id}: {e}")
+            logger.error(f"Error completing job {job.id}: {e}")
     
     def _fail_job(self, job: ScrapingJob, error_message: str):
         """Mark job as failed"""
