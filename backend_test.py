@@ -274,7 +274,7 @@ class WebScrapingSystemTester:
             start_time = time.time()
             payload = {
                 "job_name": "GeeksforGeeks_Mass_Collection_Test",
-                "source_names": ["geeksforgeeks"],
+                "source_names": ["GeeksforGeeks"],  # Fixed: Use correct source name
                 "max_questions_per_source": 500,  # Aim for 500 questions from GeeksforGeeks
                 "target_categories": ["programming", "algorithms", "data-structures"],
                 "priority_level": 1,  # Fixed: Use integer instead of string
