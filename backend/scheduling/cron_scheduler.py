@@ -611,6 +611,94 @@ class CronScheduler:
         self.task_functions[name] = function
         logger.info(f"Registered task function: {name}")
     
+    def get_schedule_logs(self, schedule_id: str, limit: int = 50) -> List[Dict[str, Any]]:
+        """Get execution logs for a schedule (alias for get_execution_logs)"""
+        return self.get_execution_logs(schedule_id, limit)
+    
+    def update_schedule(self, schedule_id: str, **kwargs) -> bool:
+        """Update an existing schedule"""
+        try:
+            if schedule_id not in self.schedules:
+                logger.warning(f"Schedule {schedule_id} not found")
+                return False
+            
+            schedule = self.schedules[schedule_id]
+            updated = False
+            
+            # Update allowed fields
+            if 'name' in kwargs and kwargs['name']:
+                schedule.name = kwargs['name']
+                updated = True
+            
+            if 'description' in kwargs and kwargs['description']:
+                schedule.description = kwargs['description']
+                updated = True
+            
+            if 'cron_expression' in kwargs and kwargs['cron_expression']:
+                try:
+                    # Validate new cron expression
+                    import croniter
+                    croniter.croniter(kwargs['cron_expression'])
+                    schedule.cron_expression = kwargs['cron_expression']
+                    # Update cron iterator
+                    schedule.cron_iter = croniter.croniter(kwargs['cron_expression'], datetime.utcnow())
+                    schedule.metrics.next_execution_time = schedule.cron_iter.get_next(datetime)
+                    updated = True
+                except Exception as e:
+                    logger.error(f"Invalid cron expression: {str(e)}")
+                    return False
+            
+            if 'status' in kwargs and kwargs['status']:
+                if hasattr(ScheduleStatus, kwargs['status'].upper()):
+                    schedule.status = ScheduleStatus(kwargs['status'].lower())
+                    updated = True
+            
+            if 'max_runtime_hours' in kwargs and kwargs['max_runtime_hours']:
+                schedule.max_runtime_hours = kwargs['max_runtime_hours']
+                updated = True
+            
+            if 'retry_on_failure' in kwargs and kwargs['retry_on_failure'] is not None:
+                schedule.retry_on_failure = kwargs['retry_on_failure']
+                updated = True
+            
+            if 'max_retries' in kwargs and kwargs['max_retries'] is not None:
+                schedule.max_retries = kwargs['max_retries']
+                updated = True
+            
+            if updated:
+                schedule.last_modified = datetime.utcnow()
+                logger.info(f"Updated schedule '{schedule.name}' (ID: {schedule_id})")
+            
+            return updated
+            
+        except Exception as e:
+            logger.error(f"Error updating schedule {schedule_id}: {str(e)}")
+            return False
+    
+    async def execute_schedule_now(self, schedule_id: str) -> bool:
+        """Execute a schedule immediately"""
+        try:
+            if schedule_id not in self.schedules:
+                logger.warning(f"Schedule {schedule_id} not found")
+                return False
+            
+            schedule = self.schedules[schedule_id]
+            
+            # Check if already running
+            if schedule.is_running:
+                logger.warning(f"Schedule {schedule_id} is already running")
+                return False
+            
+            # Execute the schedule
+            await self._execute_schedule(schedule)
+            
+            logger.info(f"Manual execution triggered for schedule {schedule_id}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error executing schedule {schedule_id}: {str(e)}")
+            return False
+    
     def get_scheduler_stats(self) -> Dict[str, Any]:
         """Get scheduler statistics (alias for get_scheduler_status)"""
         return self.get_scheduler_status()
