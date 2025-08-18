@@ -497,19 +497,28 @@ class ScrapingEngine:
             
             logger.info(f"Starting scraping job {job.id} for {job.config.source_ids}")
             
+            # First resolve source ID to source name
+            source_id = job.config.source_ids[0] if job.config.source_ids else "unknown"
+            source_name = self._resolve_source_id_to_name(source_id)
+            
+            if not source_name:
+                self._fail_job(job, f"Could not resolve source ID {source_id} to source name")
+                return
+            
+            logger.info(f"Resolved source ID {source_id} to source name: {source_name}")
+            
             with self.performance_monitor.monitor_operation(f"scraping_job_{job.id}"):
-                # Get appropriate driver and extractor - using first source from config
-                source_id = job.config.source_ids[0] if job.config.source_ids else "unknown"
-                driver = self._get_driver(source_id, ContentExtractionMethod.SELENIUM)  # Default to selenium
-                extractor = self._get_extractor(source_id)
+                # Get appropriate driver and extractor - using resolved source name
+                driver = self._get_driver(source_name, ContentExtractionMethod.SELENIUM)  # Default to selenium
+                extractor = self._get_extractor(source_name)
                 
                 if not driver or not extractor:
                     self._fail_job(job, "Failed to initialize driver or extractor")
                     return
                 
                 try:
-                    # Process job with retry logic
-                    success = self._execute_job_with_retries(job, driver, extractor)
+                    # Process job with retry logic (pass source_name instead of source_id)
+                    success = self._execute_job_with_retries(job, driver, extractor, source_name)
                     
                     if success:
                         self._complete_job(job)
