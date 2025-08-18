@@ -39,6 +39,32 @@ class ExtractionQuality(str, Enum):
     POOR = "poor"
     FAILED = "failed"
 
+class ScheduleType(str, Enum):
+    """Types of scheduled tasks"""
+    SCRAPING = "scraping"
+    MAINTENANCE = "maintenance"
+    CLEANUP = "cleanup"
+    MONITORING = "monitoring"
+    BACKUP = "backup"
+    ANALYSIS = "analysis"
+    CUSTOM = "custom"
+
+class ScheduleStatus(str, Enum):
+    """Schedule status"""
+    ACTIVE = "active"
+    PAUSED = "paused"
+    DISABLED = "disabled"
+    ERROR = "error"
+
+class TriggerType(str, Enum):
+    """Schedule trigger types"""
+    CRON = "cron"
+    INTERVAL = "interval" 
+    DAILY = "daily"
+    WEEKLY = "weekly"
+    MONTHLY = "monthly"
+    CUSTOM = "custom"
+
 # =============================================================================
 # DATA SOURCE MODELS
 # =============================================================================
