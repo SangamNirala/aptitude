@@ -198,10 +198,9 @@
 
 ## test_plan:
   current_focus: 
-    - "Driver Parameter Integration Fix (IndiaBix SeleniumDriver)"
     - "Content Extraction Enhancement (GeeksforGeeks Extractor)"
   stuck_tasks: 
-    - "Scraping Engine Execution Testing (Critical Fix Verification)"
+    - "Content Extraction Enhancement (GeeksforGeeks Extractor)"
   test_all: false
   test_priority: "stuck_first"
 
