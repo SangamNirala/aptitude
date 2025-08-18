@@ -91,14 +91,16 @@ class ScrapingEngine:
     Manages jobs, drivers, extractors, and provides comprehensive coordination
     """
     
-    def __init__(self, config: Optional[ScrapingEngineConfig] = None):
+    def __init__(self, config: Optional[ScrapingEngineConfig] = None, source_management: Optional[SourceManagementService] = None):
         """
         Initialize the scraping engine
         
         Args:
             config: Engine configuration
+            source_management: Source management service for accessing targets
         """
         self.config = config or ScrapingEngineConfig()
+        self.source_management = source_management
         
         # Core components
         self.job_queue = queue.Queue()
