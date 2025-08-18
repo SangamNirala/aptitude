@@ -96,9 +96,18 @@ class ProductionStatusResponse(BaseModel):
 
 
 # Health Check Endpoints
+def check_production_monitoring_available():
+    """Check if production monitoring components are available"""
+    if not PRODUCTION_MONITORING_AVAILABLE:
+        raise HTTPException(
+            status_code=503, 
+            detail="Production monitoring components not available. Check system configuration."
+        )
+
 @router.get("/health", response_model=SystemHealthResponse)
 async def get_system_health():
     """Get overall system health status"""
+    check_production_monitoring_available()
     try:
         health_data = await get_health_summary()
         return SystemHealthResponse(**health_data)
