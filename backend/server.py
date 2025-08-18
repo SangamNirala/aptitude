@@ -144,55 +144,78 @@ logger = logging.getLogger(__name__)
 # Initialize AI services on startup
 @app.on_event("startup")
 async def startup_event():
-    """Initialize AI services and check configuration"""
-    logger.info("🚀 Starting AI-Enhanced Aptitude Questions API")
+    """Initialize production system with comprehensive startup sequence"""
+    logger.info("🚀 Starting AI-Enhanced Web Scraping System Production Startup")
     
-    # Verify AI API keys
-    required_keys = ['GEMINI_API_KEY', 'GROQ_API_KEY', 'HUGGINGFACE_API_TOKEN']
-    missing_keys = [key for key in required_keys if not os.getenv(key)]
-    
-    if missing_keys:
-        logger.warning(f"Missing AI API keys: {missing_keys}")
-    else:
-        logger.info("✅ All AI API keys configured successfully")
-    
-    # Test MongoDB connection
     try:
-        await db.command("ping")
-        logger.info("✅ MongoDB connection established")
-    except Exception as e:
-        logger.error(f"❌ MongoDB connection failed: {str(e)}")
-    
-    # Initialize scraping services
-    try:
-        from routers.scraping_management import initialize_scraping_services
-        from routers.scraping_analytics import initialize_analytics_services
-        # Import monitoring dashboard initialization (Task 16)
-        from routers.monitoring_dashboard import initialize_monitoring_services
+        # Initialize production system
+        startup_success = await initialize_production_system()
         
-        await initialize_scraping_services()
-        await initialize_analytics_services()
-        await initialize_monitoring_services()
-        logger.info("✅ Scraping and monitoring services initialized successfully")
-    except Exception as e:
-        logger.error(f"❌ Services initialization failed: {str(e)}")
-    
-    # Create indexes for performance
-    try:
-        # Index for question filtering
-        await db.enhanced_questions.create_index([("category", 1), ("difficulty", 1), ("is_active", 1)])
-        await db.enhanced_questions.create_index([("ai_metrics.quality_score", -1)])
-        await db.enhanced_questions.create_index([("metadata.company_patterns", 1)])
-        await db.enhanced_questions.create_index([("metadata.concepts", 1)])
+        if not startup_success:
+            logger.error("❌ Production startup failed - some components may not be fully functional")
+        else:
+            logger.info("✅ Production system startup completed successfully")
         
-        # Index for analytics
-        await db.question_attempts.create_index([("question_id", 1), ("timestamp", -1)])
+        # Continue with existing initialization for backwards compatibility
+        logger.info("🔧 Performing additional service initialization...")
         
-        logger.info("✅ Database indexes created successfully")
+        # Verify AI API keys
+        required_keys = ['GEMINI_API_KEY', 'GROQ_API_KEY', 'HUGGINGFACE_API_TOKEN']
+        missing_keys = [key for key in required_keys if not os.getenv(key)]
+        
+        if missing_keys:
+            logger.warning(f"Missing AI API keys: {missing_keys}")
+        else:
+            logger.info("✅ All AI API keys configured successfully")
+        
+        # Test MongoDB connection
+        try:
+            await db.command("ping")
+            logger.info("✅ MongoDB connection established")
+        except Exception as e:
+            logger.error(f"❌ MongoDB connection failed: {str(e)}")
+        
+        # Initialize scraping services
+        try:
+            from routers.scraping_management import initialize_scraping_services
+            from routers.scraping_analytics import initialize_analytics_services
+            # Import monitoring dashboard initialization (Task 16)
+            from routers.monitoring_dashboard import initialize_monitoring_services
+            # Import production monitoring initialization (Task 19)
+            from routers.production_monitoring import initialize_production_monitoring
+            
+            await initialize_scraping_services()
+            await initialize_analytics_services()
+            await initialize_monitoring_services()
+            await initialize_production_monitoring()
+            logger.info("✅ All services initialized successfully")
+        except Exception as e:
+            logger.error(f"❌ Services initialization failed: {str(e)}")
+        
+        # Create indexes for performance
+        try:
+            # Index for question filtering
+            await db.enhanced_questions.create_index([("category", 1), ("difficulty", 1), ("is_active", 1)])
+            await db.enhanced_questions.create_index([("ai_metrics.quality_score", -1)])
+            await db.enhanced_questions.create_index([("metadata.company_patterns", 1)])
+            await db.enhanced_questions.create_index([("metadata.concepts", 1)])
+            
+            # Index for analytics
+            await db.question_attempts.create_index([("question_id", 1), ("timestamp", -1)])
+            
+            # Indexes for scraping operations
+            await db.scraping_jobs.create_index([("status", 1), ("created_at", -1)])
+            await db.scraping_jobs.create_index([("source_name", 1, "status", 1)])
+            await db.raw_extracted_questions.create_index([("source", 1), ("extracted_at", -1)])
+            
+            logger.info("✅ Database indexes created successfully")
+        except Exception as e:
+            logger.warning(f"Index creation warning: {str(e)}")
+        
+        logger.info("🎯 Production AI-Enhanced Scraping System startup completed!")
+        
     except Exception as e:
-        logger.warning(f"Index creation warning: {str(e)}")
-    
-    logger.info("🎯 AI-Enhanced API startup completed successfully!")
+        logger.error(f"❌ Critical startup error: {str(e)}", exc_info=True)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
