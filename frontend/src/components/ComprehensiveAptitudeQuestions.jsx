@@ -1418,7 +1418,9 @@ const ComprehensiveAptitudeQuestions = () => {
           {/* Technical modal content remains the same... */}
         </DialogContent>
       </Dialog>
-    </div>
+        </div>
+      )}
+    </>
   );
 };
 
