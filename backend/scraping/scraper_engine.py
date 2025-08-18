@@ -541,8 +541,8 @@ class ScrapingEngine:
                     logger.info(f"Retry attempt {attempt} for job {job.id}")
                     time.sleep(self.config.retry_delay_base * attempt)
                 
-                # Execute the actual scraping
-                success = self._execute_single_job_attempt(job, driver, extractor)
+                # Execute the actual scraping, pass source_name to avoid re-resolution
+                success = self._execute_single_job_attempt(job, driver, extractor, source_name)
                 
                 if success:
                     return True
