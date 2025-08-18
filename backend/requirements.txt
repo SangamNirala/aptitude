@@ -116,3 +116,8 @@ google-auth-httplib2>=0.2.0
 cachetools>=5.5.0
 pyasn1-modules>=0.4.0
 pyparsing>=3.2.0
+
+# Production monitoring dependencies  
+proto-plus>=1.24.0
+cycler>=0.12.1
+kiwisolver>=1.4.5
