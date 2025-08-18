@@ -395,7 +395,7 @@ class BaseContentExtractor(ABC):
     def validate_extracted_question(self, question_data: RawExtractedQuestion) -> ContentQualityScore:
         """Validate extracted question using content validator"""
         try:
-            question_dict = asdict(question_data)
+            question_dict = question_data.dict()
             return self.validator.validate_content(question_dict)
         except Exception as e:
             logger.error(f"Error validating question: {e}")
