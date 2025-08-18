@@ -34,17 +34,8 @@ class LogicalQuestionsCollectionTester:
     """
     
     def __init__(self):
-        # Get backend URL from environment
-        try:
-            with open('/app/frontend/.env', 'r') as f:
-                for line in f:
-                    if line.startswith('REACT_APP_BACKEND_URL='):
-                        self.base_url = line.split('=')[1].strip() + "/api"
-                        break
-                else:
-                    self.base_url = "https://aptiscraper.preview.emergentagent.com/api"
-        except:
-            self.base_url = "https://aptiscraper.preview.emergentagent.com/api"
+        # Use local backend URL for testing since external URL has connectivity issues
+        self.base_url = "http://localhost:8001/api"
         
         self.session = None
         self.test_results = {
