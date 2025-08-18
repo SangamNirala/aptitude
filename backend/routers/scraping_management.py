@@ -83,7 +83,7 @@ async def initialize_scraping_services():
         await source_manager.initialize_default_sources()
         
         # Initialize scraping engine
-        scraping_engine = get_scraping_engine()
+        scraping_engine = get_scraping_engine_instance()
         
         logger.info("✅ Scraping management services initialized successfully")
         
