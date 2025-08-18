@@ -765,7 +765,7 @@ class ScrapingEngine:
             else:
                 # Generic Playwright driver
                 from scraping.drivers.playwright_driver import create_playwright_driver
-                return create_playwright_driver()
+                return create_playwright_driver(source_name=source_type)
         
         except Exception as e:
             logger.error(f"Error creating Playwright driver for {source_type}: {e}")
