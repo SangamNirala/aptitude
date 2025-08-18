@@ -294,9 +294,9 @@ class ScrapingEngine:
                 for job_id, job in self.active_jobs.items():
                     progress = self.job_progress.get(job_id)
                     active_job_info.append({
-                        "job_id": job.job_id,
+                        "job_id": job.id,
                         "status": job.status.value,
-                        "source_type": job.source_type,
+                        "source_type": job.config.source_ids[0] if job.config.source_ids else "unknown",
                         "created_at": job.created_at,
                         "progress": asdict(progress) if progress else None
                     })
