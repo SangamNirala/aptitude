@@ -34,9 +34,9 @@ class FocusedIntegrationTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://scraper-metrics.preview.emergentagent.com/api"
+                    self.base_url = "https://driver-extractor-fix.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://scraper-metrics.preview.emergentagent.com/api"
+            self.base_url = "https://driver-extractor-fix.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {
