@@ -19,8 +19,8 @@ from routers.scraping_analytics import router as scraping_analytics_router
 from routers.monitoring_dashboard import router as monitoring_dashboard_router
 # Import performance optimization router (Task 18)
 from routers.performance_optimization import router as performance_optimization_router
-# Import production monitoring router (Task 19) - TEMPORARILY DISABLED
-# from routers.production_monitoring import router as production_monitoring_router
+# Import production monitoring router (Task 19) - SIMPLIFIED VERSION FOR TESTING
+from routers.simple_production_monitoring import router as production_monitoring_router
 
 # Import production startup system
 from utils.production_startup import initialize_production_system
