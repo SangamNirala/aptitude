@@ -1416,6 +1416,7 @@ class JobManagerServiceTester:
             
             # Create a test job
             job_config = ScrapingJobConfig(
+                job_name="Test Job",  # Added required job_name field
                 source_ids=["test_source"],
                 max_questions_per_source=5,
                 target_categories=["quantitative"],
