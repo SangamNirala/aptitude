@@ -195,10 +195,13 @@ async def startup_event():
             except ImportError:
                 # Fallback to simple version if original has configuration issues
                 from routers.simple_production_monitoring import initialize_production_monitoring
+            # Import scheduling management initialization (Task 13)
+            from routers.scheduling_management import initialize_scheduling_services
             
             await initialize_scraping_services()
             await initialize_analytics_services()
             await initialize_monitoring_services()
+            await initialize_scheduling_services()
             # await initialize_production_monitoring()  # TEMPORARILY DISABLED
             logger.info("✅ All services initialized successfully")
         except Exception as e:
