@@ -183,11 +183,24 @@ class SeleniumDriver:
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-gpu")
             options.add_argument("--disable-features=VizDisplayCompositor")
-            
-            # User agent
-            if self.anti_detection and self.config.user_agent_rotation:
-                user_agent = self.anti_detection.get_user_agent()
-                options.add_argument(f"--user-agent={user_agent}")
+        
+        # Essential containerized environment options (always add these for Docker/K8s)
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-software-rasterizer")
+        options.add_argument("--disable-background-timer-throttling")
+        options.add_argument("--disable-backgrounding-occluded-windows")
+        options.add_argument("--disable-renderer-backgrounding")
+        options.add_argument("--disable-features=TranslateUI")
+        options.add_argument("--disable-ipc-flooding-protection")
+        options.add_argument("--remote-debugging-port=9222")
+        options.add_argument("--disable-extensions")
+        
+        # User agent (only if anti-detection is enabled)
+        if self.config.enable_anti_detection and self.anti_detection and self.config.user_agent_rotation:
+            user_agent = self.anti_detection.get_user_agent()
+            options.add_argument(f"--user-agent={user_agent}")
         
         # Set chromium binary location if available
         if os.path.exists("/usr/bin/chromium"):
