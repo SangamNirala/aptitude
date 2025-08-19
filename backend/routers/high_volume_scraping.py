@@ -6,7 +6,7 @@ RESTful API endpoints for managing large-scale question extraction operations ta
 import asyncio
 import logging
 from typing import Dict, List, Optional, Any
-from datetime import datetime
+from datetime import datetime, timedelta
 from pydantic import BaseModel, Field
 from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends
 import uuid
