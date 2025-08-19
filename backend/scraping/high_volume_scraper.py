@@ -709,6 +709,12 @@ def create_quick_extraction_test(source: str, max_questions: int = 50) -> Dict[s
     Returns:
         Test results
     """
+    import asyncio
+    import nest_asyncio
+    
+    # Allow nested event loops in Jupyter/FastAPI contexts
+    nest_asyncio.apply()
+    
     async def test_extraction():
         config = HighVolumeScrapingConfig(
             target_questions_total=max_questions,
@@ -724,6 +730,7 @@ def create_quick_extraction_test(source: str, max_questions: int = 50) -> Dict[s
                 return {"success": False, "error": "Component initialization failed"}
             
             # Create simple plan
+            from config.scraping_config import get_source_targets
             targets = get_source_targets(source)
             if not targets:
                 return {"success": False, "error": f"No targets found for {source}"}
@@ -745,4 +752,19 @@ def create_quick_extraction_test(source: str, max_questions: int = 50) -> Dict[s
             scraper.cleanup()
             return {"success": False, "error": str(e)}
     
-    return asyncio.run(test_extraction())
+    try:
+        # Try to get existing event loop
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            # If we're in a running loop, use create_task
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(asyncio.run, test_extraction())
+                return future.result(timeout=120)
+        else:
+            return asyncio.run(test_extraction())
+    except RuntimeError:
+        # No event loop, create one
+        return asyncio.run(test_extraction())
+    except Exception as e:
+        return {"success": False, "error": f"Event loop error: {str(e)}"}
