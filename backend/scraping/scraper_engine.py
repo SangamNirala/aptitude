@@ -27,7 +27,7 @@ from models.scraping_models import (
 from services.source_management_service import SourceManagementService
 from scraping.extractors.base_extractor import BatchExtractionResult, create_extraction_context
 from scraping.extractors.indiabix_extractor import IndiaBixExtractor, create_indiabix_extractor
-from scraping.extractors.geeksforgeeks_extractor import GeeksforGeeksExtractor, create_geeksforgeeks_extractor
+from scraping.extractors.geeksforgeeks_extractor import GeeksForGeeksExtractor, create_geeksforgeeks_extractor
 from scraping.drivers.selenium_driver import SeleniumDriver, create_indiabix_selenium_driver
 from scraping.drivers.playwright_driver import PlaywrightDriver, create_geeksforgeeks_playwright_driver
 from scraping.utils.content_validator import ContentValidator, validate_with_quality_gate
