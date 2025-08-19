@@ -67,7 +67,7 @@ class HighVolumeScrapingTester:
             logger.error(f"❌ System status error: {e}")
             return {}
     
-    def test_quick_extraction(self, source: str = "indiabix", max_questions: int = 10) -> Dict[str, Any]:
+    def test_quick_extraction(self, source: str = "indiabix", max_questions: int = 15) -> Dict[str, Any]:
         """Test quick extraction functionality"""
         try:
             logger.info(f"🧪 Testing quick extraction for {source} (max {max_questions} questions)")
