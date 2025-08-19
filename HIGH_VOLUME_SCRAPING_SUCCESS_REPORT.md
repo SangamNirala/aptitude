@@ -169,12 +169,12 @@ class HighVolumeQuestionStorage:
 
 ### **Step 1: System Health Check**
 ```bash
-curl https://question-vault.preview.emergentagent.com/api/high-volume-scraping/system-status
+curl https://aptitude-extract.preview.emergentagent.com/api/high-volume-scraping/system-status
 ```
 
 ### **Step 2: Start High-Volume Extraction**
 ```bash
-curl -X POST https://question-vault.preview.emergentagent.com/api/high-volume-scraping/start-extraction \
+curl -X POST https://aptitude-extract.preview.emergentagent.com/api/high-volume-scraping/start-extraction \
   -H "Content-Type: application/json" \
   -d '{
     "target_questions_total": 10000,
@@ -190,12 +190,12 @@ curl -X POST https://question-vault.preview.emergentagent.com/api/high-volume-sc
 ### **Step 3: Monitor Progress**
 ```bash
 # Get extraction ID from step 2 response
-curl https://question-vault.preview.emergentagent.com/api/high-volume-scraping/status/{EXTRACTION_ID}
+curl https://aptitude-extract.preview.emergentagent.com/api/high-volume-scraping/status/{EXTRACTION_ID}
 ```
 
 ### **Step 4: Get Final Results**
 ```bash
-curl https://question-vault.preview.emergentagent.com/api/high-volume-scraping/results/{EXTRACTION_ID}
+curl https://aptitude-extract.preview.emergentagent.com/api/high-volume-scraping/results/{EXTRACTION_ID}
 ```
 
 ---
