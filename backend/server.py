@@ -134,6 +134,10 @@ app.include_router(production_monitoring_router)
 from routers.scheduling_management import router as scheduling_management_router
 app.include_router(scheduling_management_router)
 
+# Include high-volume scraping router for 10,000 questions target
+from routers.high_volume_scraping import router as high_volume_scraping_router
+app.include_router(high_volume_scraping_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
