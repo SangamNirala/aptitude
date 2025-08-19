@@ -315,14 +315,14 @@ class HighVolumeScrapingTester:
         
         # Test 3: Quick Extraction Test (IndiaBix)
         logger.info("\n3️⃣ Testing Quick Extraction (IndiaBix)...")
-        indiabix_result = self.test_quick_extraction("indiabix", 5)
+        indiabix_result = self.test_quick_extraction("indiabix", 15)
         test_results["tests"]["indiabix_quick_test"] = indiabix_result.get("success", False)
         if not indiabix_result.get("success"):
             logger.warning(f"IndiaBix quick test failed: {indiabix_result.get('error')}")
         
         # Test 4: Quick Extraction Test (GeeksforGeeks)
         logger.info("\n4️⃣ Testing Quick Extraction (GeeksforGeeks)...")
-        gfg_result = self.test_quick_extraction("geeksforgeeks", 5)
+        gfg_result = self.test_quick_extraction("geeksforgeeks", 15)
         test_results["tests"]["geeksforgeeks_quick_test"] = gfg_result.get("success", False)
         if not gfg_result.get("success"):
             logger.warning(f"GeeksforGeeks quick test failed: {gfg_result.get('error')}")
