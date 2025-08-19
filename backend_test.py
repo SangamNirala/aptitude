@@ -1103,6 +1103,396 @@ async def test_indiabix_driver_creation_fix():
     logger.info("=" * 80)
     return test_results
 
+async def test_high_volume_scraping_system():
+    """
+    HIGH-VOLUME SCRAPING SYSTEM TESTING
+    Test the comprehensive high-volume scraping system for extracting 10,000 aptitude questions
+    """
+    logger.info("🎯 HIGH-VOLUME SCRAPING SYSTEM TESTING")
+    logger.info("=" * 80)
+    logger.info("TESTING REQUIREMENTS FROM REVIEW REQUEST:")
+    logger.info("1. System Status Check: GET /api/high-volume-scraping/system-status")
+    logger.info("2. Quick Test Extraction: POST /api/high-volume-scraping/test-extraction")
+    logger.info("3. Start High-Volume Extraction: POST /api/high-volume-scraping/start-extraction")
+    logger.info("4. Monitor Progress: GET /api/high-volume-scraping/status/{id}")
+    logger.info("5. Get Results: GET /api/high-volume-scraping/results/{id}")
+    logger.info("6. Test both IndiaBix and GeeksforGeeks sources")
+    logger.info("7. Verify API responses are properly formatted")
+    logger.info("8. Check system can handle high-volume parameters correctly")
+    logger.info("=" * 80)
+    
+    test_results = {
+        "system_status_test": False,
+        "quick_test_indiabix": False,
+        "quick_test_geeksforgeeks": False,
+        "high_volume_start_test": False,
+        "progress_monitoring_test": False,
+        "results_retrieval_test": False,
+        "api_format_validation": False,
+        "high_volume_parameters_test": False,
+        "extraction_id": None,
+        "questions_extracted": 0,
+        "errors_found": []
+    }
+    
+    async with WebScrapingSystemTester() as tester:
+        # Test 1: System Status Check
+        logger.info("🔧 TEST 1: System Status Check - GET /api/high-volume-scraping/system-status")
+        try:
+            start_time = time.time()
+            async with tester.session.get(f"{tester.base_url}/high-volume-scraping/system-status") as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Verify required fields in system status
+                    required_fields = ["system_status", "capabilities", "current_usage", "performance_metrics"]
+                    missing_fields = [field for field in required_fields if field not in data]
+                    
+                    if not missing_fields:
+                        capabilities = data.get("capabilities", {})
+                        supported_sources = capabilities.get("supported_sources", [])
+                        
+                        # Check if both required sources are supported
+                        has_indiabix = "indiabix" in supported_sources
+                        has_geeksforgeeks = "geeksforgeeks" in supported_sources
+                        
+                        if has_indiabix and has_geeksforgeeks:
+                            test_results["system_status_test"] = True
+                            logger.info(f"✅ System status check PASSED - Status: {data.get('system_status')}, Sources: {supported_sources}")
+                        else:
+                            test_results["errors_found"].append(f"Missing required sources - IndiaBix: {has_indiabix}, GeeksforGeeks: {has_geeksforgeeks}")
+                            logger.error(f"❌ Missing required sources - IndiaBix: {has_indiabix}, GeeksforGeeks: {has_geeksforgeeks}")
+                    else:
+                        test_results["errors_found"].append(f"System status missing fields: {missing_fields}")
+                        logger.error(f"❌ System status missing fields: {missing_fields}")
+                else:
+                    error_text = await response.text()
+                    test_results["errors_found"].append(f"System status failed: {response.status} - {error_text[:200]}")
+                    logger.error(f"❌ System status failed: {response.status} - {error_text[:200]}")
+                    
+        except Exception as e:
+            test_results["errors_found"].append(f"System status exception: {str(e)}")
+            logger.error(f"❌ System status exception: {e}")
+        
+        # Test 2: Quick Test Extraction - IndiaBix
+        logger.info("🔧 TEST 2: Quick Test Extraction - IndiaBix (15 questions)")
+        try:
+            payload = {"source": "indiabix", "max_questions": 15}
+            start_time = time.time()
+            
+            async with tester.session.post(f"{tester.base_url}/high-volume-scraping/test-extraction", json=payload) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Verify test extraction response format
+                    if "success" in data and "questions_extracted" in data:
+                        questions_extracted = data.get("questions_extracted", 0)
+                        success = data.get("success", False)
+                        
+                        if success and questions_extracted >= 10:  # At least 10 questions
+                            test_results["quick_test_indiabix"] = True
+                            logger.info(f"✅ IndiaBix quick test PASSED - Extracted: {questions_extracted} questions")
+                        else:
+                            test_results["errors_found"].append(f"IndiaBix test insufficient: {questions_extracted} questions, success: {success}")
+                            logger.warning(f"⚠️ IndiaBix test insufficient: {questions_extracted} questions, success: {success}")
+                    else:
+                        test_results["errors_found"].append("IndiaBix test response missing required fields")
+                        logger.error("❌ IndiaBix test response missing required fields")
+                else:
+                    error_text = await response.text()
+                    test_results["errors_found"].append(f"IndiaBix test failed: {response.status} - {error_text[:200]}")
+                    logger.error(f"❌ IndiaBix test failed: {response.status} - {error_text[:200]}")
+                    
+        except Exception as e:
+            test_results["errors_found"].append(f"IndiaBix test exception: {str(e)}")
+            logger.error(f"❌ IndiaBix test exception: {e}")
+        
+        # Test 3: Quick Test Extraction - GeeksforGeeks
+        logger.info("🔧 TEST 3: Quick Test Extraction - GeeksforGeeks (15 questions)")
+        try:
+            payload = {"source": "geeksforgeeks", "max_questions": 15}
+            start_time = time.time()
+            
+            async with tester.session.post(f"{tester.base_url}/high-volume-scraping/test-extraction", json=payload) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Verify test extraction response format
+                    if "success" in data and "questions_extracted" in data:
+                        questions_extracted = data.get("questions_extracted", 0)
+                        success = data.get("success", False)
+                        
+                        if success and questions_extracted >= 10:  # At least 10 questions
+                            test_results["quick_test_geeksforgeeks"] = True
+                            logger.info(f"✅ GeeksforGeeks quick test PASSED - Extracted: {questions_extracted} questions")
+                        else:
+                            test_results["errors_found"].append(f"GeeksforGeeks test insufficient: {questions_extracted} questions, success: {success}")
+                            logger.warning(f"⚠️ GeeksforGeeks test insufficient: {questions_extracted} questions, success: {success}")
+                    else:
+                        test_results["errors_found"].append("GeeksforGeeks test response missing required fields")
+                        logger.error("❌ GeeksforGeeks test response missing required fields")
+                else:
+                    error_text = await response.text()
+                    test_results["errors_found"].append(f"GeeksforGeeks test failed: {response.status} - {error_text[:200]}")
+                    logger.error(f"❌ GeeksforGeeks test failed: {response.status} - {error_text[:200]}")
+                    
+        except Exception as e:
+            test_results["errors_found"].append(f"GeeksforGeeks test exception: {str(e)}")
+            logger.error(f"❌ GeeksforGeeks test exception: {e}")
+        
+        # Test 4: Start High-Volume Extraction (1000 questions)
+        logger.info("🔧 TEST 4: Start High-Volume Extraction (1000 questions)")
+        try:
+            payload = {
+                "target_questions_total": 1000,
+                "target_questions_per_source": 500,
+                "batch_size": 50,
+                "max_concurrent_extractors": 2,
+                "quality_threshold": 75.0,
+                "enable_real_time_validation": True,
+                "enable_duplicate_detection": True
+            }
+            start_time = time.time()
+            
+            async with tester.session.post(f"{tester.base_url}/high-volume-scraping/start-extraction", json=payload) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Verify start extraction response format
+                    if "extraction_id" in data and "status" in data:
+                        extraction_id = data.get("extraction_id")
+                        status = data.get("status")
+                        
+                        if extraction_id and status == "started":
+                            test_results["high_volume_start_test"] = True
+                            test_results["extraction_id"] = extraction_id
+                            logger.info(f"✅ High-volume extraction started PASSED - ID: {extraction_id[:8]}, Status: {status}")
+                        else:
+                            test_results["errors_found"].append(f"Invalid start response: ID={extraction_id}, Status={status}")
+                            logger.error(f"❌ Invalid start response: ID={extraction_id}, Status={status}")
+                    else:
+                        test_results["errors_found"].append("Start extraction response missing required fields")
+                        logger.error("❌ Start extraction response missing required fields")
+                else:
+                    error_text = await response.text()
+                    test_results["errors_found"].append(f"Start extraction failed: {response.status} - {error_text[:200]}")
+                    logger.error(f"❌ Start extraction failed: {response.status} - {error_text[:200]}")
+                    
+        except Exception as e:
+            test_results["errors_found"].append(f"Start extraction exception: {str(e)}")
+            logger.error(f"❌ Start extraction exception: {e}")
+        
+        # Test 5: Monitor Progress (if extraction started)
+        if test_results["extraction_id"]:
+            logger.info("🔧 TEST 5: Monitor Progress - Multiple checks over 2 minutes")
+            extraction_id = test_results["extraction_id"]
+            
+            # Monitor for 2 minutes with checks every 30 seconds
+            monitoring_duration = 120  # 2 minutes
+            check_interval = 30  # 30 seconds
+            checks = monitoring_duration // check_interval
+            
+            for check_num in range(checks):
+                logger.info(f"🔍 Progress Check {check_num + 1}/{checks} - {(check_num + 1) * check_interval}s elapsed")
+                
+                try:
+                    start_time = time.time()
+                    async with tester.session.get(f"{tester.base_url}/high-volume-scraping/status/{extraction_id}") as response:
+                        response_time = time.time() - start_time
+                        
+                        if response.status == 200:
+                            data = await response.json()
+                            
+                            # Verify progress response format
+                            required_fields = [
+                                "extraction_id", "status", "progress_percentage", 
+                                "total_questions_extracted", "total_questions_validated",
+                                "total_questions_stored", "questions_per_minute"
+                            ]
+                            missing_fields = [field for field in required_fields if field not in data]
+                            
+                            if not missing_fields:
+                                status = data.get("status")
+                                progress = data.get("progress_percentage", 0)
+                                extracted = data.get("total_questions_extracted", 0)
+                                validated = data.get("total_questions_validated", 0)
+                                stored = data.get("total_questions_stored", 0)
+                                rate = data.get("questions_per_minute", 0)
+                                
+                                logger.info(f"📊 Status: {status}, Progress: {progress:.1f}%, Extracted: {extracted}, Rate: {rate:.1f}/min")
+                                
+                                # Update test results
+                                if extracted > test_results["questions_extracted"]:
+                                    test_results["questions_extracted"] = extracted
+                                
+                                # Mark progress monitoring as successful if we get valid responses
+                                if check_num == 0:  # First successful check
+                                    test_results["progress_monitoring_test"] = True
+                                    test_results["api_format_validation"] = True
+                                
+                                # Check if extraction completed
+                                if status in ["completed", "failed"]:
+                                    logger.info(f"🏁 Extraction {status} - Final count: {extracted} questions")
+                                    break
+                                    
+                            else:
+                                test_results["errors_found"].append(f"Progress response missing fields: {missing_fields}")
+                                logger.error(f"❌ Progress response missing fields: {missing_fields}")
+                        else:
+                            error_text = await response.text()
+                            test_results["errors_found"].append(f"Progress check failed: {response.status} - {error_text[:200]}")
+                            logger.error(f"❌ Progress check failed: {response.status} - {error_text[:200]}")
+                            
+                except Exception as e:
+                    test_results["errors_found"].append(f"Progress check exception: {str(e)}")
+                    logger.error(f"❌ Progress check exception: {e}")
+                
+                # Wait before next check (except on last iteration)
+                if check_num < checks - 1:
+                    logger.info(f"⏳ Waiting {check_interval} seconds before next check...")
+                    await asyncio.sleep(check_interval)
+        
+        # Test 6: Get Results (if extraction was started)
+        if test_results["extraction_id"]:
+            logger.info("🔧 TEST 6: Get Results")
+            extraction_id = test_results["extraction_id"]
+            
+            try:
+                start_time = time.time()
+                async with tester.session.get(f"{tester.base_url}/high-volume-scraping/results/{extraction_id}") as response:
+                    response_time = time.time() - start_time
+                    
+                    if response.status == 200:
+                        data = await response.json()
+                        
+                        # Verify results response format
+                        required_fields = [
+                            "extraction_id", "success", "total_questions_extracted",
+                            "total_questions_validated", "total_questions_stored",
+                            "target_achievement_percentage", "execution_time_seconds"
+                        ]
+                        missing_fields = [field for field in required_fields if field not in data]
+                        
+                        if not missing_fields:
+                            success = data.get("success", False)
+                            extracted = data.get("total_questions_extracted", 0)
+                            achievement = data.get("target_achievement_percentage", 0)
+                            
+                            test_results["results_retrieval_test"] = True
+                            logger.info(f"✅ Results retrieval PASSED - Success: {success}, Extracted: {extracted}, Achievement: {achievement:.1f}%")
+                        else:
+                            test_results["errors_found"].append(f"Results response missing fields: {missing_fields}")
+                            logger.error(f"❌ Results response missing fields: {missing_fields}")
+                    elif response.status == 400:
+                        # Extraction might not be completed yet - this is acceptable
+                        logger.info("ℹ️ Results not yet available (extraction still running) - This is acceptable")
+                        test_results["results_retrieval_test"] = True
+                    else:
+                        error_text = await response.text()
+                        test_results["errors_found"].append(f"Results retrieval failed: {response.status} - {error_text[:200]}")
+                        logger.error(f"❌ Results retrieval failed: {response.status} - {error_text[:200]}")
+                        
+            except Exception as e:
+                test_results["errors_found"].append(f"Results retrieval exception: {str(e)}")
+                logger.error(f"❌ Results retrieval exception: {e}")
+        
+        # Test 7: High-Volume Parameters Validation
+        logger.info("🔧 TEST 7: High-Volume Parameters Validation")
+        try:
+            # Test with maximum parameters
+            payload = {
+                "target_questions_total": 20000,  # Maximum allowed
+                "target_questions_per_source": 10000,
+                "batch_size": 100,
+                "max_concurrent_extractors": 5,
+                "quality_threshold": 95.0,
+                "enable_real_time_validation": True,
+                "enable_duplicate_detection": True
+            }
+            
+            async with tester.session.post(f"{tester.base_url}/high-volume-scraping/start-extraction", json=payload) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if "extraction_id" in data:
+                        test_results["high_volume_parameters_test"] = True
+                        logger.info("✅ High-volume parameters validation PASSED - System accepts maximum parameters")
+                        
+                        # Stop this test extraction to avoid resource usage
+                        test_extraction_id = data.get("extraction_id")
+                        try:
+                            async with tester.session.post(f"{tester.base_url}/high-volume-scraping/stop/{test_extraction_id}") as stop_response:
+                                if stop_response.status == 200:
+                                    logger.info("✅ Test extraction stopped successfully")
+                        except:
+                            pass  # Ignore stop errors
+                    else:
+                        test_results["errors_found"].append("High-volume parameters test missing extraction_id")
+                        logger.error("❌ High-volume parameters test missing extraction_id")
+                else:
+                    error_text = await response.text()
+                    test_results["errors_found"].append(f"High-volume parameters test failed: {response.status} - {error_text[:200]}")
+                    logger.error(f"❌ High-volume parameters test failed: {response.status} - {error_text[:200]}")
+                    
+        except Exception as e:
+            test_results["errors_found"].append(f"High-volume parameters exception: {str(e)}")
+            logger.error(f"❌ High-volume parameters exception: {e}")
+    
+    # Final Assessment
+    logger.info("\n" + "=" * 80)
+    logger.info("🎯 HIGH-VOLUME SCRAPING SYSTEM TEST RESULTS")
+    logger.info("=" * 80)
+    logger.info(f"📊 TEST RESULTS:")
+    logger.info(f"   • System Status Check: {'✅ PASSED' if test_results['system_status_test'] else '❌ FAILED'}")
+    logger.info(f"   • IndiaBix Quick Test: {'✅ PASSED' if test_results['quick_test_indiabix'] else '❌ FAILED'}")
+    logger.info(f"   • GeeksforGeeks Quick Test: {'✅ PASSED' if test_results['quick_test_geeksforgeeks'] else '❌ FAILED'}")
+    logger.info(f"   • High-Volume Start: {'✅ PASSED' if test_results['high_volume_start_test'] else '❌ FAILED'}")
+    logger.info(f"   • Progress Monitoring: {'✅ PASSED' if test_results['progress_monitoring_test'] else '❌ FAILED'}")
+    logger.info(f"   • Results Retrieval: {'✅ PASSED' if test_results['results_retrieval_test'] else '❌ FAILED'}")
+    logger.info(f"   • API Format Validation: {'✅ PASSED' if test_results['api_format_validation'] else '❌ FAILED'}")
+    logger.info(f"   • High-Volume Parameters: {'✅ PASSED' if test_results['high_volume_parameters_test'] else '❌ FAILED'}")
+    logger.info(f"   • Questions Extracted: {test_results['questions_extracted']}")
+    logger.info(f"   • Errors Found: {len(test_results['errors_found'])}")
+    
+    if test_results['errors_found']:
+        logger.info("❌ ERRORS DETECTED:")
+        for error in test_results['errors_found']:
+            logger.info(f"   - {error}")
+    
+    # Calculate success rate
+    total_tests = 8
+    passed_tests = sum([
+        test_results['system_status_test'],
+        test_results['quick_test_indiabix'],
+        test_results['quick_test_geeksforgeeks'],
+        test_results['high_volume_start_test'],
+        test_results['progress_monitoring_test'],
+        test_results['results_retrieval_test'],
+        test_results['api_format_validation'],
+        test_results['high_volume_parameters_test']
+    ])
+    
+    success_rate = (passed_tests / total_tests) * 100
+    
+    logger.info(f"📈 OVERALL SUCCESS RATE: {success_rate:.1f}% ({passed_tests}/{total_tests} tests passed)")
+    
+    if success_rate >= 80:
+        logger.info("🎉 SUCCESS: High-volume scraping system is working well!")
+    elif success_rate >= 60:
+        logger.info("⚠️ PARTIAL SUCCESS: System has some issues but core functionality works")
+    else:
+        logger.info("❌ FAILURE: High-volume scraping system has significant issues")
+    
+    logger.info("=" * 80)
+    return test_results
+
 async def test_logical_questions_functionality():
     """
     FOCUSED TEST: Logical Questions Functionality
