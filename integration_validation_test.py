@@ -46,9 +46,9 @@ class IntegrationValidationTester:
                         self.base_url = line.split('=')[1].strip() + "/api"
                         break
                 else:
-                    self.base_url = "https://aptitude-test-repair.preview.emergentagent.com/api"
+                    self.base_url = "https://question-vault.preview.emergentagent.com/api"
         except:
-            self.base_url = "https://aptitude-test-repair.preview.emergentagent.com/api"
+            self.base_url = "https://question-vault.preview.emergentagent.com/api"
         
         self.session = None
         self.test_results = {

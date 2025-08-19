@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class ScrapingSystemTester:
     def __init__(self):
-        self.base_url = "https://aptitude-test-repair.preview.emergentagent.com/api"
+        self.base_url = "https://question-vault.preview.emergentagent.com/api"
         self.session = None
         self.test_results = {
             "total_tests": 0,
