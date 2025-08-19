@@ -153,7 +153,7 @@ async def start_high_volume_extraction(
             "extraction_id": extraction_id,
             "status": "started",
             "message": f"High-volume extraction started for {request.target_questions_total} questions",
-            "estimated_duration_minutes": request.target_questions_total // 20  # Rough estimate
+            "estimated_duration_minutes": str(request.target_questions_total // 20)  # Convert to string
         }
         
     except Exception as e:
