@@ -700,18 +700,19 @@ async def run_high_volume_extraction(target_questions: int = 10000) -> Dict[str,
 
 def create_quick_extraction_test(source: str, max_questions: int = 50) -> Dict[str, Any]:
     """
-    Create a quick test extraction for validation
+    Create a quick test extraction for validation using actual scraping
     
     Args:
         source: Source name (indiabix/geeksforgeeks)
         max_questions: Maximum questions to extract for testing
         
     Returns:
-        Test results
+        Test results with actual extracted questions
     """
+    start_time = datetime.now()
+    
     try:
-        # For testing purposes, return a simulated successful extraction
-        # In a real implementation, this would perform actual scraping
+        logger.info(f"🧪 Starting quick extraction test for {source} (max {max_questions} questions)")
         
         if source.lower() not in ["indiabix", "geeksforgeeks"]:
             return {
@@ -726,31 +727,127 @@ def create_quick_extraction_test(source: str, max_questions: int = 50) -> Dict[s
                 }
             }
         
-        # Simulate extraction results based on source
-        if source.lower() == "indiabix":
-            questions_extracted = min(max_questions, 12)  # Simulate some questions found
-            success = questions_extracted > 0
-        else:  # geeksforgeeks
-            questions_extracted = min(max_questions, 8)   # Simulate fewer questions
-            success = questions_extracted > 0
+        # Get source configuration and targets
+        source_name = source.lower()
+        targets = get_source_targets(source_name)
+        
+        if not targets:
+            return {
+                "success": False,
+                "error": f"No targets configured for source: {source_name}",
+                "questions_extracted": 0,
+                "test_info": {
+                    "source": source,
+                    "max_questions": max_questions,
+                    "test_timestamp": datetime.now().isoformat(),
+                    "test_purpose": "validation"
+                }
+            }
+        
+        # Select first target for quick test
+        target = targets[0]
+        
+        logger.info(f"🎯 Testing with target: {target.category}/{target.subcategory}")
+        
+        # Create driver
+        driver = None
+        if source_name == "indiabix":
+            driver = create_indiabix_selenium_driver(
+                anti_detection_config={
+                    "source_name": source_name,
+                    "enable_user_agent_rotation": True,
+                    "enable_behavior_simulation": True
+                }
+            )
+        else:
+            driver = create_selenium_driver(
+                source_name=source_name,
+                browser="chrome",
+                headless=True,
+                page_load_timeout=30
+            )
+        
+        if not driver or not driver.initialize_driver():
+            return {
+                "success": False,
+                "error": "Failed to initialize web driver",
+                "questions_extracted": 0,
+                "test_info": {
+                    "source": source,
+                    "max_questions": max_questions,
+                    "test_timestamp": datetime.now().isoformat(),
+                    "test_purpose": "validation"
+                }
+            }
+        
+        # Create extractor
+        if source_name == "indiabix":
+            extractor = create_indiabix_extractor()
+        else:
+            from scraping.extractors.geeksforgeeks_extractor import create_geeksforgeeks_extractor
+            extractor = create_geeksforgeeks_extractor()
+        
+        # Navigate to target URL
+        navigation_result = driver.navigate_to_page(target.target_url)
+        if not navigation_result.success:
+            driver.cleanup()
+            return {
+                "success": False,
+                "error": f"Navigation failed: {navigation_result.error_message}",
+                "questions_extracted": 0,
+                "test_info": {
+                    "source": source,
+                    "max_questions": max_questions,
+                    "test_timestamp": datetime.now().isoformat(),
+                    "test_purpose": "validation"
+                }
+            }
+        
+        # Create extraction context
+        from scraping.extractors.base_extractor import create_extraction_context
+        context = create_extraction_context(
+            target=target,
+            page_url=target.target_url,
+            page_number=1,
+            max_questions=min(max_questions, 20)  # Limit for quick test
+        )
+        
+        # Extract questions
+        batch_result = extractor.extract_questions_from_page(driver.driver, context)
+        
+        # Cleanup driver
+        driver.cleanup()
+        
+        # Process results
+        questions_extracted = batch_result.successful_extractions
+        success = questions_extracted > 0
+        
+        execution_time = (datetime.now() - start_time).total_seconds()
+        questions_per_minute = (questions_extracted / (execution_time / 60)) if execution_time > 0 else 0
+        
+        logger.info(f"✅ Quick test completed: {questions_extracted} questions extracted in {execution_time:.1f}s")
         
         return {
             "success": success,
             "questions_extracted": questions_extracted,
-            "total_processed": questions_extracted + 2,  # Some failed extractions
-            "successful_extractions": questions_extracted,
+            "total_processed": batch_result.total_processed,
+            "successful_extractions": batch_result.successful_extractions,
             "source": source,
-            "extraction_time_seconds": 15.5,
-            "questions_per_minute": questions_extracted * 4,  # Rough rate
+            "extraction_time_seconds": execution_time,
+            "questions_per_minute": questions_per_minute,
             "test_info": {
                 "source": source,
                 "max_questions": max_questions,
                 "test_timestamp": datetime.now().isoformat(),
-                "test_purpose": "validation"
-            }
+                "test_purpose": "validation",
+                "target_url": target.target_url,
+                "target_category": f"{target.category}/{target.subcategory}"
+            },
+            "errors": batch_result.errors if hasattr(batch_result, 'errors') else []
         }
         
     except Exception as e:
+        logger.error(f"❌ Quick extraction test failed: {e}")
         return {
             "success": False,
             "error": f"Test extraction failed: {str(e)}",
@@ -759,6 +856,7 @@ def create_quick_extraction_test(source: str, max_questions: int = 50) -> Dict[s
                 "source": source,
                 "max_questions": max_questions,
                 "test_timestamp": datetime.now().isoformat(),
-                "test_purpose": "validation"
+                "test_purpose": "validation",
+                "execution_time_seconds": (datetime.now() - start_time).total_seconds()
             }
         }
