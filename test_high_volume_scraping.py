@@ -20,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Test configuration
-BASE_URL = "http://localhost:8001"  # Backend URL
+BASE_URL = "https://question-vault.preview.emergentagent.com"  # Backend URL
 API_PREFIX = "/api"
 
 class HighVolumeScrapingTester:
