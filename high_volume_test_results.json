@@ -1,15 +1,15 @@
 {
-  "start_time": "2025-08-19T01:51:35.531091",
+  "start_time": "2025-08-19T02:19:11.670883",
   "tests": {
-    "api_health": false,
-    "system_status": false,
+    "api_health": true,
+    "system_status": true,
     "indiabix_quick_test": false,
     "geeksforgeeks_quick_test": false,
-    "database_questions": false
+    "database_questions": true
   },
-  "overall_success": false,
-  "end_time": "2025-08-19T01:51:35.735907",
+  "overall_success": true,
+  "end_time": "2025-08-19T02:19:25.885098",
   "total_tests": 5,
-  "passed_tests": 0,
-  "success_rate": 0.0
+  "passed_tests": 3,
+  "success_rate": 60.0
 }
