@@ -1809,60 +1809,61 @@ async def test_logical_questions_functionality():
     return test_results
 
 async def main():
-    """Main test execution function - Focus on Logical Questions Functionality"""
-    logger.info("🚀 LOGICAL QUESTIONS FUNCTIONALITY TESTING")
-    logger.info("🎯 Testing the logical questions API and database integration")
-    logger.info("🔍 Focus: Verify the fix is working and students can access logical reasoning questions")
+    """Main test execution function - Focus on High-Volume Scraping System"""
+    logger.info("🚀 HIGH-VOLUME SCRAPING SYSTEM TESTING")
+    logger.info("🎯 Testing the high-volume scraping system for extracting 10,000 aptitude questions")
+    logger.info("🔍 Focus: Verify system health, quick tests, high-volume extraction, and API responses")
     
-    # Run the focused logical questions functionality test
-    test_results = await test_logical_questions_functionality()
+    # Run the high-volume scraping system test (primary focus)
+    test_results = await test_high_volume_scraping_system()
     
     # Overall summary
     logger.info("\n" + "=" * 80)
-    logger.info("🎯 FINAL ASSESSMENT SUMMARY")
+    logger.info("🎯 HIGH-VOLUME SCRAPING SYSTEM FINAL ASSESSMENT")
     logger.info("=" * 80)
     
     # Calculate success rate
-    total_tests = 9
+    total_tests = 8
     passed_tests = sum([
-        test_results['api_endpoint_test'],
-        test_results['question_count_test'],
-        test_results['question_structure_test'],
-        test_results['question_patterns_test'],
-        test_results['difficulty_levels_test'],
-        test_results['ai_metrics_test'],
-        test_results['pagination_test'],
-        test_results['database_verification_test'],
-        test_results['categorization_test']
+        test_results['system_status_test'],
+        test_results['quick_test_indiabix'],
+        test_results['quick_test_geeksforgeeks'],
+        test_results['high_volume_start_test'],
+        test_results['progress_monitoring_test'],
+        test_results['results_retrieval_test'],
+        test_results['api_format_validation'],
+        test_results['high_volume_parameters_test']
     ])
     
     success_rate = (passed_tests / total_tests) * 100
     
-    logger.info(f"API Endpoint: {'✅ SUCCESS' if test_results['api_endpoint_test'] else '❌ FAILED'}")
-    logger.info(f"Question Count (10): {'✅ SUCCESS' if test_results['question_count_test'] else '❌ FAILED'}")
-    logger.info(f"Question Structure: {'✅ SUCCESS' if test_results['question_structure_test'] else '❌ FAILED'}")
-    logger.info(f"Question Patterns: {'✅ SUCCESS' if test_results['question_patterns_test'] else '❌ FAILED'}")
-    logger.info(f"Database Verification: {'✅ SUCCESS' if test_results['database_verification_test'] else '❌ FAILED'}")
+    logger.info(f"System Status Check: {'✅ SUCCESS' if test_results['system_status_test'] else '❌ FAILED'}")
+    logger.info(f"IndiaBix Quick Test: {'✅ SUCCESS' if test_results['quick_test_indiabix'] else '❌ FAILED'}")
+    logger.info(f"GeeksforGeeks Quick Test: {'✅ SUCCESS' if test_results['quick_test_geeksforgeeks'] else '❌ FAILED'}")
+    logger.info(f"High-Volume Start: {'✅ SUCCESS' if test_results['high_volume_start_test'] else '❌ FAILED'}")
+    logger.info(f"Progress Monitoring: {'✅ SUCCESS' if test_results['progress_monitoring_test'] else '❌ FAILED'}")
+    logger.info(f"Results Retrieval: {'✅ SUCCESS' if test_results['results_retrieval_test'] else '❌ FAILED'}")
+    logger.info(f"API Format Validation: {'✅ SUCCESS' if test_results['api_format_validation'] else '❌ FAILED'}")
+    logger.info(f"High-Volume Parameters: {'✅ SUCCESS' if test_results['high_volume_parameters_test'] else '❌ FAILED'}")
     logger.info(f"Overall Success Rate: {success_rate:.1f}% ({passed_tests}/{total_tests})")
-    logger.info(f"Questions Found: {test_results['questions_found']}")
-    logger.info(f"Patterns Found: {test_results['patterns_found']}")
+    logger.info(f"Questions Extracted: {test_results['questions_extracted']}")
     logger.info(f"Errors Found: {len(test_results['errors_found'])}")
     logger.info("=" * 80)
     
     # Answer the review request question
     critical_tests_passed = (
-        test_results['api_endpoint_test'] and 
-        test_results['question_count_test'] and 
-        test_results['question_structure_test'] and
-        test_results['database_verification_test']
+        test_results['system_status_test'] and 
+        test_results['quick_test_indiabix'] and 
+        test_results['quick_test_geeksforgeeks'] and
+        test_results['high_volume_start_test']
     )
     
     if critical_tests_passed and success_rate >= 80:
-        logger.info("✅ FINAL ANSWER: Logical questions functionality is working correctly - the critical integration issue has been resolved")
+        logger.info("✅ FINAL ANSWER: High-volume scraping system is working correctly and ready for 10,000 question extraction")
     elif critical_tests_passed:
-        logger.info("⚠️ FINAL ANSWER: Core functionality is working but some features need attention")
+        logger.info("⚠️ FINAL ANSWER: Core high-volume scraping functionality is working but some features need attention")
     else:
-        logger.info("❌ FINAL ANSWER: Critical integration issues still need to be resolved")
+        logger.info("❌ FINAL ANSWER: Critical high-volume scraping system issues need to be resolved")
     
     logger.info("=" * 80)
 
