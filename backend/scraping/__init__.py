@@ -24,7 +24,7 @@ from .extractors.base_extractor import (
     PageExtractionContext, create_extraction_context, merge_batch_results
 )
 from .extractors.indiabix_extractor import IndiaBixExtractor, create_indiabix_extractor
-from .extractors.geeksforgeeks_extractor import GeeksforGeeksExtractor, create_geeksforgeeks_extractor
+from .extractors.geeksforgeeks_extractor import GeeksForGeeksExtractor, create_geeksforgeeks_extractor
 
 # Utilities
 from .utils.anti_detection import AntiDetectionManager, create_anti_detection_manager
@@ -58,7 +58,7 @@ __all__ = [
     'BaseContentExtractor', 'ExtractionResult', 'BatchExtractionResult',
     'PageExtractionContext', 'create_extraction_context', 'merge_batch_results',
     'IndiaBixExtractor', 'create_indiabix_extractor',
-    'GeeksforGeeksExtractor', 'create_geeksforgeeks_extractor',
+    'GeeksForGeeksExtractor', 'create_geeksforgeeks_extractor',
     
     # Anti-Detection
     'AntiDetectionManager', 'create_anti_detection_manager',
